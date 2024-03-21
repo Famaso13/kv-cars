@@ -1,7 +1,8 @@
 import "./App.css";
+import Home from "./pages/home/Home";
 
 function App() {
-  return <p>hello world</p>;
+  return <Home />;
 }
 
 export default App;

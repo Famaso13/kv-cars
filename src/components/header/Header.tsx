@@ -5,11 +5,18 @@ import Button from "../button/Button";
 const Header = () => {
   return (
     <div className="header">
-      <div style={{ width: "15%" }}>
+      <div className="nav" style={{ width: "15%" }}>
         <img src={logo} />
       </div>
-      <div style={{ width: "75%" }}></div>
-      <div style={{ width: "10%" }}>
+      <div className="nav" style={{ width: "70%" }}>
+        <Button type="selected" text="Track" />
+        <Button type="unselected" text="Cars" />
+        <Button type="unselected" text="Leaderboard" />
+      </div>
+      <div
+        className="nav"
+        style={{ display: "flex", width: "15%", justifyContent: "center" }}
+      >
         <Button type="main" text="Sign up" />
       </div>
     </div>

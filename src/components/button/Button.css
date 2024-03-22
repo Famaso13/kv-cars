@@ -2,15 +2,16 @@
 
 .button {
   display: flex;
-  padding: 10px;
+  padding: 10px 30px;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
+  width: fit-content;
+  max-height: 40%;
 }
 .text {
   margin: 0 0 0 0;
   font-family: "Poppins", sans-serif;
   font-weight: 600;
   font-style: normal;
-  color: white;
 }

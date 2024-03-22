@@ -5,4 +5,5 @@ export const colors = {
   selected_text: "#A02638",
   unselected: "#ffffff",
   unselected_text: "rgba(6, 0, 0, 0.52)",
+  home_column: "#3b0404",
 };

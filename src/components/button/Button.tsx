@@ -9,31 +9,32 @@ interface buttonInterface {
 
 const Button: React.FC<buttonInterface> = ({ type, text }) => {
   return type === "main" ? (
-    <div
-      className="button"
-      style={{ backgroundColor: colors.main, color: colors.main_text }}
-    >
-      <p className="text">{text}</p>
+    <div className="button" style={{ backgroundColor: colors.main }}>
+      <p>{text}</p>
     </div>
   ) : type === "selected" ? (
     <div
       className="button"
       style={{
         backgroundColor: colors.selected,
-        color: colors.selected_text,
       }}
     >
-      <p className="text">{text}</p>
+      <p style={{ color: colors.selected_text }}>{text}</p>
     </div>
   ) : type === "unselected" ? (
     <div
       className="button"
       style={{
         backgroundColor: colors.unselected,
-        color: colors.unselected_text,
       }}
     >
-      <p className="text">{text}</p>
+      <p
+        style={{
+          color: colors.unselected_text,
+        }}
+      >
+        {text}
+      </p>
     </div>
   ) : null;
 };

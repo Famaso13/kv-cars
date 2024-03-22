@@ -1,3 +1,36 @@
+.content {
+  display: flex;
+  height: 80vh;
+}
+
+.picture {
+  display: flex;
+  justify-content: end;
+  background-image: url(./../../assets/home_page_cars.png);
+  height: 100%;
+  width: 65%;
+  background-size: cover;
+}
+
+.column {
+  height: 100%;
+  width: 7%;
+  opacity: 0.7;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  width: 35%;
+}
+
+.message_text {
+  width: 100%;
+  text-align: center;
+}
+
 .blank {
-  height: 10%;
+  height: 10vh;
 }

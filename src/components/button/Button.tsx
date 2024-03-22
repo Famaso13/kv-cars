@@ -1,5 +1,6 @@
 import React from "react";
 import { colors } from "../../../colors.js";
+import "./Button.css";
 
 interface buttonInterface {
   type: "main" | "secondary";
@@ -9,7 +10,7 @@ interface buttonInterface {
 const Button: React.FC<buttonInterface> = ({ type, text }) => {
   return type === "main" ? (
     <div className="button" style={{ backgroundColor: colors.main }}>
-      {text}
+      <p className="text">{text}</p>
     </div>
   ) : type === "secondary" ? (
     <div className="button">{text}</div>

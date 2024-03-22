@@ -10,7 +10,7 @@ const Header = () => {
       </div>
       <div style={{ width: "75%" }}></div>
       <div style={{ width: "10%" }}>
-        <Button type="main" text="Sign in" />
+        <Button type="main" text="Sign up" />
       </div>
     </div>
   );

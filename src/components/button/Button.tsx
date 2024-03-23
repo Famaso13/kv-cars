@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { colors } from "../../../colors.js";
 import "./Button.css";
 
@@ -8,8 +9,17 @@ interface buttonInterface {
 }
 
 const Button: React.FC<buttonInterface> = ({ type, text }) => {
+  let navigate = useNavigate();
+  const signup = () => {
+    navigate("signup");
+  };
+
   return type === "main" ? (
-    <div className="button" style={{ backgroundColor: colors.main }}>
+    <div
+      className="button"
+      style={{ backgroundColor: colors.main }}
+      onClick={signup}
+    >
       <p>{text}</p>
     </div>
   ) : type === "selected" ? (

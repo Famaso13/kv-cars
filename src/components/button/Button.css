@@ -6,4 +6,5 @@
   border-radius: 10px;
   width: fit-content;
   max-height: 40%;
+  cursor: pointer;
 }

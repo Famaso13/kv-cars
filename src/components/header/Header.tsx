@@ -1,6 +1,6 @@
 import logo from "../../assets/Klogo1.svg";
-import "../Header.css";
 import Button from "../button/Button";
+import "../Header.css";
 
 const Header = () => {
   return (

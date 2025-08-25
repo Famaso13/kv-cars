@@ -3,6 +3,7 @@
     font-weight: 500;
     margin-bottom: 1rem;
     color: #333;
+    font-size: large;
 }
 
 .input {
@@ -12,6 +13,7 @@
     border-radius: 5px;
     font-size: 16px;
     box-sizing: border-box;
+    background-color: #cec6c7;
 }
 
 .input:focus {

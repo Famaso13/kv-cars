@@ -9,6 +9,7 @@
     height: 100vh;
     background-color: #a02638;
     object-fit: cover;
+    user-select: none;
 }
 
 .form-container {

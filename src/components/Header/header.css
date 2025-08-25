@@ -25,6 +25,9 @@ header {
     justify-content: center;
 }
 
-.logo {
-    height: 80%;
+.logoHeader {
+    display: flex;
+    height: 85%;
+    align-items: center;
+    justify-content: center;
 }

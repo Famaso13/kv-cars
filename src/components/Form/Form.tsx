@@ -1,6 +1,7 @@
 import Button from "../Button/Button";
 import FormInput from "../FormInput/FormInput";
 import "./form.css";
+import "../../App.css";
 
 interface FormProps {
     isLogin: boolean;
@@ -11,17 +12,17 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
     return (
         <form className="form">
             {isLogin ? (
-                <h1>
+                <h2 className="heading">
                     Already accepted the challenge?
                     <br />
                     Log in and embrace the speed.
-                </h1>
+                </h2>
             ) : (
-                <h1>
+                <h2 className="heading">
                     Think you can handle the speed?
                     <br />
                     Sing up and start your journey today.
-                </h1>
+                </h2>
             )}
             <div className="inputs">
                 {isLogin ? (
@@ -62,18 +63,30 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
                 )}
             </div>
             {isLogin ? (
-                <Button style={true} type="submit" label="Log In" onClick={() => console.log("login")} width="50%" />
+                <Button
+                    style={"primary"}
+                    type="submit"
+                    label="Log In"
+                    onClick={() => console.log("login")}
+                    width="50%"
+                />
             ) : (
-                <Button style={true} type="submit" label="Sign Up" onClick={() => console.log("signup")} width="50%" />
+                <Button
+                    style={"primary"}
+                    type="submit"
+                    label="Sign Up"
+                    onClick={() => console.log("signup")}
+                    width="50%"
+                />
             )}
             {isLogin ? (
-                <p>
+                <p className="helping-text">
                     Think you can handle the speed?
                     <br /> <span onClick={() => setIsLogin(false)}>Sing up</span>
                     &nbsp;and start your journey today.
                 </p>
             ) : (
-                <p>
+                <p className="helping-text">
                     Already accepted the challenge?
                     <br /> <span onClick={() => setIsLogin(true)}>Log in</span>
                     &nbsp;and embrace the speed.

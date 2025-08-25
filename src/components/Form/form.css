@@ -11,21 +11,26 @@
 
 .inputs {
     width: 80%;
-    height: 20%;
+    min-height: 20%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
 }
 
-h1 {
+.heading {
     font-weight: 400;
     text-align: center;
+    color: black;
+    font-size: 2.5rem;
+    width: 80%;
+    margin: 0;
 }
 
-p {
+.helping-text {
     font-weight: 400;
     text-align: center;
+    color: black;
 }
 
 span {

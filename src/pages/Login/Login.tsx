@@ -3,6 +3,7 @@ import "../../App.css";
 import logo from "../../assets/logoWhite.png";
 import { useState } from "react";
 import Form from "../../components/Form/Form";
+import { Link } from "react-router-dom";
 
 const Login = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -18,7 +19,9 @@ const Login = () => {
             </div>
             <div className="half">
                 <div className="space">
-                    <img className="logo" src={logo} alt="logo" />
+                    <Link className="logoLogin" to={"/"}>
+                        <img className="logoLogin" src={logo} alt="logo" />
+                    </Link>
                 </div>
                 <div className="form-container">
                     <Form isLogin={isLogin} setIsLogin={setIsLogin} />

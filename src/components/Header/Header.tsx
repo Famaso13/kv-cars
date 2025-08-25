@@ -1,16 +1,25 @@
 import "./header.css";
 import logo from "../../assets/logoBlack.svg";
 import Button from "../Button/Button";
+import { Link, useNavigate } from "react-router-dom";
 
 interface HeaderProps {
     loggedIn: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
+const Header: React.FC<HeaderProps> = ({ loggedIn = false }) => {
+    const navigate = useNavigate();
+
+    const handleLogin = () => {
+        navigate("/login");
+    };
+
     return (
         <header>
             <div className="side">
-                <img className="logo" src={logo} />
+                <Link className="logoHeader" to="/">
+                    <img className="logoHeader" src={logo} />
+                </Link>
             </div>
             <div className="main">
                 <Button
@@ -45,13 +54,7 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
                         height={"50%"}
                     />
                 ) : (
-                    <Button
-                        style="primary"
-                        label="Log in"
-                        onClick={() => console.log("link na login")}
-                        width={"80%"}
-                        height={"50%"}
-                    />
+                    <Button style="primary" label="Log in" onClick={handleLogin} width={"80%"} height={"50%"} />
                 )}
             </div>
         </header>

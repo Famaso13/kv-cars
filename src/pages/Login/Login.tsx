@@ -1,4 +1,5 @@
 import "./login.css";
+import "../../App.css";
 import logo from "../../assets/logoWhite.png";
 import { useState } from "react";
 import Form from "../../components/Form/Form";

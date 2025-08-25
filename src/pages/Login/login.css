@@ -1,17 +1,3 @@
-.half {
-    width: 50%;
-    height: 100vh;
-}
-
-.full-screen {
-    display: flex;
-    width: 100%;
-    height: 100vh;
-    background-color: #a02638;
-    object-fit: cover;
-    user-select: none;
-}
-
 .form-container {
     display: flex;
     flex-direction: column;

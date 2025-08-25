@@ -7,10 +7,14 @@ const Home = () => {
         <>
             <Header loggedIn={true} />
             <div className="full-screen">
-                <div className="half">
-                    <img className="full-screen" src="/home.png" alt="carsOnTrack" />
+                <div id="background" className="left">
+                    <div style={{ width: "92%" }}></div>
+                    <div className="column"></div>
                 </div>
-                <div className="half"></div>
+                <div className="right">
+                    <h1>Test your abilities</h1>
+                    <p>Get on the track and set the best time</p>
+                </div>
             </div>
         </>
     );

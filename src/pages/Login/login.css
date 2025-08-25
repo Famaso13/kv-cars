@@ -1,0 +1,35 @@
+.half {
+    width: 50%;
+    height: 100vh;
+}
+
+.full-screen {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background-color: #a02638;
+    object-fit: cover;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+    width: 80%;
+    margin: 0 auto;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.space {
+    display: flex;
+    height: 10%;
+    align-items: center;
+}
+
+.logo {
+    height: 80%;
+    margin-left: 3%;
+}

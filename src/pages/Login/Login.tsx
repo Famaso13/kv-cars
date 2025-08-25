@@ -2,6 +2,7 @@ import "./login.css";
 import logo from "../../assets/logoWhite.png";
 import { useState } from "react";
 import Button from "../../components/Button/Button";
+import FormInput from "../../components/FormInput/FormInput";
 
 const Login = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -20,6 +21,7 @@ const Login = () => {
                     <img className="logo" src={logo} alt="logo" />
                 </div>
                 <div className="form-container">
+                    <FormInput label="First Name" type="text" placeholder="John" width="50%" />
                     {isLogin ? (
                         <Button primary={true} label="Log In" onClick={() => setIsLogin(false)} width="50%" />
                     ) : (

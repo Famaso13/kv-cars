@@ -1,9 +1,10 @@
 import "./login.css";
 import logo from "../../assets/logoWhite.png";
 import { useState } from "react";
+import Button from "../../components/Button/Button";
 
 const Login = () => {
-    const [isLogin, setIsLogin] = useState(false);
+    const [isLogin, setIsLogin] = useState(true);
 
     return (
         <div className="full-screen">
@@ -18,7 +19,13 @@ const Login = () => {
                 <div className="space">
                     <img className="logo" src={logo} alt="logo" />
                 </div>
-                <div className="form-container"></div>
+                <div className="form-container">
+                    {isLogin ? (
+                        <Button primary={true} label="Log In" onClick={() => setIsLogin(false)} width="50%" />
+                    ) : (
+                        <Button primary={true} label="Sign In" onClick={() => setIsLogin(true)} width="50%" />
+                    )}
+                </div>
                 <div className="space"></div>
             </div>
         </div>

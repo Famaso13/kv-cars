@@ -1,7 +1,7 @@
 import "./button.css";
 
 interface ButtonProps {
-    primary?: boolean;
+    style?: "primary" | "secondary" | "navigation" | "selected";
     label: string;
     onClick: () => void;
     disabled?: boolean;
@@ -11,7 +11,7 @@ interface ButtonProps {
 }
 
 const Button: React.FC<ButtonProps> = ({
-    primary = true,
+    style: style = "primary",
     label,
     onClick,
     disabled,
@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({
             type={type}
             disabled={disabled}
             onClick={onClick}
-            className={primary ? "primary button" : "secondary button"}
+            className={`button ${style}`}
             style={{ width, height }}
         >
             {label}

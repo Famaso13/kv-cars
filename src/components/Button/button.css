@@ -18,3 +18,29 @@
     color: #a02638;
     border: #a02638 1px solid;
 }
+
+.navigation {
+    background-color: white;
+    color: #00000099;
+    font-size: 1.5rem;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+.navigation:hover {
+    color: #a02638;
+    transform: scale(1.1);
+}
+
+.selected {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #a02638;
+    background: none;
+    transition: transform 0.2s ease;
+}
+
+.selected:hover {
+    color: #a02638;
+    transform: scale(1.1);
+}

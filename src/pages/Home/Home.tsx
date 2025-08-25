@@ -1,15 +1,19 @@
-import "./home.css";
 import "../../App.css";
+import Header from "../../components/Header/Header";
+import "./home.css";
 
-const Login = () => {
+const Home = () => {
     return (
-        <div className="full-screen">
-            <div className="half">
-                <img className="full-screen" src="/signin.png" alt="carsOnTrack" />
+        <>
+            <Header loggedIn={true} />
+            <div className="full-screen">
+                <div className="half">
+                    <img className="full-screen" src="/home.png" alt="carsOnTrack" />
+                </div>
+                <div className="half"></div>
             </div>
-            <div className="half"></div>
-        </div>
+        </>
     );
 };
 
-export default Login;
+export default Home;

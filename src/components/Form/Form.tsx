@@ -62,15 +62,9 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
                 )}
             </div>
             {isLogin ? (
-                <Button primary={true} type="submit" label="Log In" onClick={() => console.log("login")} width="50%" />
+                <Button style={true} type="submit" label="Log In" onClick={() => console.log("login")} width="50%" />
             ) : (
-                <Button
-                    primary={true}
-                    type="submit"
-                    label="Sign Up"
-                    onClick={() => console.log("signup")}
-                    width="50%"
-                />
+                <Button style={true} type="submit" label="Sign Up" onClick={() => console.log("signup")} width="50%" />
             )}
             {isLogin ? (
                 <p>

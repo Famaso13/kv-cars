@@ -5,13 +5,19 @@ import { Link, useNavigate } from "react-router-dom";
 
 interface HeaderProps {
     loggedIn: boolean;
+    currentPage?: "track" | "cars" | "leaderboard";
 }
 
-const Header: React.FC<HeaderProps> = ({ loggedIn = false }) => {
+const Header: React.FC<HeaderProps> = ({ loggedIn = false, currentPage }) => {
     const navigate = useNavigate();
 
     const handleLogin = () => {
         navigate("/login");
+    };
+
+    const handleNavigate = (link: string) => {
+        if (loggedIn) navigate(`/${link}`);
+        else navigate("/login");
     };
 
     return (
@@ -23,23 +29,23 @@ const Header: React.FC<HeaderProps> = ({ loggedIn = false }) => {
             </div>
             <div className="main">
                 <Button
-                    style={"navigation"}
+                    style={currentPage === "track" ? "selected" : "navigation"}
                     label="Track"
-                    onClick={() => console.log("link na track")}
+                    onClick={() => handleNavigate("track")}
                     width={"20%"}
                     height={"50%"}
                 />
                 <Button
-                    style={"navigation"}
+                    style={currentPage === "cars" ? "selected" : "navigation"}
                     label="Cars"
-                    onClick={() => console.log("link na Cars")}
+                    onClick={() => handleNavigate("cars")}
                     width={"20%"}
                     height={"50%"}
                 />
                 <Button
-                    style={"navigation"}
+                    style={currentPage === "leaderboard" ? "selected" : "navigation"}
                     label="Leaderboard"
-                    onClick={() => console.log("link na Leaderboard")}
+                    onClick={() => handleNavigate("leaderboard")}
                     width={"20%"}
                     height={"50%"}
                 />
@@ -49,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({ loggedIn = false }) => {
                     <Button
                         style="primary"
                         label="Profile name"
-                        onClick={() => console.log("link na profile")}
+                        onClick={() => handleNavigate("profile")}
                         width={"80%"}
                         height={"50%"}
                     />

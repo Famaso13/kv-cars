@@ -6,7 +6,7 @@ import "../../components/Header/header.css";
 const Home = () => {
     return (
         <>
-            <Header loggedIn={false} />
+            <Header loggedIn={true} />
             <div className="full-screen">
                 <div id="background" className="left">
                     <div style={{ width: "92%" }}></div>

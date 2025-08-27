@@ -1,0 +1,75 @@
+$primary-color: #a02638;
+
+.leaderboard-filters {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 25%;
+}
+.leaderboard-data {
+    display: flex;
+    background-color: white;
+    justify-content: space-evenly;
+    flex-direction: column;
+    align-items: center;
+    width: 75%;
+
+    h1 {
+        width: 100%;
+        color: $primary-color;
+        padding-left: 40px;
+    }
+}
+
+.leaderboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    height: 70%;
+}
+
+.leaderboard-settings {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    margin-bottom: 20px;
+    p {
+        color: black;
+        margin: 0;
+        padding-right: 10px;
+    }
+
+    select {
+        padding: 8px 12px;
+        height: 36px;
+        border: 2px solid lighten($primary-color, 35%);
+        border-radius: 8px;
+        background: #fff;
+        color: #111;
+        cursor: pointer;
+
+        &:hover {
+            border-color: lighten($primary-color, 20%);
+        }
+
+        &:focus {
+            outline: none;
+            border-color: $primary-color;
+        }
+    }
+}
+
+.leaderboard-entries {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    height: 90%;
+    overflow-y: auto;
+    gap: 20px;
+}

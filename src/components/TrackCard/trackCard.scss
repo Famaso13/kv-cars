@@ -1,0 +1,49 @@
+.track-card {
+    width: 90%;
+    height: 500px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #222;
+    img {
+        min-width: 100%;
+        min-height: 60%;
+        background-color: gray;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        object-fit: cover;
+    }
+
+    h3 {
+        margin: 0;
+    }
+
+    .track-info {
+        display: flex;
+        box-sizing: border-box;
+        flex-direction: column;
+        align-items: start;
+        height: 40%;
+        width: 100%;
+        justify-content: space-around;
+        padding: 0 10px;
+
+        .track-stats {
+            display: flex;
+            width: 100%;
+
+            h3 {
+                color: #222;
+                width: 45%;
+            }
+            p {
+                text-align: start;
+                width: 55%;
+                margin: 0;
+                font-size: 18px;
+                color: #222;
+            }
+        }
+    }
+}

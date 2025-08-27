@@ -5,6 +5,7 @@ import Login from "./pages/Login/Login";
 import NotFound from "./pages/NotFound/NotFound";
 import Leaderboard from "./pages/Leaderboard/Leaderboard";
 import Profile from "./pages/Profile/Profile";
+import TrackLeaderboard from "./pages/TrackLeaderboard/TrackLeaderboard";
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/leaderboard/:id" element={<TrackLeaderboard />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );

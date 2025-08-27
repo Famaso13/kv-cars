@@ -17,7 +17,9 @@ $primary-color: #a02638;
     h1 {
         width: 100%;
         color: $primary-color;
-        padding-left: 40px;
+        padding: 10rem 0 0 40px;
+        box-sizing: border-box;
+        margin: 0;
     }
 }
 
@@ -28,39 +30,6 @@ $primary-color: #a02638;
     justify-content: center;
     width: 80%;
     height: 70%;
-}
-
-.leaderboard-settings {
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    width: 100%;
-    height: 10%;
-    margin-bottom: 20px;
-    p {
-        color: black;
-        margin: 0;
-        padding-right: 10px;
-    }
-
-    select {
-        padding: 8px 12px;
-        height: 36px;
-        border: 2px solid lighten($primary-color, 35%);
-        border-radius: 8px;
-        background: #fff;
-        color: #111;
-        cursor: pointer;
-
-        &:hover {
-            border-color: lighten($primary-color, 20%);
-        }
-
-        &:focus {
-            outline: none;
-            border-color: $primary-color;
-        }
-    }
 }
 
 .leaderboard-entries {

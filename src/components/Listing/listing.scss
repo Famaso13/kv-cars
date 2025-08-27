@@ -1,0 +1,58 @@
+$primary-color: #a02638;
+
+.listing {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+
+    p {
+        color: black;
+        font-size: 1rem;
+        width: 20%;
+        text-align: center;
+        margin: 0;
+    }
+
+    .medal {
+        display: flex;
+        align-items: center;
+        width: 20%;
+    }
+
+    .position-first,
+    .position-second,
+    .position-third {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-weight: bold;
+        margin: auto;
+    }
+
+    .position-first {
+        background-color: gold;
+        font-size: 1.2rem;
+    }
+    .position-second {
+        background-color: silver;
+        font-size: 1.1rem;
+    }
+    .position-third {
+        background-color: #cd7f32;
+        font-size: 1.05rem;
+    }
+}
+
+.title {
+    background-color: #a02638;
+
+    p {
+        color: white;
+    }
+}

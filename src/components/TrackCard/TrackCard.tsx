@@ -8,7 +8,7 @@ interface TrackCardProps {
 const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
     return (
         <div className="track-card">
-            <img src="" alt="Track" />
+            <img src="#" alt="Track" />
             <div className="track-info">
                 <h3>Track Name, location - todo backend{track}</h3>
                 <div className="track-stats">

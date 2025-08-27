@@ -75,12 +75,10 @@ const LeaderboardListings = () => {
                 <hr />
                 <div className="leaderboard-listings">
                     {listings.map((listing, index) => (
-                        <>
-                            <div key={index} className="leaderboard-listing">
-                                <Listing position={index + 1} listing={listing} tempUnit={tempUnit} />
-                            </div>
+                        <div key={index} className="leaderboard-listing">
+                            <Listing position={index + 1} listing={listing} tempUnit={tempUnit} />
                             {index !== listings.length - 1 && <hr />}
-                        </>
+                        </div>
                     ))}
                 </div>
             </div>

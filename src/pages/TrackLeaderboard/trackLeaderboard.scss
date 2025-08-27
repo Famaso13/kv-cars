@@ -4,7 +4,22 @@ $primary-color: #a02638;
     display: flex;
     justify-content: center;
     flex-direction: column;
+    align-items: center;
     width: 25%;
+
+    h2 {
+        color: white;
+        text-align: center;
+    }
+
+    .leaderboard-temps {
+        display: flex;
+        width: 80%;
+
+        * {
+            width: 50%;
+        }
+    }
 }
 .leaderboard-data {
     display: flex;

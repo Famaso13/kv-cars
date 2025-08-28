@@ -52,4 +52,5 @@ function loadPaths() {
     // TODO - make paths for the classes after creating classes and methods
     let restTracks = new RestTracks();
     server.get("/api/tracks", restTracks.getTracks.bind(restTracks));
+    server.get("/api/tracks/:id", restTracks.getTrackById.bind(restTracks));
 }

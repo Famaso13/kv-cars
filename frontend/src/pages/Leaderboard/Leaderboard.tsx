@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import type { TrackI } from "../../interfaces/tracksI";
 
 const Leaderboard = () => {
-    // TODO implement fetching and displaying tracks
     const server = import.meta.env.VITE_BACKEND;
     const [tracks, setTracks] = useState<TrackI[]>([]);
 
@@ -15,7 +14,6 @@ const Leaderboard = () => {
         if (response.status == 200) {
             setTracks(JSON.parse(await response.text()) as Array<TrackI>);
         }
-        console.log(server);
     };
 
     useEffect(() => {

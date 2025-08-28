@@ -2,7 +2,6 @@ import type { TrackI } from "../../interfaces/tracksI";
 import "./trackCard.scss";
 
 interface TrackCardProps {
-    // TODO implement track type
     track: TrackI;
 }
 
@@ -12,7 +11,7 @@ const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
             <img src="#" alt={track.name} />
             <div className="track-info">
                 <h3>
-                    {track.name},{track.location}
+                    {track.name}, {track.location}
                 </h3>
                 <div className="track-stats">
                     <h3>Track lenght:</h3>

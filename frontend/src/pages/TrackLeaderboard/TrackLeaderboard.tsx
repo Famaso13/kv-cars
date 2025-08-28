@@ -3,14 +3,27 @@ import "./trackLeaderboard.scss";
 import { useParams } from "react-router-dom";
 import LeaderboardListings from "../../components/LeaderboardListings/LeaderboardListings";
 import FormInput from "../../components/FormInput/FormInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
+import type { TrackI } from "../../interfaces/tracksI";
 
 const TrackLeaderboard = () => {
+    const server = import.meta.env.VITE_BACKEND;
     const { id } = useParams<{ id: string }>();
+    const [track, setTrack] = useState<TrackI>({} as TrackI);
 
-    //TODO Replace with actual track fetching logic
-    const track = id;
+    const fetchTrackById = async (id: string | undefined) => {
+        let response = (await fetch(server + "api/tracks/" + id)) as Response;
+        if (response.status == 200) {
+            setTrack(JSON.parse(await response.text()) as TrackI);
+        }
+    };
+
+    useEffect(() => {
+        fetchTrackById(id);
+    }, []);
+
+    //TODO Replace with filter fetching
     const categories: string[] = ["A", "B", "C"];
     const tyres: string[] = ["Soft", "Medium", "Hard"];
     const cars: string[] = ["Car1", "Car2", "Car3"];
@@ -49,7 +62,7 @@ const TrackLeaderboard = () => {
                     <Button label="Apply Filters" onClick={applyFilters} style="secondary" width="80%" />
                 </div>
                 <div className="leaderboard-data">
-                    <h1>Leaderboard for {track}</h1>
+                    <h1>Leaderboard for {track.name}</h1>
                     <div className="leaderboard">
                         <div className="leaderboard-entries">
                             <LeaderboardListings />

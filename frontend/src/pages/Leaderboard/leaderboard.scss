@@ -1,0 +1,22 @@
+.leaderboard-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100dvh;
+}
+
+.leaderboard-grid {
+    height: 100%;
+    padding: 10% 0 8% 0;
+    width: 80%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    place-items: center;
+
+    .link {
+        text-decoration: none;
+    }
+}

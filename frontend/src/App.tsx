@@ -14,7 +14,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/leaderboard/:id" element={<TrackLeaderboard />} />
+            <Route path="/leaderboard/track/:id" element={<TrackLeaderboard />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );

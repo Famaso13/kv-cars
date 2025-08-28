@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { RestTracks } from "./routes/restTracks";
 
 dotenv.config();
 
@@ -26,17 +27,14 @@ function runServer() {
 
     server.use(express.static(BUILD_DIR));
 
-    //  server.get("/", (request, response) => {
-    //      response.status(200);
-    //      response.type("html");
-    //      console.log(__dirname() + "../../frontend/dist/index.html");
-    //      response.sendFile(__dirname() + "../../frontend/dist/index.html");
-    //  });
-
     server.get("/", (request, response) => {
         response.status(200);
         response.type("html");
         response.sendFile(indexHtml);
+    });
+
+    server.get(/.*/, (_req, res) => {
+        res.sendFile(path.join(BUILD_DIR, "index.html"));
     });
 
     server.use((request, response) => {
@@ -52,26 +50,6 @@ function runServer() {
 
 function loadPaths() {
     // TODO - make paths for the classes after creating classes and methods
+    let restTracks = new RestTracks();
+    server.get("/api/tracks", restTracks.getTracks.bind(restTracks));
 }
-
-// function __dirname(): string {
-//     return dirname(fileURLToPath(getCallerFile()));
-// }
-
-// function getCallerFile(): string {
-//     const originalFunc = Error.prepareStackTrace;
-//     Error.prepareStackTrace = (err: Error, stackTraces: NodeJS.CallSite[]) => stackTraces;
-//     const err = new Error();
-//     const stack = err.stack as unknown as NodeJS.CallSite[];
-//     Error.prepareStackTrace = originalFunc;
-
-//     let callerFile = null;
-//     if (stack[2] != undefined) {
-//         callerFile = stack[2].getFileName();
-//     }
-//     if (!callerFile) {
-//         throw new Error("Nije moguće utvrditi naziv datoteke koja poziva funkciju");
-//     }
-
-//     return callerFile;
-// }

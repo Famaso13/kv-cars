@@ -1,27 +1,29 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "better-sqlite3": "^12.2.0",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0"
-  },
-  "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.3.0",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.2"
-  }
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "npm run build-frontend && ts-node-dev --respawn --transpile-only src/index.ts",
+        "build": "tsc",
+        "start": "npm run build-frontend && tsc && node dist/index.js",
+        "build-frontend": "npm run build --prefix ../frontend"
+    },
+    "keywords": [],
+    "author": "Karlo Vlah",
+    "license": "ISC",
+    "dependencies": {
+        "better-sqlite3": "^12.2.0",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.1",
+        "express": "^5.1.0"
+    },
+    "devDependencies": {
+        "@types/better-sqlite3": "^7.6.13",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.3",
+        "@types/node": "^24.3.0",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.9.2"
+    }
 }

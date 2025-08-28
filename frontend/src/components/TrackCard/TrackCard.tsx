@@ -1,23 +1,26 @@
+import type { TrackI } from "../../interfaces/tracksI";
 import "./trackCard.scss";
 
 interface TrackCardProps {
     // TODO implement track type
-    track: number;
+    track: TrackI;
 }
 
 const TrackCard: React.FC<TrackCardProps> = ({ track }) => {
     return (
         <div className="track-card">
-            <img src="#" alt="Track" />
+            <img src="#" alt={track.name} />
             <div className="track-info">
-                <h3>Track Name, location - todo backend{track}</h3>
+                <h3>
+                    {track.name},{track.location}
+                </h3>
                 <div className="track-stats">
                     <h3>Track lenght:</h3>
-                    <p> lenght - todo backend</p>
+                    <p>{track.length_km} km</p>
                 </div>
                 <div className="track-stats">
                     <h3>Famous corner:</h3>
-                    <p> corner - todo backend</p>
+                    <p>{track.famous_corner}</p>
                 </div>
             </div>
         </div>

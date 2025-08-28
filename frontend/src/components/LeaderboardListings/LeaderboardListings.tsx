@@ -15,7 +15,7 @@ const LeaderboardListings = () => {
             tyre: "Soft",
             weather: "Sunny",
             trackTemp: 30,
-            date: "2023-10-01",
+            lap_time: "2023-10-01",
         },
         {
             username: "Ana",
@@ -24,7 +24,7 @@ const LeaderboardListings = () => {
             tyre: "Medium",
             weather: "Cloudy",
             trackTemp: 25,
-            date: "2023-10-02",
+            lap_time: "2023-10-02",
         },
         {
             username: "Marko",
@@ -33,7 +33,7 @@ const LeaderboardListings = () => {
             tyre: "Hard",
             weather: "Rainy",
             trackTemp: 20,
-            date: "2023-10-03",
+            lap_time: "2023-10-03",
         },
         {
             username: "Ivana",
@@ -42,7 +42,7 @@ const LeaderboardListings = () => {
             tyre: "Soft",
             weather: "Sunny",
             trackTemp: 32,
-            date: "2023-10-04",
+            lap_time: "2023-10-04",
         },
     ];
 
@@ -66,7 +66,7 @@ const LeaderboardListings = () => {
                             tyre: "Tyre",
                             weather: "Weather",
                             trackTemp: "Track Temperature",
-                            date: "Date",
+                            lap_time: "Lap Time",
                         }}
                         tempUnit={tempUnit}
                         title

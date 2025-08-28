@@ -6,5 +6,5 @@ export type Listings = {
     tyre: string;
     weather: string;
     trackTemp: number | string;
-    date: string;
+    lap_time: string;
 };

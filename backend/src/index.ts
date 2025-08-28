@@ -5,6 +5,8 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import { RestTracks } from "./routes/restTracks";
+import { RestTrackConditions } from "./routes/restTrackConditions";
+import { RestLaps } from "./routes/restLaps";
 
 dotenv.config();
 
@@ -53,4 +55,12 @@ function loadPaths() {
     let restTracks = new RestTracks();
     server.get("/api/tracks", restTracks.getTracks.bind(restTracks));
     server.get("/api/tracks/:id", restTracks.getTrackById.bind(restTracks));
+
+    let restTrackConditions = new RestTrackConditions();
+    server.get("/api/conditions/:track_id"), restTrackConditions.getConditionsByTrackId.bind(restTrackConditions);
+    server.get("/api/condition/:condition_id"), restTrackConditions.getConditionById.bind(restTrackConditions);
+
+    let restLaps = new RestLaps();
+    server.get("/api/laps/:track_id"), restLaps.getLapsByTrackId.bind(restLaps);
+    server.get("/api/lap/:lap_id"), restLaps.getLapById.bind(restLaps);
 }

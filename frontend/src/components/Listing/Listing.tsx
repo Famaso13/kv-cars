@@ -35,7 +35,7 @@ const Listing: React.FC<ListingProps> = ({ position, listing, tempUnit, title })
                 {listing.trackTemp}
                 {!title && tempUnit}
             </p>
-            <p>{listing.date}</p>
+            <p>{listing.lap_time}</p>
         </div>
     );
 };

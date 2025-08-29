@@ -62,7 +62,7 @@ const Profile = () => {
                             />
                             <FormInput
                                 label="Password"
-                                type="password"
+                                type={editInfo ? "text" : "password"}
                                 value="password - backend TODO"
                                 width={"80%"}
                                 disabled={!editInfo}

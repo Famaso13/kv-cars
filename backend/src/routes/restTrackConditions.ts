@@ -31,6 +31,7 @@ export class RestTrackConditions {
         if (data != undefined) {
             this.getById(parseInt(data)).then((track_condition) => {
                 response.status(200);
+                console.log(track_condition);
                 response.send(JSON.stringify(track_condition));
             });
         } else {

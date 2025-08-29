@@ -1,9 +1,9 @@
-import type { Listings } from "../../types/listing";
+import type { ListingsI } from "../../types/listing";
 import "./listing.scss";
 
 interface ListingProps {
     position?: number | string;
-    listing: Listings;
+    listing: ListingsI;
     tempUnit?: string;
     title?: boolean;
 }

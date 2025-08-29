@@ -1,5 +1,4 @@
-// TODO - replace with real implementation
-export type Listings = {
+export type ListingsI = {
     username: string;
     car: string;
     category: string;

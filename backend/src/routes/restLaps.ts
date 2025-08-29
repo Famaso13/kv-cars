@@ -15,9 +15,10 @@ export class RestLaps {
         response.type("application/json");
         let data = request.params["track_id"];
         if (data != undefined) {
-            this.getAllByTrackId(parseInt(data)).then((track_condition) => {
+            this.getAllByTrackId(parseInt(data)).then((laps) => {
                 response.status(200);
-                response.send(JSON.stringify(track_condition));
+                console.log(laps);
+                response.send(JSON.stringify(laps));
             });
         } else {
             response.status(400);
@@ -30,9 +31,9 @@ export class RestLaps {
         response.type("application/json");
         let data = request.params["lap_id"];
         if (data != undefined) {
-            this.getById(parseInt(data)).then((track_condition) => {
+            this.getById(parseInt(data)).then((laps) => {
                 response.status(200);
-                response.send(JSON.stringify(track_condition));
+                response.send(JSON.stringify(laps));
             });
         } else {
             response.status(400);

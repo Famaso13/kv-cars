@@ -10,9 +10,10 @@ import type { TrackI } from "../../interfaces/tracksI";
 const TrackLeaderboard = () => {
     const server = import.meta.env.VITE_BACKEND;
     const { id } = useParams<{ id: string }>();
+    const trackIdNum = id ? Number(id) : NaN;
     const [track, setTrack] = useState<TrackI>({} as TrackI);
 
-    const fetchTrackById = async (id: string | undefined) => {
+    const fetchTrackById = async (id: number) => {
         let response = (await fetch(server + "api/tracks/" + id)) as Response;
         if (response.status == 200) {
             setTrack(JSON.parse(await response.text()) as TrackI);
@@ -20,8 +21,8 @@ const TrackLeaderboard = () => {
     };
 
     useEffect(() => {
-        fetchTrackById(id);
-    }, []);
+        fetchTrackById(trackIdNum);
+    }, [trackIdNum, server]);
 
     //TODO Replace with filter fetching
     const categories: string[] = ["A", "B", "C"];
@@ -65,7 +66,7 @@ const TrackLeaderboard = () => {
                     <h1>Leaderboard for {track.name}</h1>
                     <div className="leaderboard">
                         <div className="leaderboard-entries">
-                            <LeaderboardListings />
+                            <LeaderboardListings track_id={Number(id)} />
                         </div>
                     </div>
                 </div>

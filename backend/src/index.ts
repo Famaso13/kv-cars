@@ -7,6 +7,7 @@ import fs from "fs";
 import { RestTracks } from "./routes/restTracks";
 import { RestTrackConditions } from "./routes/restTrackConditions";
 import { RestLaps } from "./routes/restLaps";
+import { RestListings } from "./routes/restListings";
 
 dotenv.config();
 
@@ -57,10 +58,13 @@ function loadPaths() {
     server.get("/api/tracks/:id", restTracks.getTrackById.bind(restTracks));
 
     let restTrackConditions = new RestTrackConditions();
-    server.get("/api/conditions/:track_id"), restTrackConditions.getConditionsByTrackId.bind(restTrackConditions);
-    server.get("/api/condition/:condition_id"), restTrackConditions.getConditionById.bind(restTrackConditions);
+    server.get("/api/conditions/:track_id", restTrackConditions.getConditionsByTrackId.bind(restTrackConditions));
+    server.get("/api/condition/:condition_id", restTrackConditions.getConditionById.bind(restTrackConditions));
 
     let restLaps = new RestLaps();
-    server.get("/api/laps/:track_id"), restLaps.getLapsByTrackId.bind(restLaps);
-    server.get("/api/lap/:lap_id"), restLaps.getLapById.bind(restLaps);
+    server.get("/api/laps/:track_id", restLaps.getLapsByTrackId.bind(restLaps));
+    server.get("/api/lap/:lap_id", restLaps.getLapById.bind(restLaps));
+
+    let restListings = new RestListings();
+    server.get("/api/listings/:track_id", restListings.getListingsByTrackId.bind(restListings));
 }

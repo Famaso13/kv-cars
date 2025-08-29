@@ -1,50 +1,30 @@
-import { useState } from "react";
-import type { Listings } from "../../types/listing";
+import React, { useEffect, useState } from "react";
+import type { ListingsI } from "../../types/listing";
 import Listing from "../Listing/Listing";
 import "./leaderboardListings.scss";
 
-const LeaderboardListings = () => {
+interface LeaderboardListingsProps {
+    track_id: number;
+}
+
+const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({ track_id }) => {
     const [tempUnit, setTempUnit] = useState("°C");
 
     // TODO Replace with actual fetching logic
-    const listings: Listings[] = [
-        {
-            username: "Karlo",
-            car: "Car 1",
-            category: "A",
-            tyre: "Soft",
-            weather: "Sunny",
-            trackTemp: 30,
-            lap_time: "2023-10-01",
-        },
-        {
-            username: "Ana",
-            car: "Car 2",
-            category: "B",
-            tyre: "Medium",
-            weather: "Cloudy",
-            trackTemp: 25,
-            lap_time: "2023-10-02",
-        },
-        {
-            username: "Marko",
-            car: "Car 3",
-            category: "C",
-            tyre: "Hard",
-            weather: "Rainy",
-            trackTemp: 20,
-            lap_time: "2023-10-03",
-        },
-        {
-            username: "Ivana",
-            car: "Car 4",
-            category: "A",
-            tyre: "Soft",
-            weather: "Sunny",
-            trackTemp: 32,
-            lap_time: "2023-10-04",
-        },
-    ];
+    const server = import.meta.env.VITE_BACKEND;
+    const [listings, setListings] = useState<ListingsI[]>([]);
+
+    useEffect(() => {
+        const fetchListings = async (track_id: number) => {
+            let response = (await fetch(server + "api/listings/" + track_id)) as Response;
+            if (response.status == 200) {
+                let data = JSON.parse(await response.text()) as Array<ListingsI>;
+                console.log(data);
+                setListings(data);
+            }
+        };
+        fetchListings(track_id);
+    }, [track_id, server]);
 
     return (
         <>

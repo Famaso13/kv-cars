@@ -8,6 +8,10 @@ interface ListingProps {
     title?: boolean;
 }
 
+const celsiusToFahrenheit = (temp: number) => {
+    return (temp * (9 / 5) + 32).toPrecision(3);
+};
+
 const Listing: React.FC<ListingProps> = ({ position, listing, tempUnit, title }) => {
     return (
         <div className={title ? "title listing" : "listing"}>
@@ -32,7 +36,7 @@ const Listing: React.FC<ListingProps> = ({ position, listing, tempUnit, title })
             <p>{listing.tyre}</p>
             <p>{listing.weather}</p>
             <p>
-                {listing.trackTemp}
+                {tempUnit === "°C" ? listing.trackTemp : celsiusToFahrenheit(Number(listing.trackTemp))}
                 {!title && tempUnit}
             </p>
             <p>{listing.lap_time}</p>

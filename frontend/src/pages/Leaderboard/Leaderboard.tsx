@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import type { TrackI } from "../../interfaces/tracksI";
 
 const Leaderboard = () => {
+    const [loggedIn, setLoggedIn] = useState(false);
     const server = import.meta.env.VITE_BACKEND;
     const [tracks, setTracks] = useState<TrackI[]>([]);
 
@@ -17,12 +18,13 @@ const Leaderboard = () => {
     };
 
     useEffect(() => {
+        if (sessionStorage.getItem("user") !== null) setLoggedIn(true);
         fetchTracks();
     }, []);
 
     return (
         <>
-            <Header loggedIn={false} currentPage="leaderboard" />
+            <Header loggedIn={loggedIn} currentPage="leaderboard" />
             <div className="leaderboard-content">
                 <div className="leaderboard-grid">
                     {tracks.map((track) => (

@@ -4,28 +4,40 @@ import Button from "../../components/Button/Button";
 import profile from "../../assets/profile.png";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../../components/FormInput/FormInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProfileModal from "../../components/ProfileModal/ProfileModal";
+import type { UserI } from "../../interfaces/usersI";
 
 const Profile = () => {
+    const [loggedIn, setLoggedIn] = useState(false);
     const [editInfo, setEditInfo] = useState(false);
     const [pictureModal, setPictureModal] = useState(false);
     const navigate = useNavigate();
 
     const handleLogout = () => {
-        // Add logout logic here
+        sessionStorage.clear();
         navigate("/");
     };
+
+    const [login, setLogin] = useState<UserI>({} as UserI);
+    useEffect(() => {
+        let userStorage = sessionStorage.getItem("user");
+        if (userStorage !== null) {
+            let user = JSON.parse(userStorage) as UserI;
+            setLogin(user);
+            setLoggedIn(true);
+        }
+    }, [location]);
 
     return (
         <>
             {pictureModal && <ProfileModal setModal={setPictureModal} />}
-            <Header loggedIn={false} />
+            <Header loggedIn={loggedIn} />
             <div className="full-screen">
                 <div className="left-profile">
                     <div className="profile-info">
                         <img className="profile-picture" src={profile} />
-                        <h1>username - backend TODO</h1>
+                        <h1>{login.username}</h1>
                         <p onClick={() => setPictureModal(true)}>Change profile picture</p>
                     </div>
                     <div className="profile-details">
@@ -41,29 +53,29 @@ const Profile = () => {
                         <div className="column-profile">
                             <FormInput
                                 label="First Name"
-                                type="text"
                                 value="firstname - backend TODO"
+                                type="text"
                                 width={"80%"}
                                 disabled={!editInfo}
                             />
                             <FormInput
                                 label="Email"
                                 type="email"
-                                value="email - backend TODO"
+                                value={login.email}
                                 width={"80%"}
                                 disabled={!editInfo}
                             />
                             <FormInput
                                 label="Username"
                                 type="text"
-                                value="username - backend TODO"
+                                value={login.username}
                                 width={"80%"}
                                 disabled={!editInfo}
                             />
                             <FormInput
                                 label="Password"
                                 type={editInfo ? "text" : "password"}
-                                value="password - backend TODO"
+                                value={login.password}
                                 width={"80%"}
                                 disabled={!editInfo}
                             />

@@ -1,14 +1,26 @@
 import "./header.css";
 import logo from "../../assets/logoBlack.svg";
 import Button from "../Button/Button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import type { UserI } from "../../interfaces/usersI";
+import { useEffect, useState } from "react";
 
 interface HeaderProps {
     loggedIn: boolean;
     currentPage?: "track" | "cars" | "leaderboard";
 }
 
-const Header: React.FC<HeaderProps> = ({ loggedIn = false, currentPage }) => {
+const Header: React.FC<HeaderProps> = ({ loggedIn, currentPage }) => {
+    const location = useLocation();
+    const [login, setLogin] = useState<UserI>({} as UserI);
+    useEffect(() => {
+        let userStorage = sessionStorage.getItem("user");
+        if (userStorage !== null) {
+            let user = JSON.parse(userStorage) as UserI;
+            setLogin(user);
+        }
+    }, [location]);
+
     const navigate = useNavigate();
 
     const handleLogin = () => {
@@ -54,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({ loggedIn = false, currentPage }) => {
                 {loggedIn ? (
                     <Button
                         style="primary"
-                        label="Profile name"
+                        label={login.username}
                         onClick={() => handleNavigate("profile")}
                         width={"80%"}
                         height={"50%"}

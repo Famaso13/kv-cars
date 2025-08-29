@@ -2,6 +2,9 @@ import Button from "../Button/Button";
 import FormInput from "../FormInput/FormInput";
 import "./form.css";
 import "../../App.css";
+import React, { useState } from "react";
+import type { UserI } from "../../interfaces/usersI";
+import { useNavigate } from "react-router-dom";
 
 interface FormProps {
     isLogin: boolean;
@@ -9,8 +12,40 @@ interface FormProps {
 }
 
 const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
+    const server = import.meta.env.VITE_BACKEND;
+    let navigate = useNavigate();
+
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+
+    const handleLogin = async () => {
+        let response = (await fetch(server + "api/user/login/?username=" + username + "&pass=" + password)) as Response;
+        if (response.status == 200) {
+            let data = JSON.parse(await response.text()) as Array<UserI>;
+            sessionStorage.setItem("user", JSON.stringify(data));
+            navigate("/");
+        }
+    };
+
+    //  const handleSignup = async () => {
+    //      let response = (await fetch(server + "api/user/login/?username=" + username + "&pass=" + password)) as Response;
+    //      if (response.status == 200) {
+    //          let data = JSON.parse(await response.text()) as Array<UserI>;
+    //          localStorage.setItem("user", JSON.stringify(data));
+    //          navigate("/");
+    //      }
+    //  };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (isLogin) {
+            handleLogin();
+        } else {
+        }
+    };
     return (
-        <form className="form">
+        <form className="form" onSubmit={handleSubmit}>
             {isLogin ? (
                 <h2 className="heading">
                     Already accepted the challenge?
@@ -33,6 +68,8 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
                             placeholder="Enter your username"
                             width="80%"
                             required
+                            value={username}
+                            onChange={setUsername}
                         />
                         <FormInput
                             label="Password"
@@ -40,17 +77,29 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
                             placeholder="Enter your password"
                             width="80%"
                             required
+                            value={password}
+                            onChange={setPassword}
                         />
                     </>
                 ) : (
                     <>
-                        <FormInput label="Email" type="email" placeholder="Enter your email" width="80%" required />
+                        <FormInput
+                            label="Email"
+                            type="email"
+                            placeholder="Enter your email"
+                            width="80%"
+                            required
+                            value={email}
+                            onChange={setEmail}
+                        />
                         <FormInput
                             label="Username"
                             type="text"
                             placeholder="Enter your username"
                             width="80%"
                             required
+                            value={username}
+                            onChange={setUsername}
                         />
                         <FormInput
                             label="Password"
@@ -58,6 +107,8 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
                             placeholder="Enter your password"
                             width="80%"
                             required
+                            value={password}
+                            onChange={setPassword}
                         />
                     </>
                 )}

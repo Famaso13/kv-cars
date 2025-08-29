@@ -1,20 +1,26 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import NotFound from "./pages/NotFound/NotFound";
 import Leaderboard from "./pages/Leaderboard/Leaderboard";
 import Profile from "./pages/Profile/Profile";
 import TrackLeaderboard from "./pages/TrackLeaderboard/TrackLeaderboard";
+import { useEffect, useState } from "react";
 
 function App() {
+    const location = useLocation();
+    const [loggedIn, setLoggedIn] = useState(() => !!sessionStorage.getItem("user"));
+    useEffect(() => {
+        setLoggedIn(!!sessionStorage.getItem("user"));
+    }, [location]);
     return (
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/leaderboard/track/:id" element={<TrackLeaderboard />} />
+            <Route path="/leaderboard" element={loggedIn ? <Leaderboard /> : <Login />} />
+            <Route path="/profile" element={loggedIn ? <Profile /> : <Login />} />
+            <Route path="/leaderboard/track/:id" element={loggedIn ? <TrackLeaderboard /> : <Login />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );

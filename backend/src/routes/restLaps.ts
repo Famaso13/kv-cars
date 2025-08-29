@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Database from "../helpers/sqliteHelper";
-import { TrackConditionI } from "../interfaces/trackConditionsI";
 import { LapsI } from "../interfaces/lapsI";
 
 export class RestLaps {

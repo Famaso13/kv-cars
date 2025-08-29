@@ -36,7 +36,11 @@ const Listing: React.FC<ListingProps> = ({ position, listing, tempUnit, title })
             <p>{listing.tyre}</p>
             <p>{listing.weather}</p>
             <p>
-                {tempUnit === "°C" ? listing.trackTemp : celsiusToFahrenheit(Number(listing.trackTemp))}
+                {title
+                    ? listing.trackTemp
+                    : tempUnit === "°C"
+                    ? listing.trackTemp
+                    : celsiusToFahrenheit(Number(listing.trackTemp))}
                 {!title && tempUnit}
             </p>
             <p>{listing.lap_time}</p>

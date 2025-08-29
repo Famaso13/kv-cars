@@ -5,24 +5,59 @@ import "./leaderboardListings.scss";
 
 interface LeaderboardListingsProps {
     track_id: number;
+    categoryId: number | null;
+    carId: number | null;
+    tireId: number | null;
+    weather: string | null;
+    dateISO: string | null;
+    apply: number;
 }
 
-const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({ track_id }) => {
+const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
+    track_id,
+    categoryId,
+    carId,
+    tireId,
+    weather,
+    dateISO,
+    apply,
+}) => {
     const [tempUnit, setTempUnit] = useState("°C");
 
     // TODO Replace with actual fetching logic
     const server = import.meta.env.VITE_BACKEND;
+
     const [listings, setListings] = useState<ListingsI[]>([]);
 
+    const fetchListings = async (track_id: number) => {
+        let response = (await fetch(server + "api/listings/" + track_id)) as Response;
+        if (response.status == 200) {
+            let data = JSON.parse(await response.text()) as Array<ListingsI>;
+            console.log(data);
+            setListings(data);
+        }
+    };
+    const fetchFilteredListings = async (track_id: number) => {
+        const params = new URLSearchParams();
+
+        if (categoryId != null) params.append("category_id", String(categoryId));
+        if (carId != null) params.append("car_id", String(carId));
+        if (tireId != null) params.append("tire_id", String(tireId));
+        if (weather) params.append("weather", weather);
+        if (dateISO) params.append("date", dateISO);
+        let response = (await fetch(server + "api/listings/" + track_id + "?" + params.toString())) as Response;
+        if (response.status == 200) {
+            let data = JSON.parse(await response.text()) as Array<ListingsI>;
+            console.log(data);
+            setListings(data);
+        }
+    };
+
     useEffect(() => {
-        const fetchListings = async (track_id: number) => {
-            let response = (await fetch(server + "api/listings/" + track_id)) as Response;
-            if (response.status == 200) {
-                let data = JSON.parse(await response.text()) as Array<ListingsI>;
-                console.log(data);
-                setListings(data);
-            }
-        };
+        fetchFilteredListings(track_id);
+    }, [apply, track_id, server]);
+
+    useEffect(() => {
         fetchListings(track_id);
     }, [track_id, server]);
 

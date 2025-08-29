@@ -8,6 +8,7 @@ import { RestTracks } from "./routes/restTracks";
 import { RestTrackConditions } from "./routes/restTrackConditions";
 import { RestLaps } from "./routes/restLaps";
 import { RestListings } from "./routes/restListings";
+import { RestFilters } from "./routes/restFilters";
 
 dotenv.config();
 
@@ -67,4 +68,10 @@ function loadPaths() {
 
     let restListings = new RestListings();
     server.get("/api/listings/:track_id", restListings.getListingsByTrackId.bind(restListings));
+
+    let restFilters = new RestFilters();
+    server.get("/api/filters/categories", restFilters.getAllCategories.bind(restFilters));
+    server.get("/api/filters/cars/:category_id", restFilters.getAllCars.bind(restFilters));
+    server.get("/api/filters/tires/:car_id", restFilters.getAllTires.bind(restFilters));
+    server.get("/api/filters/weather/:track_id", restFilters.getAllWeather.bind(restFilters));
 }

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { TrackI } from "../interfaces/tracksI";
 import Database from "../helpers/sqliteHelper";
-import dotenv from "dotenv";
 
 export class RestTracks {
     private database: Database;

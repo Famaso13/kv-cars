@@ -1,3 +1,4 @@
+import type { CarFilterI, CategoryFilterI, TireFilterI, WeatherFilterI } from "../../interfaces/filtersI";
 import "./formInput.scss";
 
 // TODO - change array type to coresponding select tipes {car, category...}
@@ -10,7 +11,7 @@ interface InputProps {
     width?: string | number;
     height?: string | number;
     value?: string;
-    array?: Array<string>;
+    array?: Array<CategoryFilterI> | Array<CarFilterI> | Array<TireFilterI> | Array<WeatherFilterI>;
     light?: boolean;
     onChange?: (value: string) => void;
 }
@@ -39,14 +40,31 @@ const FormInput: React.FC<InputProps> = ({
                             id={label}
                             name={label}
                             style={{ width: "100%" }}
+                            value={value ?? ""}
                             onChange={(e) => onChange?.(e.target.value)}
                         >
-                            {array !== undefined &&
-                                array.map((c) => (
-                                    <option key={c} value={c}>
-                                        {c}
+                            <option value="">-- Select --</option>
+                            {array?.map((item, i) => {
+                                const val =
+                                    (item as any).category_id?.toString() ??
+                                    (item as any).car_id?.toString() ??
+                                    (item as any).tire_id?.toString() ??
+                                    (item as any).weather ??
+                                    (item as any).type ??
+                                    "some_value";
+                                const label =
+                                    (item as any).name ??
+                                    (item as any).car ??
+                                    (item as any).type ??
+                                    (item as any).weather ??
+                                    val;
+
+                                return (
+                                    <option key={val + i} value={val}>
+                                        {label}
                                     </option>
-                                ))}
+                                );
+                            })}
                         </select>
                     </label>
                 </>

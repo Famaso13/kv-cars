@@ -35,6 +35,7 @@ export class RestUsers {
     async login(username: string, password: string) {
         let sql = "SELECT * FROM users WHERE username = ? AND password = ?;";
         var data = (await this.database.getDataPromise(sql, [username, password])) as Array<UserI>;
+        console.log(data[0]);
         if (data.length == 1 && data[0] != undefined) {
             let d = data[0];
             let u: UserI = {

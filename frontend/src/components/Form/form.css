@@ -9,6 +9,10 @@
     border-radius: 30px;
 }
 
+.warning-text {
+    color: #a02638;
+}
+
 .inputs {
     width: 80%;
     min-height: 20%;

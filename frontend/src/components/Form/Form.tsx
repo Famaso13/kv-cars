@@ -15,6 +15,8 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
     const server = import.meta.env.VITE_BACKEND;
     let navigate = useNavigate();
 
+    const [wrongCreds, setWrongCreds] = useState(false);
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
@@ -23,8 +25,14 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
         let response = (await fetch(server + "api/user/login/?username=" + username + "&pass=" + password)) as Response;
         if (response.status == 200) {
             let data = JSON.parse(await response.text()) as Array<UserI>;
-            sessionStorage.setItem("user", JSON.stringify(data));
-            navigate("/");
+            if (data !== null) {
+                sessionStorage.setItem("user", JSON.stringify(data));
+                navigate("/");
+            } else {
+                setWrongCreds(true);
+                setUsername("");
+                setPassword("");
+            }
         }
     };
 
@@ -112,23 +120,12 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
                         />
                     </>
                 )}
+                <div>{wrongCreds ? <p className="warning-text">Incorrect username or password!</p> : <p></p>}</div>
             </div>
             {isLogin ? (
-                <Button
-                    style={"primary"}
-                    type="submit"
-                    label="Log In"
-                    onClick={() => console.log("login")}
-                    width="50%"
-                />
+                <Button style={"primary"} type="submit" label="Log In" onClick={() => {}} width="50%" />
             ) : (
-                <Button
-                    style={"primary"}
-                    type="submit"
-                    label="Sign Up"
-                    onClick={() => console.log("signup")}
-                    width="50%"
-                />
+                <Button style={"primary"} type="submit" label="Sign Up" onClick={() => {}} width="50%" />
             )}
             {isLogin ? (
                 <p className="helping-text">

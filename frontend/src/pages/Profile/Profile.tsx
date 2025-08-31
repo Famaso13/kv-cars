@@ -6,12 +6,14 @@ import { useNavigate } from "react-router-dom";
 import FormInput from "../../components/FormInput/FormInput";
 import { useEffect, useState } from "react";
 import ProfileModal from "../../components/ProfileModal/ProfileModal";
-import type { UserI } from "../../interfaces/usersI";
+import type { UserI, UserStatsI } from "../../interfaces/usersI";
 
 const Profile = () => {
     const server = import.meta.env.VITE_BACKEND;
     const [warning, setWarning] = useState("");
 
+    const [bestLap, setBestLap] = useState("");
+    const [bestCar, setBestCar] = useState("");
     const [login, setLogin] = useState<UserI>({} as UserI);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -20,7 +22,8 @@ const Profile = () => {
     const [password, setPassword] = useState("");
     const [dateOfBirth, setDateOfBirth] = useState("");
     const [country, setCountry] = useState("");
-    useEffect(() => {
+
+    const getUserFromStorage = () => {
         let userStorage = sessionStorage.getItem("user");
         if (userStorage !== null) {
             let user = JSON.parse(userStorage) as UserI;
@@ -34,7 +37,23 @@ const Profile = () => {
             setCountry(user.country);
             setLoggedIn(true);
         }
-    }, [location]);
+    };
+
+    useEffect(() => {
+        getUserFromStorage();
+    }, []);
+
+    useEffect(() => {
+        const fetchStats = async (driver_id: number | null) => {
+            let response = (await fetch(server + "api/user/stats/" + driver_id)) as Response;
+            if (response.status == 200) {
+                let data = JSON.parse(await response.text()) as UserStatsI;
+                setBestLap(`${data.best_lap}, ${data.best_lap_track}`);
+                setBestCar(data.most_used_car);
+            }
+        };
+        fetchStats(login.user_id);
+    }, [login.user_id, server]);
 
     const [loggedIn, setLoggedIn] = useState(false);
     const [editInfo, setEditInfo] = useState(false);
@@ -87,9 +106,14 @@ const Profile = () => {
                         <p onClick={() => setPictureModal(true)}>Change profile picture</p>
                     </div>
                     <div className="profile-details">
-                        <p>Best lap time: backend TODO</p>
-                        <p>Best car: backend TODO</p>
-                        <p>Place on Leaderboard: backend TODO</p>
+                        <p>
+                            Best lap time:
+                            <br /> {bestLap}
+                        </p>
+                        <p>
+                            Most used car:
+                            <br /> {bestCar}
+                        </p>
                     </div>
                     <Button label="Log out" onClick={handleLogout} style="secondary" width={"50%"} height={"70px"} />
                 </div>

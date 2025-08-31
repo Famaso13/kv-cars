@@ -317,3 +317,11 @@ SELECT * FROM laps;
 -- DEVELOPMENT QUERIES 
 DELETE from users where username == 'test';
 DELETE from users where username == 'asd';
+
+SELECT c.car_id, c.model, c.make, c.category_id, c.horsepower, c.mass
+        FROM laps l
+        JOIN cars c ON l.car_id = c.car_id
+        WHERE l.driver_id = 1
+        GROUP BY c.car_id
+        ORDER BY COUNT(*) DESC
+        LIMIT 1;

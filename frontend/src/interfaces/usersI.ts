@@ -9,3 +9,9 @@ export interface UserI {
     date_of_birth: string;
     country: string;
 }
+
+export interface UserStatsI {
+    best_lap: string;
+    best_lap_track: string;
+    most_used_car: string;
+}

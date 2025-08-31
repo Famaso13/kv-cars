@@ -26,17 +26,47 @@ export class RestLaps {
         }
     }
 
-    getLapById(request: Request, response: Response) {
+    getLapByTrackId(request: Request, response: Response) {
         response.type("application/json");
         let data = request.params["lap_id"];
         if (data != undefined) {
-            this.getById(parseInt(data)).then((laps) => {
+            this.getByTrackId(parseInt(data)).then((laps) => {
                 response.status(200);
                 response.send(JSON.stringify(laps));
             });
         } else {
             response.status(400);
             let message = { err: "No track_id provided" };
+            response.send(JSON.stringify(message));
+        }
+    }
+
+    getLapsByDriverId(request: Request, response: Response) {
+        response.type("application/json");
+        let data = request.params["driver_id"];
+        if (data != undefined) {
+            this.getByDriverId(parseInt(data)).then((laps) => {
+                response.status(200);
+                response.send(JSON.stringify(laps));
+            });
+        } else {
+            response.status(400);
+            let message = { err: "No driver_id provided" };
+            response.send(JSON.stringify(message));
+        }
+    }
+
+    getFastestLapByDriverId(request: Request, response: Response) {
+        response.type("application/json");
+        let data = request.params["driver_id"];
+        if (data != undefined) {
+            this.getFastestByDriverId(parseInt(data)).then((laps) => {
+                response.status(200);
+                response.send(JSON.stringify(laps));
+            });
+        } else {
+            response.status(400);
+            let message = { err: "No driver_id provided" };
             response.send(JSON.stringify(message));
         }
     }
@@ -60,9 +90,54 @@ export class RestLaps {
         return result;
     }
 
-    async getById(id: number): Promise<LapsI | null> {
+    async getByTrackId(id: number): Promise<LapsI | null> {
         let sql = "SELECT * FROM laps WHERE lap_id=?;";
         var data = (await this.database.getDataPromise(sql, [id])) as Array<LapsI>;
+
+        if (data.length == 1 && data[0] != undefined) {
+            let d = data[0];
+            let l: LapsI = {
+                lap_id: d["lap_id"],
+                driver_id: d["driver_id"],
+                car_id: d["car_id"],
+                track_id: d["track_id"],
+                conditions_id: d["conditions_id"],
+                lap_time_ms: d["lap_time_ms"],
+                date: d["date"],
+            };
+            return l;
+        }
+        return null;
+    }
+
+    async getByDriverId(driver_id: number): Promise<Array<LapsI | null>> {
+        let sql = "SELECT * FROM laps WHERE driver_id=?;";
+        var data = (await this.database.getDataPromise(sql, [driver_id])) as Array<LapsI>;
+        let result = new Array<LapsI>();
+        for (let d of data) {
+            let l: LapsI = {
+                lap_id: d["lap_id"],
+                driver_id: d["driver_id"],
+                car_id: d["car_id"],
+                track_id: d["track_id"],
+                conditions_id: d["conditions_id"],
+                lap_time_ms: d["lap_time_ms"],
+                date: d["date"],
+            };
+            result.push(l);
+        }
+        return result;
+    }
+
+    async getFastestByDriverId(driver_id: number): Promise<LapsI | null> {
+        let sql = `
+                  SELECT *
+                  FROM laps
+                  WHERE driver_id = ?
+                  ORDER BY lap_time_ms ASC
+                  LIMIT 1;
+                  `;
+        var data = (await this.database.getDataPromise(sql, [driver_id])) as Array<LapsI>;
 
         if (data.length == 1 && data[0] != undefined) {
             let d = data[0];

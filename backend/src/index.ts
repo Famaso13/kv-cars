@@ -65,7 +65,9 @@ function loadPaths() {
 
     let restLaps = new RestLaps();
     server.get("/api/laps/:track_id", restLaps.getLapsByTrackId.bind(restLaps));
-    server.get("/api/lap/:lap_id", restLaps.getLapById.bind(restLaps));
+    server.get("/api/lap/:lap_id", restLaps.getLapByTrackId.bind(restLaps));
+    server.get("/api/laps/driver/:driver_id", restLaps.getLapsByDriverId.bind(restLaps));
+    server.get("/api/lap/driver/:driver_id", restLaps.getFastestLapByDriverId.bind(restLaps));
 
     let restListings = new RestListings();
     server.get("/api/listings/:track_id", restListings.getListingsByTrackId.bind(restListings));
@@ -78,6 +80,7 @@ function loadPaths() {
 
     let restUsers = new RestUsers();
     server.get("/api/user/login", restUsers.userLogin.bind(restUsers));
+    server.get("/api/user/stats/:driver_id", restUsers.getUserStats.bind(restUsers));
     server.post("/api/user/register", restUsers.userRegister.bind(restUsers));
     server.put("/api/user/update", restUsers.userUpdate.bind(restUsers));
 }

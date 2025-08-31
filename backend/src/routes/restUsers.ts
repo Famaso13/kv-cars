@@ -1,14 +1,22 @@
 import { Request, Response } from "express";
 import Database from "../helpers/sqliteHelper";
-import { CarFilterI, CategoryFilterI, TireFilterI, WeatherFilterI } from "../interfaces/filtersI";
-import { UserI } from "../interfaces/usersI";
+import { UserI, UserStatsI } from "../interfaces/usersI";
+import { RestLaps } from "./restLaps";
+import { RestTracks } from "./restTracks";
+import { RestCars } from "./restCars";
 
 export class RestUsers {
     private database: Database;
     private DB_FILE = process.env.DB_FILE ?? "data/db/racingdb.sqlite";
+    private restLaps;
+    private restTracks;
+    private restCars;
 
     constructor() {
         this.database = new Database(this.DB_FILE);
+        this.restLaps = new RestLaps();
+        this.restTracks = new RestTracks();
+        this.restCars = new RestCars();
     }
 
     userLogin(request: Request, response: Response) {
@@ -73,6 +81,52 @@ export class RestUsers {
                 response.send(JSON.stringify(status));
             }
         });
+    }
+
+    formatLapTime(lap_time: number) {
+        const minutes = Math.floor(lap_time / 60000);
+        const seconds = Math.floor((lap_time % 60000) / 1000);
+        const millis = lap_time % 1000;
+
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(millis).padStart(
+            3,
+            "0"
+        )}`;
+    }
+
+    async getUserStats(request: Request, response: Response) {
+        response.type("application/json");
+        let data = request.params["driver_id"];
+        if (data != undefined) {
+            const lap = await this.restLaps.getFastestByDriverId(Number(data));
+            const car = await this.restCars.getMostUsedByDriverId(Number(data));
+
+            if (!lap || !car) {
+                response.status(400);
+                let message = { err: "Driver doesn't have any laps" };
+                response.send(JSON.stringify(message));
+            }
+
+            const track = await this.restTracks.getById(lap!.track_id);
+            if (!track) {
+                response.status(400);
+                let message = { err: "Track not found for best lap" };
+                response.send(JSON.stringify(message));
+            }
+
+            const userStats: UserStatsI = {
+                best_lap: this.formatLapTime(lap!.lap_time_ms),
+                best_lap_track: track!.name,
+                most_used_car: `${car!.make} ${car!.model}`,
+            };
+
+            response.status(200);
+            response.send(JSON.stringify(userStats));
+        } else {
+            response.status(400);
+            let message = { err: "No driver_id provided" };
+            response.send(JSON.stringify(message));
+        }
     }
 
     async login(username: string, password: string) {

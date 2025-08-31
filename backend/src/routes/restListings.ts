@@ -30,12 +30,6 @@ export class RestListings {
                 ? String(request.query["date"])
                 : null;
         if (track_id != undefined) {
-            // const categoryIdNum =
-            //     category_id !== undefined && category_id !== "" ? parseInt(category_id as string) : null;
-            // const carIdNum = car_id !== undefined && car_id !== "" ? parseInt(car_id as string) : null;
-            // const tireIdNum = tire_id !== undefined && tire_id !== "" ? parseInt(tire_id as string) : null;
-            // const weatherStr = typeof weather === "string" && weather !== "" ? weather : null;
-            // const dateStr = typeof date === "string" && date !== "" ? date : null;
             this.getAllByTrackId(parseInt(track_id), categoryIdNum, carIdNum, tireIdNum, weatherStr, dateStr).then(
                 (laps) => {
                     response.status(200);
@@ -49,21 +43,6 @@ export class RestListings {
             response.send(JSON.stringify(message));
         }
     }
-
-    //  getLapById(request: Request, response: Response) {
-    //      response.type("application/json");
-    //      let data = request.params["lap_id"];
-    //      if (data != undefined) {
-    //          this.getById(parseInt(data)).then((laps) => {
-    //              response.status(200);
-    //              response.send(JSON.stringify(laps));
-    //          });
-    //      } else {
-    //          response.status(400);
-    //          let message = { err: "No track_id provided" };
-    //          response.send(JSON.stringify(message));
-    //      }
-    //  }
 
     async getAllByTrackId(
         track_id: number,

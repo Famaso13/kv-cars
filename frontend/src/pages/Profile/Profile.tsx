@@ -7,6 +7,7 @@ import FormInput from "../../components/FormInput/FormInput";
 import { useEffect, useState } from "react";
 import ProfileModal from "../../components/ProfileModal/ProfileModal";
 import type { UserI, UserStatsI } from "../../interfaces/usersI";
+import LeaderboardListings from "../../components/LeaderboardListings/LeaderboardListings";
 
 const Profile = () => {
     const server = import.meta.env.VITE_BACKEND;
@@ -44,15 +45,17 @@ const Profile = () => {
     }, []);
 
     useEffect(() => {
-        const fetchStats = async (driver_id: number | null) => {
-            let response = (await fetch(server + "api/user/stats/" + driver_id)) as Response;
-            if (response.status == 200) {
-                let data = JSON.parse(await response.text()) as UserStatsI;
-                setBestLap(`${data.best_lap}, ${data.best_lap_track}`);
-                setBestCar(data.most_used_car);
-            }
-        };
-        fetchStats(login.user_id);
+        if (login.user_id !== undefined) {
+            const fetchStats = async (driver_id: number | null) => {
+                let response = (await fetch(server + "api/user/stats/" + driver_id)) as Response;
+                if (response.status == 200) {
+                    let data = JSON.parse(await response.text()) as UserStatsI;
+                    setBestLap(`${data.best_lap}, ${data.best_lap_track}`);
+                    setBestCar(data.most_used_car);
+                }
+            };
+            fetchStats(login.user_id);
+        }
     }, [login.user_id, server]);
 
     const [loggedIn, setLoggedIn] = useState(false);
@@ -119,92 +122,99 @@ const Profile = () => {
                 </div>
                 <div className="right-profile">
                     <h1>Your racing info</h1>
-                    <p className="warning-text">{warning}</p>
-                    <form>
-                        <div className="column-profile">
-                            <FormInput
-                                label="First Name"
-                                value={firstName}
-                                onChange={setFirstName}
-                                type="text"
-                                width={"80%"}
-                                disabled={!editInfo}
-                            />
-                            <FormInput
-                                label="Email"
-                                type="email"
-                                value={email}
-                                onChange={setEmail}
-                                width={"80%"}
-                                disabled={!editInfo}
-                            />
-                            <FormInput
-                                label="Username"
-                                type="text"
-                                value={username}
-                                onChange={setUsername}
-                                width={"80%"}
-                                disabled={!editInfo}
-                            />
-                            <FormInput
-                                label="Password"
-                                type={editInfo ? "text" : "password"}
-                                value={password}
-                                onChange={setPassword}
-                                width={"80%"}
-                                disabled={!editInfo}
-                            />
-                        </div>
-                        <div className="column-profile">
-                            <FormInput
-                                label="Last Name"
-                                type="text"
-                                value={lastName}
-                                onChange={setLastName}
-                                width={"80%"}
-                                disabled={!editInfo}
-                            />
-                            <FormInput
-                                label="Date of birth"
-                                type="date"
-                                value={dateOfBirth}
-                                onChange={setDateOfBirth}
-                                width={"80%"}
-                                disabled={!editInfo}
-                            />
-                            <FormInput
-                                label="Country"
-                                type="text"
-                                value={country}
-                                onChange={setCountry}
-                                width={"80%"}
-                                disabled={!editInfo}
-                            />
+                    <div className="profile-content-scroll">
+                        <p className="warning-text" style={warning === "" ? { display: "none" } : { display: "block" }}>
+                            {warning}
+                        </p>
+                        <form>
+                            <div className="column-profile">
+                                <FormInput
+                                    label="First Name"
+                                    value={firstName}
+                                    onChange={setFirstName}
+                                    type="text"
+                                    width={"80%"}
+                                    disabled={!editInfo}
+                                />
+                                <FormInput
+                                    label="Email"
+                                    type="email"
+                                    value={email}
+                                    onChange={setEmail}
+                                    width={"80%"}
+                                    disabled={!editInfo}
+                                />
+                                <FormInput
+                                    label="Username"
+                                    type="text"
+                                    value={username}
+                                    onChange={setUsername}
+                                    width={"80%"}
+                                    disabled={!editInfo}
+                                />
+                                <FormInput
+                                    label="Password"
+                                    type={editInfo ? "text" : "password"}
+                                    value={password}
+                                    onChange={setPassword}
+                                    width={"80%"}
+                                    disabled={!editInfo}
+                                />
+                            </div>
+                            <div className="column-profile">
+                                <FormInput
+                                    label="Last Name"
+                                    type="text"
+                                    value={lastName}
+                                    onChange={setLastName}
+                                    width={"80%"}
+                                    disabled={!editInfo}
+                                />
+                                <FormInput
+                                    label="Date of birth"
+                                    type="date"
+                                    value={dateOfBirth}
+                                    onChange={setDateOfBirth}
+                                    width={"80%"}
+                                    disabled={!editInfo}
+                                />
+                                <FormInput
+                                    label="Country"
+                                    type="text"
+                                    value={country}
+                                    onChange={setCountry}
+                                    width={"80%"}
+                                    disabled={!editInfo}
+                                />
 
-                            {editInfo ? (
-                                <Button
-                                    label="Save changes"
-                                    onClick={() => {
-                                        handleEdit();
-                                    }}
-                                    style="primary"
-                                    width={"80%"}
-                                    height={"80px"}
-                                />
-                            ) : (
-                                <Button
-                                    label="Edit info"
-                                    onClick={() => setEditInfo(true)}
-                                    style="primary"
-                                    width={"80%"}
-                                    height={"80px"}
-                                />
-                            )}
+                                {editInfo ? (
+                                    <Button
+                                        label="Save changes"
+                                        onClick={() => {
+                                            handleEdit();
+                                        }}
+                                        style="primary"
+                                        width={"80%"}
+                                        height={"70px"}
+                                    />
+                                ) : (
+                                    <Button
+                                        label="Edit info"
+                                        onClick={() => setEditInfo(true)}
+                                        style="primary"
+                                        width={"80%"}
+                                        height={"70px"}
+                                    />
+                                )}
+                            </div>
+                        </form>
+                        <div className="profile-leaderboard">
+                            <LeaderboardListings driver_id={login.user_id} profile={true} />
                         </div>
-                    </form>
-                    <div>
-                        <h2>Be the best on track!</h2>
-                        <p>Your information will be used do display on leaderboards.</p>
+                        <div>
+                            <h2>Be the best on track!</h2>
+                            <p>Your information will be used do display on leaderboards.</p>
+                        </div>
                     </div>
                 </div>
             </div>

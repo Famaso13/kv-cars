@@ -71,6 +71,7 @@ function loadPaths() {
 
     let restListings = new RestListings();
     server.get("/api/listings/:track_id", restListings.getListingsByTrackId.bind(restListings));
+    server.get("/api/listings/driver/:driver_id", restListings.getListingsByDriverId.bind(restListings));
 
     let restFilters = new RestFilters();
     server.get("/api/filters/categories", restFilters.getAllCategories.bind(restFilters));

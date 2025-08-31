@@ -20,6 +20,10 @@ $primary-color: #a02638;
         display: flex;
         align-items: center;
         width: 20%;
+
+        p {
+            margin: 0 auto;
+        }
     }
 
     .position-first,

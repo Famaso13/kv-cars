@@ -171,6 +171,7 @@ const TrackLeaderboard = () => {
                                 weather={weather}
                                 dateISO={dateISO}
                                 apply={apply}
+                                profile={false}
                             />
                         </div>
                     </div>

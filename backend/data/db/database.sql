@@ -9,6 +9,12 @@ CREATE TABLE users (
   date_created TEXT    NOT NULL DEFAULT (datetime('now'))
 );
 
+ALTER TABLE users ADD COLUMN first_name TEXT;
+ALTER TABLE users ADD COLUMN last_name TEXT;
+ALTER TABLE users ADD COLUMN date_of_birth TEXT;
+ALTER TABLE users ADD COLUMN country TEXT;
+
+
 -- LEAGUES
 CREATE TABLE leagues (
   league_id   INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -120,6 +126,8 @@ INSERT INTO users (username, email, password) VALUES
   ('petar',   'petar@example.com',   'qwerty789'),
   ('ana',     'ana@example.com',     'letmein'),
   ('nikola',  'nikola@example.com',  '123456');
+
+
 
 select * from users;
 
@@ -304,3 +312,8 @@ INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms) VALUE
 
 -- Provjera
 SELECT * FROM laps;
+
+
+-- DEVELOPMENT QUERIES 
+DELETE from users where username == 'test';
+DELETE from users where username == 'asd';

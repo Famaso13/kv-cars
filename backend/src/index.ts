@@ -78,4 +78,5 @@ function loadPaths() {
 
     let restUsers = new RestUsers();
     server.get("/api/user/login", restUsers.userLogin.bind(restUsers));
+    server.post("/api/user/register", restUsers.userRegister.bind(restUsers));
 }

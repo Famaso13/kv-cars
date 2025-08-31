@@ -15,7 +15,6 @@ const Form: React.FC<FormProps> = ({ isLogin, setIsLogin }) => {
     const server = import.meta.env.VITE_BACKEND;
     let navigate = useNavigate();
 
-    //  const [wrongCreds, setWrongCreds] = useState(0);
     const [warning, setWarning] = useState("");
 
     const [username, setUsername] = useState("");

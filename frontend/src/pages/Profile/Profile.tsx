@@ -9,6 +9,33 @@ import ProfileModal from "../../components/ProfileModal/ProfileModal";
 import type { UserI } from "../../interfaces/usersI";
 
 const Profile = () => {
+    const server = import.meta.env.VITE_BACKEND;
+    const [warning, setWarning] = useState("");
+
+    const [login, setLogin] = useState<UserI>({} as UserI);
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [dateOfBirth, setDateOfBirth] = useState("");
+    const [country, setCountry] = useState("");
+    useEffect(() => {
+        let userStorage = sessionStorage.getItem("user");
+        if (userStorage !== null) {
+            let user = JSON.parse(userStorage) as UserI;
+            setLogin(user);
+            setFirstName(user.first_name);
+            setLastName(user.last_name);
+            setEmail(user.email);
+            setUsername(user.username);
+            setPassword(user.password);
+            setDateOfBirth(user.date_of_birth);
+            setCountry(user.country);
+            setLoggedIn(true);
+        }
+    }, [location]);
+
     const [loggedIn, setLoggedIn] = useState(false);
     const [editInfo, setEditInfo] = useState(false);
     const [pictureModal, setPictureModal] = useState(false);
@@ -19,15 +46,34 @@ const Profile = () => {
         navigate("/");
     };
 
-    const [login, setLogin] = useState<UserI>({} as UserI);
-    useEffect(() => {
-        let userStorage = sessionStorage.getItem("user");
-        if (userStorage !== null) {
-            let user = JSON.parse(userStorage) as UserI;
-            setLogin(user);
-            setLoggedIn(true);
+    const handleEdit = async () => {
+        let user: UserI = {
+            user_id: login.user_id,
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            date_of_birth: dateOfBirth,
+            username: username,
+            country: country,
+            password: password,
+            date_created: login.date_created,
+        };
+        let response = (await fetch(server + "api/user/update/", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            method: "PUT",
+            body: JSON.stringify(user),
+        })) as Response;
+        if (response.status == 200) {
+            setEditInfo(false);
+            sessionStorage.clear();
+            sessionStorage.setItem("user", JSON.stringify(user));
+        } else if (response.status == 400) {
+            let data = JSON.parse(await response.text()) as { err: string; inserted: boolean };
+            setWarning(data.err);
         }
-    }, [location]);
+    };
 
     return (
         <>
@@ -49,11 +95,13 @@ const Profile = () => {
                 </div>
                 <div className="right-profile">
                     <h1>Your racing info</h1>
+                    <p className="warning-text">{warning}</p>
                     <form>
                         <div className="column-profile">
                             <FormInput
                                 label="First Name"
-                                value="firstname - backend TODO"
+                                value={firstName}
+                                onChange={setFirstName}
                                 type="text"
                                 width={"80%"}
                                 disabled={!editInfo}
@@ -61,21 +109,24 @@ const Profile = () => {
                             <FormInput
                                 label="Email"
                                 type="email"
-                                value={login.email}
+                                value={email}
+                                onChange={setEmail}
                                 width={"80%"}
                                 disabled={!editInfo}
                             />
                             <FormInput
                                 label="Username"
                                 type="text"
-                                value={login.username}
+                                value={username}
+                                onChange={setUsername}
                                 width={"80%"}
                                 disabled={!editInfo}
                             />
                             <FormInput
                                 label="Password"
                                 type={editInfo ? "text" : "password"}
-                                value={login.password}
+                                value={password}
+                                onChange={setPassword}
                                 width={"80%"}
                                 disabled={!editInfo}
                             />
@@ -84,21 +135,24 @@ const Profile = () => {
                             <FormInput
                                 label="Last Name"
                                 type="text"
-                                value="lastname - backend TODO"
+                                value={lastName}
+                                onChange={setLastName}
                                 width={"80%"}
                                 disabled={!editInfo}
                             />
                             <FormInput
                                 label="Date of birth"
                                 type="date"
-                                value="dateofbirth - backend TODO"
+                                value={dateOfBirth}
+                                onChange={setDateOfBirth}
                                 width={"80%"}
                                 disabled={!editInfo}
                             />
                             <FormInput
                                 label="Country"
                                 type="text"
-                                value="country - backend TODO"
+                                value={country}
+                                onChange={setCountry}
                                 width={"80%"}
                                 disabled={!editInfo}
                             />
@@ -107,7 +161,7 @@ const Profile = () => {
                                 <Button
                                     label="Save changes"
                                     onClick={() => {
-                                        setEditInfo(false); /* TODO Add save logic here */
+                                        handleEdit();
                                     }}
                                     style="primary"
                                     width={"80%"}

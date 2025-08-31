@@ -61,6 +61,20 @@ export class RestUsers {
         }
     }
 
+    userUpdate(request: Request, response: Response) {
+        let userInfo = request.body as UserI;
+
+        this.update(userInfo).then((status) => {
+            if (status.inserted === true) {
+                response.status(200);
+                response.send(JSON.stringify(status));
+            } else {
+                response.status(400);
+                response.send(JSON.stringify(status));
+            }
+        });
+    }
+
     async login(username: string, password: string) {
         let sql = "SELECT * FROM users WHERE username = ? AND password = ?;";
         var data = (await this.database.getDataPromise(sql, [username, password])) as Array<UserI>;
@@ -72,6 +86,10 @@ export class RestUsers {
                 email: d["email"],
                 password: d["password"],
                 date_created: d["date_created"],
+                first_name: d["first_name"],
+                last_name: d["last_name"],
+                date_of_birth: d["date_of_birth"],
+                country: d["country"],
             };
             return u;
         }
@@ -115,5 +133,33 @@ export class RestUsers {
             emails.push(d.email);
         }
         return emails;
+    }
+
+    async update(user: UserI) {
+        let sql = `UPDATE users 
+               SET  username = ?,
+                  email = ?,
+                  password = ?, 
+                  date_created = ?, 
+                  first_name = ?, 
+                  last_name = ?, 
+                  date_of_birth = ?, 
+                  country = ?
+               WHERE user_id = ?`;
+
+        let userData = [
+            user.username,
+            user.email,
+            user.password,
+            user.date_created,
+            user.first_name,
+            user.last_name,
+            user.date_of_birth,
+            user.country,
+            user.user_id,
+        ];
+        let data = await this.database.insertUpdateRows(sql, userData);
+        if (data.error === null) return { err: "", inserted: true };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
     }
 }

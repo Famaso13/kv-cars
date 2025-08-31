@@ -12,6 +12,10 @@ $primary-color: #a02638;
     background-color: white;
     justify-content: space-evenly;
 
+    .warning-text {
+        color: #a02638;
+    }
+
     h1 {
         color: $primary-color;
         font-size: 50px;

@@ -14,6 +14,7 @@ const TrackLeaderboard = () => {
     const trackIdNum = id ? Number(id) : NaN;
     const [track, setTrack] = useState<TrackI>({} as TrackI);
     const [apply, setApply] = useState(0);
+    const [toggleFilters, setToggleFilters] = useState(true);
 
     useEffect(() => {
         const fetchTrackById = async (id: number) => {
@@ -114,12 +115,20 @@ const TrackLeaderboard = () => {
         setApply((t) => t + 1);
     };
 
+    const changeToggleFilters = () => {
+        setToggleFilters(!toggleFilters);
+    };
+
     return (
         <div>
             <Header loggedIn={true} currentPage="leaderboard" />
             <div className="full-screen">
                 <div className="leaderboard-filters">
                     <h2>Data filters</h2>
+                    <div className="leaderboard-data-filters">
+                        <h2>Real position:</h2>
+                        <Button label={toggleFilters ? "Off" : "On"} onClick={changeToggleFilters} style="secondary" />
+                    </div>
                     <FormInput
                         label="Category"
                         array={categories}
@@ -172,6 +181,7 @@ const TrackLeaderboard = () => {
                                 dateISO={dateISO}
                                 apply={apply}
                                 profile={false}
+                                toggleFilters={toggleFilters}
                             />
                         </div>
                     </div>

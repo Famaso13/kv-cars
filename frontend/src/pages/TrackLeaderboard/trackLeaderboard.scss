@@ -10,6 +10,18 @@ $primary-color: #a02638;
     h2 {
         color: white;
         text-align: center;
+        font-size: 2rem;
+    }
+
+    .leaderboard-data-filters {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+
+        h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
     }
 
     .leaderboard-temps {

@@ -13,6 +13,7 @@ interface LeaderboardListingsProps {
     apply?: number;
     driver_id?: number;
     profile?: boolean;
+    toggleFilters?: boolean;
 }
 
 const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
@@ -25,13 +26,15 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
     apply,
     driver_id,
     profile,
+    toggleFilters,
 }) => {
     const [tempUnit, setTempUnit] = useState("°C");
 
     // TODO Replace with actual fetching logic
     const server = import.meta.env.VITE_BACKEND;
 
-    const [listings, setListings] = useState<ListingsI[]>([]);
+    const [fullListings, setFullListings] = useState<ListingsI[]>([]);
+    const [filteredListings, setFilteredListings] = useState<ListingsI[]>([]);
     const [profileListings, setProfileListings] = useState<ProfileListingsI[]>([]);
 
     const fetchListings = async (track_id: number) => {
@@ -39,7 +42,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         if (response.status == 200) {
             let data = JSON.parse(await response.text()) as Array<ListingsI>;
             console.log(data);
-            setListings(data);
+            setFullListings(data);
         }
     };
 
@@ -55,7 +58,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         if (response.status == 200) {
             let data = JSON.parse(await response.text()) as Array<ListingsI>;
             console.log(data);
-            setListings(data);
+            setFilteredListings(data);
         }
     };
 
@@ -79,6 +82,20 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
     useEffect(() => {
         if (driver_id !== undefined) fetchDriverListings(driver_id);
     }, [driver_id, profile, server]);
+
+    const getRealPosition = (listing: ListingsI) => {
+        return (
+            fullListings.findIndex(
+                (l) =>
+                    l.username === listing.username &&
+                    l.car === listing.car &&
+                    l.category === listing.category &&
+                    l.tyre === listing.tyre &&
+                    l.weather === listing.weather &&
+                    l.lap_time === listing.lap_time
+            ) + 1
+        );
+    };
 
     return (
         <>
@@ -128,12 +145,32 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                 <hr />
                 <div className="leaderboard-listings">
                     {!profile &&
-                        listings.map((listing, index) => (
-                            <div key={index} className="leaderboard-listing">
-                                <Listing position={index + 1} listing={listing} tempUnit={tempUnit} profile={false} />
-                                {index !== listings.length - 1 && <hr />}
-                            </div>
-                        ))}
+                        (toggleFilters
+                            ? filteredListings.map((listing, index) => (
+                                  <div key={index} className="leaderboard-listing">
+                                      <Listing
+                                          position={index + 1}
+                                          listing={listing}
+                                          tempUnit={tempUnit}
+                                          profile={false}
+                                      />
+                                      {index !== filteredListings.length - 1 && <hr />}
+                                  </div>
+                              ))
+                            : filteredListings.map((listing, index) => {
+                                  const realPos = getRealPosition(listing);
+                                  return (
+                                      <div key={index} className="leaderboard-listing">
+                                          <Listing
+                                              position={realPos}
+                                              listing={listing}
+                                              tempUnit={tempUnit}
+                                              profile={false}
+                                          />
+                                          {index !== filteredListings.length - 1 && <hr />}
+                                      </div>
+                                  );
+                              }))}
 
                     {profile &&
                         profileListings.map((profileListing, index) => (

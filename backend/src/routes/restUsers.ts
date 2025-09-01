@@ -96,6 +96,7 @@ export class RestUsers {
 
     async getUserStats(request: Request, response: Response) {
         response.type("application/json");
+
         let data = request.params["driver_id"];
         if (data != undefined) {
             const lap = await this.restLaps.getFastestByDriverId(Number(data));

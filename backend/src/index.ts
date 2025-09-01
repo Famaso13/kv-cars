@@ -68,6 +68,7 @@ function loadPaths() {
     server.get("/api/lap/:lap_id", restLaps.getLapByTrackId.bind(restLaps));
     server.get("/api/laps/driver/:driver_id", restLaps.getLapsByDriverId.bind(restLaps));
     server.get("/api/lap/driver/:driver_id", restLaps.getFastestLapByDriverId.bind(restLaps));
+    server.post("/api/lap", restLaps.submitLap.bind(restLaps));
 
     let restListings = new RestListings();
     server.get("/api/listings/:track_id", restListings.getListingsByTrackId.bind(restListings));

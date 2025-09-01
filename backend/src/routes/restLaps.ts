@@ -1,13 +1,18 @@
 import { Request, Response } from "express";
 import Database from "../helpers/sqliteHelper";
 import { LapsI } from "../interfaces/lapsI";
+import { TrackConditionI } from "../interfaces/trackConditionsI";
+import { RestTrackConditions } from "./restTrackConditions";
 
 export class RestLaps {
     private database: Database;
     private DB_FILE = process.env.DB_FILE ?? "data/db/racingdb.sqlite";
 
+    private restTrackConditions;
+
     constructor() {
         this.database = new Database(this.DB_FILE);
+        this.restTrackConditions = new RestTrackConditions();
     }
 
     getLapsByTrackId(request: Request, response: Response) {
@@ -68,6 +73,50 @@ export class RestLaps {
             response.status(400);
             let message = { err: "No driver_id provided" };
             response.send(JSON.stringify(message));
+        }
+    }
+
+    formatDateTime(ms: number): string {
+        const date = new Date(ms);
+        const pad = (n: number) => n.toString().padStart(2, "0");
+        return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(
+            date.getMinutes()
+        )}:${pad(date.getSeconds())}`;
+    }
+    async submitLap(request: Request, response: Response) {
+        let lapInfo = request.body as { lap: LapsI; trackCondition: TrackConditionI };
+        let lap = lapInfo.lap;
+        let trackCondition = lapInfo.trackCondition;
+        let conditionTime = trackCondition.time;
+        trackCondition.time = this.formatDateTime(Number(conditionTime));
+
+        if (trackCondition !== undefined) {
+            let trackConditionStatus = await this.restTrackConditions.insertCondition(trackCondition);
+
+            if (trackConditionStatus.inserted == false) {
+                response.status(400);
+                let message = "Track conditions not inserted";
+                response.send(JSON.stringify(message));
+            }
+
+            let latestTrackCondition = await this.restTrackConditions.getLatest();
+
+            if (!latestTrackCondition) {
+                response.status(400);
+                let message = "Couldn't get track condition id";
+                response.send(JSON.stringify(message));
+            }
+
+            lap.conditions_id = latestTrackCondition?.conditions_id;
+            let lapStatus = await this.insertLap(lap);
+
+            if (lapStatus.inserted === true) {
+                response.status(200);
+                response.send(JSON.stringify(lapStatus));
+            } else {
+                response.status(400);
+                response.send(JSON.stringify(lapStatus));
+            }
         }
     }
 
@@ -153,5 +202,22 @@ export class RestLaps {
             return l;
         }
         return null;
+    }
+
+    async insertLap(lap: LapsI) {
+        let lapData = [
+            lap.driver_id ?? null,
+            lap.car_id ?? null,
+            lap.track_id ?? null,
+            lap.conditions_id ?? null,
+            lap.lap_time_ms ?? null,
+            lap.date ?? null,
+        ];
+
+        let sql =
+            "INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms, date) VALUES (?,?,?,?,?,?);";
+        let data = await this.database.insertUpdateRows(sql, lapData);
+        if (data.error === null) return { err: "", inserted: true };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
     }
 }

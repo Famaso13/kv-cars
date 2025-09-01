@@ -41,6 +41,34 @@ export class RestTrackConditions {
         }
     }
 
+    insertTrackCondition(request: Request, response: Response) {
+        let trackCondition = request.body as TrackConditionI;
+
+        if (trackCondition !== undefined) {
+            this.insertCondition(trackCondition).then((status) => {
+                if (status.inserted === true) {
+                    response.status(200);
+                    response.send(JSON.stringify(status));
+                } else {
+                    response.status(400);
+                    response.send(JSON.stringify(status));
+                }
+            });
+        } else {
+            response.status(400);
+            let message = { err: "No username or password provided", inserted: false };
+            response.send(JSON.stringify(message));
+        }
+    }
+
+    getLatestTrackCondition(request: Request, response: Response) {
+        response.type("application/json");
+        this.getLatest().then((track_condition) => {
+            response.status(200);
+            response.send(JSON.stringify(track_condition));
+        });
+    }
+
     async getAllByTrackId(track_id: number): Promise<Array<TrackConditionI>> {
         let sql = "SELECT * FROM track_conditions WHERE track_id=?;";
         var data = (await this.database.getDataPromise(sql, [track_id])) as Array<TrackConditionI>;
@@ -64,6 +92,42 @@ export class RestTrackConditions {
         var data = (await this.database.getDataPromise(sql, [id])) as Array<TrackConditionI>;
 
         if (data.length == 1 && data[0] != undefined) {
+            let d = data[0];
+            let tc: TrackConditionI = {
+                conditions_id: d["conditions_id"],
+                track_id: d["track_id"],
+                time: d["time"],
+                weather: d["weather"],
+                track_temperature: d["track_temperature"],
+                tire_id: d["tire_id"],
+            };
+            return tc;
+        }
+
+        return null;
+    }
+
+    async insertCondition(condition: TrackConditionI) {
+        let conditionData = [
+            condition.track_id ?? null,
+            condition.time ?? null,
+            condition.weather ?? null,
+            condition.track_temperature ?? null,
+            condition.tire_id ?? null,
+        ];
+
+        let sql =
+            "INSERT INTO track_conditions (track_id, time, weather, track_temperature, tire_id) VALUES (?,?,?,?,?);";
+        let data = await this.database.insertUpdateRows(sql, conditionData);
+        if (data.error === null) return { err: "", inserted: true };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
+    }
+
+    async getLatest(): Promise<TrackConditionI | null> {
+        let sql = "SELECT * FROM track_conditions ORDER BY conditions_id DESC LIMIT 1;";
+        var data = (await this.database.getDataPromise(sql, [])) as Array<TrackConditionI>;
+
+        if (data.length === 1 && data[0] != undefined) {
             let d = data[0];
             let tc: TrackConditionI = {
                 conditions_id: d["conditions_id"],

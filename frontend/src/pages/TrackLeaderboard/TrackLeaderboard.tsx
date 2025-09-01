@@ -6,7 +6,8 @@ import FormInput from "../../components/FormInput/FormInput";
 import { useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import type { TrackI } from "../../interfaces/tracksI";
-import type { CarFilterI, CategoryFilterI, TireFilterI, WeatherFilterI } from "../../interfaces/filtersI";
+import Modal from "../../components/Modal/Modal";
+import { useFilters } from "../../hooks/useFilters";
 
 const TrackLeaderboard = () => {
     const server = import.meta.env.VITE_BACKEND;
@@ -15,6 +16,7 @@ const TrackLeaderboard = () => {
     const [track, setTrack] = useState<TrackI>({} as TrackI);
     const [apply, setApply] = useState(0);
     const [toggleFilters, setToggleFilters] = useState(true);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchTrackById = async (id: number) => {
@@ -27,75 +29,11 @@ const TrackLeaderboard = () => {
         fetchTrackById(trackIdNum);
     }, [trackIdNum, server]);
 
-    const [categoryId, setCategoryId] = useState<number | null>(null);
-    const [carId, setCarId] = useState<number | null>(null);
     const [tireId, setTireId] = useState<number | null>(null);
     const [weather, setWeather] = useState<string | null>(null);
     const [dateISO, setDateISO] = useState<string | null>(null);
 
-    const [categories, setCategories] = useState<CategoryFilterI[]>([]);
-    const [cars, setCars] = useState<CarFilterI[]>([]);
-    const [tires, setTires] = useState<TireFilterI[]>([]);
-    const [weatherList, setWeatherList] = useState<WeatherFilterI[]>([]);
-
-    useEffect(() => {
-        setCarId(null);
-        setTireId(null);
-        setTires([]);
-        const fetchCategories = async () => {
-            let response = (await fetch(server + "api/filters/categories")) as Response;
-            if (response.status == 200) {
-                let data = JSON.parse(await response.text()) as Array<CategoryFilterI>;
-                setCategories(data);
-            }
-        };
-        fetchCategories();
-    }, []);
-
-    useEffect(() => {
-        setCarId(null);
-        setTireId(null);
-        setTires([]);
-        if (categoryId == null) {
-            setCars([]);
-            return;
-        }
-        const fetchCars = async (categoryId: number | null) => {
-            let response = (await fetch(server + "api/filters/cars/" + categoryId)) as Response;
-            if (response.status == 200) {
-                let data = JSON.parse(await response.text()) as Array<CarFilterI>;
-                setCars(data);
-            }
-        };
-        fetchCars(categoryId);
-    }, [categoryId]);
-
-    useEffect(() => {
-        setTireId(null);
-        if (carId == null) {
-            setTires([]);
-            return;
-        }
-        const fetchTires = async (carId: number | null) => {
-            let response = (await fetch(server + "api/filters/tires/" + carId)) as Response;
-            if (response.status == 200) {
-                let data = JSON.parse(await response.text()) as Array<TireFilterI>;
-                setTires(data);
-            }
-        };
-        fetchTires(categoryId);
-    }, [carId]);
-
-    useEffect(() => {
-        const fetchWeather = async (trackId: number | null) => {
-            let response = (await fetch(server + "api/filters/weather/" + trackId)) as Response;
-            if (response.status == 200) {
-                let data = JSON.parse(await response.text()) as Array<WeatherFilterI>;
-                setWeatherList(data);
-            }
-        };
-        fetchWeather(trackIdNum);
-    }, []);
+    const { categories, cars, tires, weatherList, categoryId, setCategoryId, carId, setCarId } = useFilters(trackIdNum);
 
     const onChangeCategory = (val: string) => setCategoryId(val ? Number(val) : null);
     const onChangeCar = (val: string) => setCarId(val ? Number(val) : null);
@@ -183,8 +121,16 @@ const TrackLeaderboard = () => {
                                 profile={false}
                                 toggleFilters={toggleFilters}
                             />
+                            <Button
+                                label="Add Lap"
+                                style="primary"
+                                onClick={() => {
+                                    setShowModal(true);
+                                }}
+                            />
                         </div>
                     </div>
+                    {showModal && <Modal setModal={setShowModal} lapInsert track_id={trackIdNum} />}
                 </div>
             </div>
         </div>

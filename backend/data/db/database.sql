@@ -325,3 +325,5 @@ SELECT c.car_id, c.model, c.make, c.category_id, c.horsepower, c.mass
         GROUP BY c.car_id
         ORDER BY COUNT(*) DESC
         LIMIT 1;
+
+DELETE FROM laps WHERE lap_id = 44;

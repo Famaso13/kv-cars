@@ -5,7 +5,7 @@ import profile from "../../assets/profile.png";
 import { useNavigate } from "react-router-dom";
 import FormInput from "../../components/FormInput/FormInput";
 import { useEffect, useState } from "react";
-import ProfileModal from "../../components/ProfileModal/ProfileModal";
+import Modal from "../../components/Modal/Modal";
 import type { UserI, UserStatsI } from "../../interfaces/usersI";
 import LeaderboardListings from "../../components/LeaderboardListings/LeaderboardListings";
 
@@ -99,7 +99,7 @@ const Profile = () => {
 
     return (
         <>
-            {pictureModal && <ProfileModal setModal={setPictureModal} />}
+            {pictureModal && <Modal setModal={setPictureModal} profile />}
             <Header loggedIn={loggedIn} />
             <div className="full-screen">
                 <div className="left-profile">

@@ -30,7 +30,6 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
 }) => {
     const [tempUnit, setTempUnit] = useState("°C");
 
-    // TODO Replace with actual fetching logic
     const server = import.meta.env.VITE_BACKEND;
 
     const [fullListings, setFullListings] = useState<ListingsI[]>([]);

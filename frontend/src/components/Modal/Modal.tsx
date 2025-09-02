@@ -123,108 +123,114 @@ ModalProps) => {
                             <p onClick={() => setModal(false)}>X</p>
                         </div>
                         <h1>Submit your lap</h1>
-                        <FormInput
-                            label="Category"
-                            array={categories}
-                            type="select"
-                            width={"80%"}
-                            value={categoryId?.toString() ?? ""}
-                            light
-                            onChange={(val) => {
-                                setCategoryId(val === "" ? null : Number(val));
-                            }}
-                        />
-                        <FormInput
-                            label="Cars"
-                            array={cars}
-                            type="select"
-                            value={carId?.toString() ?? ""}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                setCarId(val === "" ? null : Number(val));
-                            }}
-                        />
-                        <FormInput
-                            label="Tires"
-                            array={tires}
-                            type="select"
-                            value={tireId?.toString() ?? ""}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                setTireId(val === "" ? null : Number(val));
-                            }}
-                        />
-                        <FormInput
-                            label="Weather"
-                            array={weatherList}
-                            type="select"
-                            value={weather ?? ""}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                setWeather(val === "" ? null : val);
-                            }}
-                        />
-                        <FormInput
-                            label="Date"
-                            type="date"
-                            value={date?.toString() ?? ""}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                setDate(val);
-                            }}
-                        />
-                        <FormInput
-                            label="Track Temperature (°C)"
-                            type="text"
-                            value={trackTemperature.toString()}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                if (!isNaN(Number(val))) {
-                                    setTrackTemperature(Number(val));
-                                }
-                            }}
-                        />
-                        <FormInput
-                            label=""
-                            type="text"
-                            value={minute.toString()}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                if (!isNaN(Number(val))) {
-                                    setMinute(Number(val));
-                                }
-                            }}
-                        />
-                        <FormInput
-                            label=""
-                            type="text"
-                            value={seconds.toString()}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                if (!isNaN(Number(val))) {
-                                    setSeconds(Number(val));
-                                }
-                            }}
-                        />
-                        <FormInput
-                            label=""
-                            type="text"
-                            value={miliseconds.toString()}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                if (!isNaN(Number(val))) {
-                                    setMiliseconds(Number(val));
-                                }
-                            }}
-                        />
+                        <div className="modal-lap">
+                            <FormInput
+                                label="Category"
+                                array={categories}
+                                type="select"
+                                width={"80%"}
+                                value={categoryId?.toString() ?? ""}
+                                light
+                                onChange={(val) => {
+                                    setCategoryId(val === "" ? null : Number(val));
+                                }}
+                            />
+                            <FormInput
+                                label="Cars"
+                                array={cars}
+                                type="select"
+                                value={carId?.toString() ?? ""}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    setCarId(val === "" ? null : Number(val));
+                                }}
+                            />
+                            <FormInput
+                                label="Tires"
+                                array={tires}
+                                type="select"
+                                value={tireId?.toString() ?? ""}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    setTireId(val === "" ? null : Number(val));
+                                }}
+                            />
+                            <FormInput
+                                label="Weather"
+                                array={weatherList}
+                                type="select"
+                                value={weather ?? ""}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    setWeather(val === "" ? null : val);
+                                }}
+                            />
+                            <FormInput
+                                label="Date"
+                                type="date"
+                                value={date?.toString() ?? ""}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    setDate(val);
+                                }}
+                            />
+                            <FormInput
+                                label="Track Temperature (°C)"
+                                type="text"
+                                value={trackTemperature.toString()}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    if (!isNaN(Number(val))) {
+                                        setTrackTemperature(Number(val));
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div className="modal-lap-time">
+                            <FormInput
+                                label="Lap Time"
+                                type="text"
+                                value={minute.toString()}
+                                light
+                                width={"25%"}
+                                onChange={(val) => {
+                                    if (!isNaN(Number(val))) {
+                                        setMinute(Number(val));
+                                    }
+                                }}
+                            />
+                            <p>:</p>
+                            <FormInput
+                                label=""
+                                type="text"
+                                value={seconds.toString()}
+                                light
+                                width={"25%"}
+                                onChange={(val) => {
+                                    if (!isNaN(Number(val))) {
+                                        setSeconds(Number(val));
+                                    }
+                                }}
+                            />
+                            <p>.</p>
+                            <FormInput
+                                label=""
+                                type="text"
+                                value={miliseconds.toString()}
+                                light
+                                width={"25%"}
+                                onChange={(val) => {
+                                    if (!isNaN(Number(val))) {
+                                        setMiliseconds(Number(val));
+                                    }
+                                }}
+                            />
+                        </div>
                         <Button
                             label="Submit Lap"
                             onClick={handleLapSubmit}

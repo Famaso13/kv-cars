@@ -14,8 +14,9 @@ $primary-color: #a02638;
 .modal {
     z-index: 1001;
     width: 40dvw;
-    height: 70dvh;
+    min-height: 70dvh;
     position: fixed;
+    overflow-y: scroll;
     top: 15dvh;
     left: 35dvw;
     background-color: $primary-color;
@@ -23,6 +24,13 @@ $primary-color: #a02638;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+
+    .modal-lap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        justify-items: center;
+    }
 
     div {
         width: 100%;
@@ -32,7 +40,7 @@ $primary-color: #a02638;
         p {
             box-sizing: border-box;
             text-align: end;
-            font-size: 3rem;
+            font-size: 2.5rem;
             padding: 10px 30px 10px 30px;
             margin: 0;
             cursor: pointer;
@@ -40,11 +48,11 @@ $primary-color: #a02638;
     }
 
     h1 {
-        color: white;
-        font-size: 2.5rem;
+        color: white !important;
+        font-size: 2rem;
         text-align: center;
         margin: 0;
-        padding: 0;
+        padding: 0 !important;
     }
 
     img {
@@ -52,6 +60,19 @@ $primary-color: #a02638;
     }
 
     .modal-space {
-        height: 10%;
+        height: 10dvh;
+    }
+
+    .modal-lap-time {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: end;
+        width: 80%;
+
+        p {
+            font-size: large;
+            cursor: auto;
+            padding-bottom: 10px;
+        }
     }
 }

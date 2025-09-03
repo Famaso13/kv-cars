@@ -1,11 +1,11 @@
 .track-card {
     min-width: 90%;
     height: 500px;
-    background-color: #f0f0f0;
+    background-color: #a02638;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-decoration: none;
-    color: #222;
+    color: white;
     img {
         min-width: 100%;
         min-height: 60%;
@@ -34,7 +34,7 @@
             width: 100%;
 
             h3 {
-                color: #222;
+                color: white;
                 width: 45%;
             }
             p {
@@ -42,7 +42,7 @@
                 width: 55%;
                 margin: 0;
                 font-size: 18px;
-                color: #222;
+                color: white;
             }
         }
     }

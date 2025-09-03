@@ -10,6 +10,7 @@ import { RestLaps } from "./routes/restLaps";
 import { RestListings } from "./routes/restListings";
 import { RestFilters } from "./routes/restFilters";
 import { RestUsers } from "./routes/restUsers";
+import { RestCars } from "./routes/restCars";
 
 dotenv.config();
 
@@ -85,4 +86,8 @@ function loadPaths() {
     server.get("/api/user/stats/:driver_id", restUsers.getUserStats.bind(restUsers));
     server.post("/api/user/register", restUsers.userRegister.bind(restUsers));
     server.put("/api/user/update", restUsers.userUpdate.bind(restUsers));
+
+    let restCars = new RestCars();
+    server.get("/api/cars", restCars.getAllCars.bind(restCars));
+    server.get("/api/car/:car_id", restCars.getCarById.bind(restCars));
 }

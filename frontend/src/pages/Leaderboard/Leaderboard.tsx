@@ -1,6 +1,6 @@
 import "./leaderboard.scss";
 import Header from "../../components/Header/Header";
-import TrackCard from "../../components/TrackCard/TrackCard";
+import Card from "../../components/Card/Card";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { TrackI } from "../../interfaces/tracksI";
@@ -29,7 +29,7 @@ const Leaderboard = () => {
                 <div className="leaderboard-grid">
                     {tracks.map((track) => (
                         <Link to={`/leaderboard/track/${track.track_id}`} key={track.track_id} className="link">
-                            <TrackCard track={track} />
+                            <Card track={track} />
                         </Link>
                     ))}
                 </div>

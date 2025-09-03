@@ -209,7 +209,7 @@ const Profile = () => {
                             </div>
                         </form>
                         <div className="profile-leaderboard">
-                            <LeaderboardListings driver_id={login.user_id} profile={true} />
+                            <LeaderboardListings driver_id={login.user_id} type="profile" />
                         </div>
                         <div>
                             <h2>Be the best on track!</h2>

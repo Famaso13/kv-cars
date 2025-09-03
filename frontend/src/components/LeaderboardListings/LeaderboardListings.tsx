@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import type { ListingsI, ProfileListingsI } from "../../types/listing";
+import type { CarsListingsI, ListingsI, ProfileListingsI } from "../../types/listing";
 import Listing from "../Listing/Listing";
 import "./leaderboardListings.scss";
 
@@ -12,7 +12,7 @@ interface LeaderboardListingsProps {
     dateISO?: string | null;
     apply?: number;
     driver_id?: number;
-    profile?: boolean;
+    type: "track" | "profile" | "cars";
     toggleFilters?: boolean;
 }
 
@@ -25,7 +25,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
     dateISO,
     apply,
     driver_id,
-    profile,
+    type,
     toggleFilters,
 }) => {
     const [tempUnit, setTempUnit] = useState("°C");
@@ -35,6 +35,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
     const [fullListings, setFullListings] = useState<ListingsI[]>([]);
     const [filteredListings, setFilteredListings] = useState<ListingsI[]>([]);
     const [profileListings, setProfileListings] = useState<ProfileListingsI[]>([]);
+    const [carListings, setCarListings] = useState<CarsListingsI[]>([]);
 
     const fetchListings = async (track_id: number) => {
         let response = (await fetch(server + "api/listings/" + track_id)) as Response;
@@ -70,6 +71,15 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         }
     };
 
+    const fetchCarListings = async (car_id: number) => {
+        let response = (await fetch(server + "api/listings/car/" + car_id)) as Response;
+        if (response.status == 200) {
+            let data = JSON.parse(await response.text()) as Array<CarsListingsI>;
+            console.log(data);
+            setCarListings(data);
+        }
+    };
+
     useEffect(() => {
         if (track_id !== undefined) fetchFilteredListings(track_id);
     }, [apply, track_id, server]);
@@ -79,8 +89,12 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
     }, [track_id, server]);
 
     useEffect(() => {
+        if (carId !== null && carId !== undefined) fetchCarListings(carId);
+    }, [carId, server]);
+
+    useEffect(() => {
         if (driver_id !== undefined) fetchDriverListings(driver_id);
-    }, [driver_id, profile, server]);
+    }, [driver_id, type, server]);
 
     const getRealPosition = (listing: ListingsI) => {
         return (
@@ -107,7 +121,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
             </div>
             <div className="leaderboard-container">
                 <div className="leaderboard-listings">
-                    {profile ? (
+                    {type === "profile" ? (
                         <Listing
                             position={"Position"}
                             listing={{
@@ -121,9 +135,9 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                             }}
                             tempUnit={tempUnit}
                             title
-                            profile={true}
+                            type="profile"
                         />
-                    ) : (
+                    ) : type === "track" ? (
                         <Listing
                             position={"Position"}
                             listing={{
@@ -137,13 +151,29 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                             }}
                             tempUnit={tempUnit}
                             title
-                            profile={false}
+                            type="track"
+                        />
+                    ) : (
+                        <Listing
+                            position={"Position"}
+                            listing={{
+                                username: "Username",
+                                track: "Track",
+                                category: "Category",
+                                tyre: "Tyre",
+                                weather: "Weather",
+                                trackTemp: "Track Temperature",
+                                lap_time: "Lap Time",
+                            }}
+                            tempUnit={tempUnit}
+                            title
+                            type="cars"
                         />
                     )}
                 </div>
                 <hr />
                 <div className="leaderboard-listings">
-                    {!profile &&
+                    {type === "track" &&
                         (toggleFilters
                             ? filteredListings.map((listing, index) => (
                                   <div key={index} className="leaderboard-listing">
@@ -151,7 +181,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                                           position={index + 1}
                                           listing={listing}
                                           tempUnit={tempUnit}
-                                          profile={false}
+                                          type="track"
                                       />
                                       {index !== filteredListings.length - 1 && <hr />}
                                   </div>
@@ -164,23 +194,31 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                                               position={realPos}
                                               listing={listing}
                                               tempUnit={tempUnit}
-                                              profile={false}
+                                              type="track"
                                           />
                                           {index !== filteredListings.length - 1 && <hr />}
                                       </div>
                                   );
                               }))}
 
-                    {profile &&
+                    {type === "profile" &&
                         profileListings.map((profileListing, index) => (
                             <div key={index} className="leaderboard-listing">
                                 <Listing
                                     position={index + 1}
                                     listing={profileListing}
                                     tempUnit={tempUnit}
-                                    profile={true}
+                                    type="profile"
                                 />
                                 {index !== profileListings.length - 1 && <hr />}
+                            </div>
+                        ))}
+
+                    {type === "cars" &&
+                        carListings.map((carListing, index) => (
+                            <div key={index} className="leaderboard-listing">
+                                <Listing position={index + 1} listing={carListing} tempUnit={tempUnit} type="cars" />
+                                {index !== carListings.length - 1 && <hr />}
                             </div>
                         ))}
                 </div>

@@ -118,7 +118,7 @@ const TrackLeaderboard = () => {
                                 weather={weather}
                                 dateISO={dateISO}
                                 apply={apply}
-                                profile={false}
+                                type="track"
                                 toggleFilters={toggleFilters}
                             />
                             <Button

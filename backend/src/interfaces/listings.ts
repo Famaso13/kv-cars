@@ -17,3 +17,13 @@ export type ProfileListingsI = {
     trackTemp: number | string;
     lap_time: string;
 };
+
+export type CarsListingsI = {
+    track: string;
+    username: string;
+    category: string;
+    tyre: string;
+    weather: string;
+    trackTemp: number | string;
+    lap_time: string;
+};

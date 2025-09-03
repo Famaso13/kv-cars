@@ -8,21 +8,31 @@ $primary-color: #a02638;
     align-items: center;
     justify-content: space-evenly;
 
-    h1 {
-        color: $primary-color;
-        height: 15dvh;
+    .cars-title {
         width: 100%;
+        min-height: 25dvh;
+        display: flex;
+        align-items: center;
+
+        h1 {
+            color: $primary-color;
+            width: 100%;
+            padding: 100px;
+            box-sizing: border-box;
+        }
     }
 
     .car-info {
-        min-height: 85dvh;
+        min-height: 75dvh;
         width: 80%;
-        overflow-y: scroll;
+        flex-direction: column;
+
         .car-stats {
             display: flex;
+            height: 50%;
 
             img {
-                min-height: 50dvh;
+                min-height: 100%;
                 min-width: 50%;
                 background-color: lightgray;
             }
@@ -52,9 +62,11 @@ $primary-color: #a02638;
                 }
             }
         }
+
         .car-leaderboard {
             display: flex;
             flex-direction: column;
+            padding: 5% 0;
         }
     }
 }

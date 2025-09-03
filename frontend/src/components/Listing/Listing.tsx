@@ -1,4 +1,4 @@
-import type { ListingsI, ProfileListingsI } from "../../types/listing";
+import type { CarsListingsI, ListingsI, ProfileListingsI } from "../../types/listing";
 import "./listing.scss";
 
 type ListingProps =
@@ -7,21 +7,28 @@ type ListingProps =
           listing: ListingsI;
           tempUnit?: string;
           title?: boolean;
-          profile: false;
+          type: "track";
       }
     | {
           position?: number | string;
           listing: ProfileListingsI;
           tempUnit?: string;
           title?: boolean;
-          profile: true;
+          type: "profile";
+      }
+    | {
+          position?: number | string;
+          listing: CarsListingsI;
+          tempUnit?: string;
+          title?: boolean;
+          type: "cars";
       };
 
 const celsiusToFahrenheit = (temp: number) => {
     return (temp * (9 / 5) + 32).toPrecision(3);
 };
 
-const Listing: React.FC<ListingProps> = ({ position, listing, tempUnit, title, profile }) => {
+const Listing: React.FC<ListingProps> = ({ position, listing, tempUnit, title, type }) => {
     return (
         <div className={title ? "title listing" : "listing"}>
             <div className="medal">
@@ -36,8 +43,8 @@ const Listing: React.FC<ListingProps> = ({ position, listing, tempUnit, title, p
                 )}
             </div>
             {/* Always render the same columns in the same order */}
-            <p>{profile ? listing.track : listing.username}</p>
-            <p>{listing.car}</p>
+            <p>{type === "track" ? listing.username : type === "profile" ? listing.track : listing.username}</p>
+            <p>{type !== "cars" ? listing.car : listing.track}</p>
             <p>{listing.category}</p>
             <p>{listing.tyre}</p>
             <p>{listing.weather}</p>

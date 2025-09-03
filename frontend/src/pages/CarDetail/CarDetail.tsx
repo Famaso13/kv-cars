@@ -39,10 +39,12 @@ const CarDetail = () => {
     return (
         <div className="car-detail">
             <Header loggedIn={true} currentPage="cars" />
-            <div className="car-info">
+            <div className="cars-title">
                 <h1>
                     {car.make} {car.model}
                 </h1>
+            </div>
+            <div className="car-info">
                 <div className="car-stats">
                     <img src="" alt={car.model} />
                     <div className="car-card-details">
@@ -65,7 +67,7 @@ const CarDetail = () => {
                     </div>
                 </div>
                 <div className="car-leaderboard">
-                    <LeaderboardListings />
+                    <LeaderboardListings carId={car.car_id} type="cars" />
                 </div>
             </div>
         </div>

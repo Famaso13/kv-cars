@@ -7,7 +7,7 @@ type ListingProps =
           listing: ListingsI;
           tempUnit?: string;
           title?: boolean;
-          type: "track";
+          type: "tracks";
       }
     | {
           position?: number | string;
@@ -42,8 +42,7 @@ const Listing: React.FC<ListingProps> = ({ position, listing, tempUnit, title, t
                     <p>{position}</p>
                 )}
             </div>
-            {/* Always render the same columns in the same order */}
-            <p>{type === "track" ? listing.username : type === "profile" ? listing.track : listing.username}</p>
+            <p>{type === "tracks" ? listing.username : type === "profile" ? listing.track : listing.username}</p>
             <p>{type !== "cars" ? listing.car : listing.track}</p>
             <p>{listing.category}</p>
             <p>{listing.tyre}</p>

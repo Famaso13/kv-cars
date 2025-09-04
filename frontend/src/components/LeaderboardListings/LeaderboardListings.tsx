@@ -12,7 +12,7 @@ interface LeaderboardListingsProps {
     dateISO?: string | null;
     apply?: number;
     driver_id?: number;
-    type: "track" | "profile" | "cars";
+    type: "tracks" | "track_detail" | "profile" | "cars";
     toggleFilters?: boolean;
 }
 
@@ -137,7 +137,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                             title
                             type="profile"
                         />
-                    ) : type === "track" ? (
+                    ) : type === "tracks" ? (
                         <Listing
                             position={"Position"}
                             listing={{
@@ -151,7 +151,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                             }}
                             tempUnit={tempUnit}
                             title
-                            type="track"
+                            type="tracks"
                         />
                     ) : (
                         <Listing
@@ -173,7 +173,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                 </div>
                 <hr />
                 <div className="leaderboard-listings">
-                    {type === "track" &&
+                    {type === "tracks" &&
                         (toggleFilters
                             ? filteredListings.map((listing, index) => (
                                   <div key={index} className="leaderboard-listing">
@@ -181,7 +181,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                                           position={index + 1}
                                           listing={listing}
                                           tempUnit={tempUnit}
-                                          type="track"
+                                          type="tracks"
                                       />
                                       {index !== filteredListings.length - 1 && <hr />}
                                   </div>
@@ -194,12 +194,19 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                                               position={realPos}
                                               listing={listing}
                                               tempUnit={tempUnit}
-                                              type="track"
+                                              type="tracks"
                                           />
                                           {index !== filteredListings.length - 1 && <hr />}
                                       </div>
                                   );
                               }))}
+                    {type === "track_detail" &&
+                        filteredListings.slice(0, 3).map((listing, index) => (
+                            <div key={index} className="leaderboard-listing">
+                                <Listing position={index + 1} listing={listing} tempUnit={tempUnit} type="tracks" />
+                                {index !== filteredListings.slice(0, 3).length - 1 && <hr />}
+                            </div>
+                        ))}
 
                     {type === "profile" &&
                         profileListings.map((profileListing, index) => (
@@ -215,10 +222,10 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                         ))}
 
                     {type === "cars" &&
-                        carListings.map((carListing, index) => (
+                        carListings.slice(0, 3).map((carListing, index) => (
                             <div key={index} className="leaderboard-listing">
                                 <Listing position={index + 1} listing={carListing} tempUnit={tempUnit} type="cars" />
-                                {index !== carListings.length - 1 && <hr />}
+                                {index !== carListings.slice(0, 3).length - 1 && <hr />}
                             </div>
                         ))}
                 </div>

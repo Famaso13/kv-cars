@@ -1,0 +1,72 @@
+$primary-color: #a02638;
+
+.car-detail {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+
+    .cars-title {
+        width: 100%;
+        min-height: 25dvh;
+        display: flex;
+        align-items: center;
+
+        h1 {
+            color: $primary-color;
+            width: 100%;
+            padding: 100px;
+            box-sizing: border-box;
+        }
+    }
+
+    .car-info {
+        min-height: 75dvh;
+        width: 80%;
+        flex-direction: column;
+
+        .car-stats {
+            display: flex;
+            height: 50%;
+
+            img {
+                min-height: 100%;
+                min-width: 50%;
+                background-color: lightgray;
+            }
+
+            .car-card-details {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                width: 50%;
+
+                div {
+                    display: flex;
+                    width: 100%;
+
+                    h2 {
+                        margin: 0;
+                        padding-left: 50px;
+                        width: 50%;
+                        font-size: 2.5rem;
+                    }
+
+                    p {
+                        margin: auto 0;
+                        text-align: center;
+                        color: black;
+                    }
+                }
+            }
+        }
+
+        .car-leaderboard {
+            display: flex;
+            flex-direction: column;
+            padding: 5% 0;
+        }
+    }
+}

@@ -13,6 +13,7 @@ ALTER TABLE users ADD COLUMN first_name TEXT;
 ALTER TABLE users ADD COLUMN last_name TEXT;
 ALTER TABLE users ADD COLUMN date_of_birth TEXT;
 ALTER TABLE users ADD COLUMN country TEXT;
+ALTER TABLE users ADD COLUMN image BLOB;
 
 
 -- LEAGUES
@@ -44,6 +45,7 @@ CREATE TABLE cars (
   FOREIGN KEY (category_id) REFERENCES categories(category_id)
     ON DELETE SET NULL ON UPDATE CASCADE
 );
+ALTER TABLE cars ADD COLUMN image BLOB;
 
 -- TIRES
 CREATE TABLE tires (
@@ -69,6 +71,8 @@ CREATE TABLE tracks (
   length_km  REAL,
   famous_corner    TEXT
 );
+
+ALTER TABLE tracks ADD COLUMN image BLOB;
 
 -- TRACK CONDITIONS 
 CREATE TABLE track_conditions (

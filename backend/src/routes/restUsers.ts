@@ -39,6 +39,22 @@ export class RestUsers {
             response.send(JSON.stringify(message));
         }
     }
+
+    getUserById(request: Request, response: Response) {
+        let user_id;
+
+        if (user_id !== undefined) {
+            this.getById(user_id).then((user) => {
+                response.status(200);
+                response.send(JSON.stringify(user));
+            });
+        } else {
+            response.status(400);
+            let message = { err: "No username or password provided" };
+            response.send(JSON.stringify(message));
+        }
+    }
+
     userRegister(request: Request, response: Response) {
         let userInfo = request.body as { username: string; password: string; email: string };
         let username = userInfo.username;
@@ -81,6 +97,46 @@ export class RestUsers {
                 response.send(JSON.stringify(status));
             }
         });
+    }
+
+    userUpdateImage(request: Request, response: Response) {
+        const driver_id_param = request.params["driver_id"];
+        let driver_id = Number(driver_id_param);
+        if (!Number.isFinite(driver_id)) {
+            response.status(400);
+            response.send("Invalid user_id");
+        }
+
+        if (!request.file) {
+            response.status(400);
+            response.send("No file uploaded");
+        } else {
+            const imageBuffer: Buffer = request.file?.buffer;
+
+            this.updateImage(driver_id, imageBuffer).then((status) => {
+                if (status.inserted === true) {
+                    response.status(200);
+                    response.send(JSON.stringify(status));
+                } else {
+                    response.status(400);
+                    response.send(JSON.stringify(status));
+                }
+            });
+        }
+    }
+
+    getUserImageById(request: Request, response: Response) {
+        const driver_id_param = request.params["driver_id"];
+        let driver_id = Number(driver_id_param);
+        if (!Number.isFinite(driver_id)) {
+            response.status(400);
+            response.send("Invalid user_id");
+        } else {
+            this.getImageById(driver_id).then((image) => {
+                response.status(200);
+                response.send(image);
+            });
+        }
     }
 
     formatLapTime(lap_time: number) {
@@ -216,5 +272,46 @@ export class RestUsers {
         let data = await this.database.insertUpdateRows(sql, userData);
         if (data.error === null) return { err: "", inserted: true };
         else return { err: "Error during row insertion. Please try again.", inserted: false };
+    }
+
+    async updateImage(user_id: number, image: Buffer) {
+        let sql = `UPDATE users 
+               SET  image = ?
+               WHERE user_id = ?`;
+
+        let userData = [image, user_id];
+        let data = await this.database.insertUpdateRows(sql, userData);
+        if (data.error === null) return { err: "", inserted: true };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
+    }
+
+    async getById(user_id: number) {
+        let sql = "SELECT * FROM users WHERE user_id = ?;";
+        var data = (await this.database.getDataPromise(sql, [user_id])) as Array<UserI>;
+        if (data.length == 1 && data[0] != undefined) {
+            let d = data[0];
+            let u: UserI = {
+                user_id: d["user_id"],
+                username: d["username"],
+                email: d["email"],
+                password: d["password"],
+                date_created: d["date_created"],
+                first_name: d["first_name"],
+                last_name: d["last_name"],
+                date_of_birth: d["date_of_birth"],
+                country: d["country"],
+            };
+            return u;
+        }
+        return null;
+    }
+
+    async getImageById(user_id: number) {
+        let sql = "SELECT image FROM users WHERE user_id = ?;";
+        var data = (await this.database.getDataPromise(sql, [user_id])) as Array<{ image: Buffer | null }>;
+        if (data.length == 1 && data[0]?.image) {
+            return data[0].image as Buffer;
+        }
+        return null;
     }
 }

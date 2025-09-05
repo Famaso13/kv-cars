@@ -78,7 +78,7 @@ export class RestTrackConditions {
                 conditions_id: d["conditions_id"],
                 track_id: d["track_id"],
                 time: d["time"],
-                weather: d["weather"],
+                weather_id: d["weather_id"],
                 track_temperature: d["track_temperature"],
                 tire_id: d["tire_id"],
             };
@@ -97,7 +97,7 @@ export class RestTrackConditions {
                 conditions_id: d["conditions_id"],
                 track_id: d["track_id"],
                 time: d["time"],
-                weather: d["weather"],
+                weather_id: d["weather_id"],
                 track_temperature: d["track_temperature"],
                 tire_id: d["tire_id"],
             };
@@ -108,16 +108,19 @@ export class RestTrackConditions {
     }
 
     async insertCondition(condition: TrackConditionI) {
+        var weather_id = await this.getWeatherId(condition.weather_id!);
+        console.log(weather_id);
+
         let conditionData = [
             condition.track_id ?? null,
             condition.time ?? null,
-            condition.weather ?? null,
+            weather_id ?? null,
             condition.track_temperature ?? null,
             condition.tire_id ?? null,
         ];
 
         let sql =
-            "INSERT INTO track_conditions (track_id, time, weather, track_temperature, tire_id) VALUES (?,?,?,?,?);";
+            "INSERT INTO track_conditions (track_id, time, weather_id, track_temperature, tire_id) VALUES (?,?,?,?,?);";
         let data = await this.database.insertUpdateRows(sql, conditionData);
         if (data.error === null) return { err: "", inserted: true };
         else return { err: "Error during row insertion. Please try again.", inserted: false };
@@ -133,11 +136,23 @@ export class RestTrackConditions {
                 conditions_id: d["conditions_id"],
                 track_id: d["track_id"],
                 time: d["time"],
-                weather: d["weather"],
+                weather_id: d["weather_id"],
                 track_temperature: d["track_temperature"],
                 tire_id: d["tire_id"],
             };
             return tc;
+        }
+
+        return null;
+    }
+
+    async getWeatherId(weather: string): Promise<number | null> {
+        let sql = "SELECT weathers_id FROM weathers w WHERE w.weather = ?;";
+        var data = (await this.database.getDataPromise(sql, [weather])) as Array<{ weathers_id: number }>;
+
+        if (data.length === 1 && data[0] != undefined) {
+            let d = data[0];
+            return d.weathers_id;
         }
 
         return null;

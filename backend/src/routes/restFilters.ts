@@ -54,18 +54,11 @@ export class RestFilters {
 
     getAllWeather(request: Request, response: Response) {
         response.type("application/json");
-        let data = request.params["track_id"];
-        if (data != undefined) {
-            this.getWeather(parseInt(data)).then((weather) => {
-                response.status(200);
-                console.log(weather);
-                response.send(JSON.stringify(weather));
-            });
-        } else {
-            response.status(400);
-            let message = { err: "No track_id provided" };
-            response.send(JSON.stringify(message));
-        }
+        this.getWeather().then((weather) => {
+            response.status(200);
+            console.log(weather);
+            response.send(JSON.stringify(weather));
+        });
     }
 
     async getCategories(): Promise<Array<CategoryFilterI>> {
@@ -111,9 +104,9 @@ export class RestFilters {
         return result;
     }
 
-    async getWeather(track_id: number): Promise<Array<WeatherFilterI>> {
-        let sql = "SELECT DISTINCT weather FROM track_conditions WHERE track_id = ? ORDER BY weather;";
-        var data = (await this.database.getDataPromise(sql, [track_id])) as Array<WeatherFilterI>;
+    async getWeather(): Promise<Array<WeatherFilterI>> {
+        let sql = "SELECT DISTINCT weather FROM weathers ORDER BY weathers_id;";
+        var data = (await this.database.getDataPromise(sql, [])) as Array<WeatherFilterI>;
         let result = new Array<WeatherFilterI>();
         for (let d of data) {
             let wf: WeatherFilterI = {

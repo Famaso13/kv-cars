@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CarFilterI, CategoryFilterI, TireFilterI, WeatherFilterI } from "../interfaces/filtersI";
 
-export function useFilters(trackId?: number) {
+export function useFilters() {
     const server = import.meta.env.VITE_BACKEND;
     const [categories, setCategories] = useState<CategoryFilterI[]>([]);
     const [cars, setCars] = useState<CarFilterI[]>([]);
@@ -41,11 +41,10 @@ export function useFilters(trackId?: number) {
     }, [carId, server]);
 
     useEffect(() => {
-        if (!trackId) return;
-        fetch(server + "api/filters/weather/" + trackId)
+        fetch(server + "api/filters/weather")
             .then((res) => res.json())
             .then(setWeatherList);
-    }, [trackId, server]);
+    }, [server]);
 
     return {
         categories,

@@ -83,29 +83,30 @@ export class RestListings {
     ): Promise<Array<ListingsI>> {
         const sql = `
     SELECT
-      u.username AS username,
-      (c.make || ' ' || c.model) AS car,
-      cat.name AS category,
-      t.type AS tyre,
-      tc.weather AS weather,
-      tc.track_temperature AS trackTemp,
-      printf('%02d:%02d.%03d',
-        l.lap_time_ms/60000,
-        (l.lap_time_ms/1000) % 60,
-        l.lap_time_ms % 1000) AS lap_time
-    FROM laps l
-    JOIN users u              ON u.user_id = l.driver_id
-    JOIN cars  c              ON c.car_id  = l.car_id
-    LEFT JOIN categories cat  ON cat.category_id = c.category_id
-    LEFT JOIN track_conditions tc ON tc.conditions_id = l.conditions_id
-    LEFT JOIN tires t              ON t.tire_id      = tc.tire_id
-    WHERE l.track_id = ?
-      AND (? = -1 OR c.category_id = ?)
-      AND (? = -1 OR c.car_id      = ?)
-      AND (? = -1 OR t.tire_id     = ?)
-      AND (? = '' OR tc.weather    = ?)
-      AND (? = '' OR date(l.date)  = date(?))
-    ORDER BY l.lap_time_ms ASC;
+    u.username AS username,
+    (c.make || ' ' || c.model) AS car,
+    cat.name AS category,
+    t.type AS tyre,
+    w.weather AS weather,  
+    tc.track_temperature AS trackTemp,
+    printf('%02d:%02d.%03d',
+      l.lap_time_ms/60000,
+      (l.lap_time_ms/1000) % 60,
+      l.lap_time_ms % 1000) AS lap_time
+FROM laps l
+JOIN users u              ON u.user_id = l.driver_id
+JOIN cars  c              ON c.car_id  = l.car_id
+LEFT JOIN categories cat  ON cat.category_id = c.category_id
+LEFT JOIN track_conditions tc ON tc.conditions_id = l.conditions_id
+LEFT JOIN tires t              ON t.tire_id      = tc.tire_id
+LEFT JOIN weathers w           ON w.weathers_id  = tc.weather_id  
+WHERE l.track_id = ?
+  AND (? = -1 OR c.category_id = ?)
+  AND (? = -1 OR c.car_id      = ?)
+  AND (? = -1 OR t.tire_id     = ?)
+  AND (? = '' OR w.weather     = ?)  
+  AND (? = '' OR date(l.date)  = date(?))
+ORDER BY l.lap_time_ms ASC;
   `;
 
         const params = [
@@ -138,25 +139,26 @@ export class RestListings {
 
     async getAllByDriverId(driver_id: number): Promise<ProfileListingsI[]> {
         const sql = `
-    SELECT
-      tr.name AS track,
-      (c.make || ' ' || c.model) AS car,
-      cat.name AS category,
-      t.type AS tyre,
-      tc.weather AS weather,
-      tc.track_temperature AS trackTemp,
-      printf('%02d:%02d.%03d',
-        l.lap_time_ms/60000,
-        (l.lap_time_ms/1000) % 60,
-        l.lap_time_ms % 1000) AS lap_time
-    FROM laps l
-    JOIN tracks tr              ON tr.track_id = l.track_id
-    JOIN cars   c               ON c.car_id    = l.car_id
-    LEFT JOIN categories   cat  ON cat.category_id = c.category_id
-    LEFT JOIN track_conditions tc ON tc.conditions_id = l.conditions_id
-    LEFT JOIN tires t              ON t.tire_id      = tc.tire_id
-    WHERE l.driver_id = ?
-    ORDER BY l.lap_time_ms ASC;
+   SELECT
+    tr.name AS track,
+    (c.make || ' ' || c.model) AS car,
+    cat.name AS category,
+    t.type AS tyre,
+    w.weather AS weather,   
+    tc.track_temperature AS trackTemp,
+    printf('%02d:%02d.%03d',
+      l.lap_time_ms/60000,
+      (l.lap_time_ms/1000) % 60,
+      l.lap_time_ms % 1000) AS lap_time
+FROM laps l
+JOIN tracks tr              ON tr.track_id = l.track_id
+JOIN cars   c               ON c.car_id    = l.car_id
+LEFT JOIN categories   cat  ON cat.category_id = c.category_id
+LEFT JOIN track_conditions tc ON tc.conditions_id = l.conditions_id
+LEFT JOIN tires t              ON t.tire_id      = tc.tire_id
+LEFT JOIN weathers w           ON w.weathers_id  = tc.weather_id   
+WHERE l.driver_id = ?
+ORDER BY l.lap_time_ms ASC;
   `;
 
         const data = (await this.database.getDataPromise(sql, [driver_id])) as Array<any>;
@@ -175,25 +177,26 @@ export class RestListings {
     async getAllByCarId(car_id: number): Promise<CarsListingsI[]> {
         const sql = `
                      SELECT
-                        tr.name AS track,
-                        u.username AS username,
-                        cat.name AS category,
-                        t.type AS tyre,
-                        tc.weather AS weather,
-                        tc.track_temperature AS trackTemp,
-                        printf('%02d:%02d.%03d',
-                        l.lap_time_ms/60000,
-                        (l.lap_time_ms/1000) % 60,
-                        l.lap_time_ms % 1000) AS lap_time
-                     FROM laps l
-                     JOIN tracks tr              ON tr.track_id = l.track_id
-                     JOIN users  u               ON u.user_id   = l.driver_id
-                     JOIN cars   c               ON c.car_id    = l.car_id
-                     LEFT JOIN categories   cat  ON cat.category_id = c.category_id
-                     LEFT JOIN track_conditions tc ON tc.conditions_id = l.conditions_id
-                     LEFT JOIN tires t              ON t.tire_id      = tc.tire_id
-                     WHERE l.car_id = ?
-                     ORDER BY l.lap_time_ms ASC;
+    tr.name AS track,
+    u.username AS username,
+    cat.name AS category,
+    t.type AS tyre,
+    w.weather AS weather,   
+    tc.track_temperature AS trackTemp,
+    printf('%02d:%02d.%03d',
+      l.lap_time_ms/60000,
+      (l.lap_time_ms/1000) % 60,
+      l.lap_time_ms % 1000) AS lap_time
+FROM laps l
+JOIN tracks tr              ON tr.track_id = l.track_id
+JOIN users  u               ON u.user_id   = l.driver_id
+JOIN cars   c               ON c.car_id    = l.car_id
+LEFT JOIN categories   cat  ON cat.category_id = c.category_id
+LEFT JOIN track_conditions tc ON tc.conditions_id = l.conditions_id
+LEFT JOIN tires t              ON t.tire_id      = tc.tire_id
+LEFT JOIN weathers w           ON w.weathers_id  = tc.weather_id   
+WHERE l.car_id = ?
+ORDER BY l.lap_time_ms ASC;
                   `;
 
         const data = (await this.database.getDataPromise(sql, [car_id])) as Array<CarsListingsI>;

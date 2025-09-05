@@ -3,10 +3,8 @@ import "./modal.scss";
 import profilePic from "../../assets/profile.png";
 import type { UserI } from "../../interfaces/usersI";
 import FormInput from "../FormInput/FormInput";
-// import type { CarFilterI, CategoryFilterI, TireFilterI, WeatherFilterI } from "../../interfaces/filtersI";
-// import { useState } from "react";
 import { useFilters } from "../../hooks/useFilters";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { TrackConditionI } from "../../interfaces/trackConditionsI";
 import type { LapsI } from "../../interfaces/lapsI";
 
@@ -15,31 +13,82 @@ interface ModalProps {
     profile?: boolean;
     lapInsert?: boolean;
     track_id?: number;
-    //  categories?: Array<CategoryFilterI>;
-    //  cars?: Array<CarFilterI>;
-    //  tires?: Array<TireFilterI>;
-    //  weatherList?: Array<WeatherFilterI>;
 }
 
-const Modal: React.FC<ModalProps> = ({
-    setModal,
-    profile,
-    lapInsert,
-    track_id,
-}: //  categories,
-//  cars,
-//  tires,
-//  weatherList,
-ModalProps) => {
+const Modal: React.FC<ModalProps> = ({ setModal, profile, lapInsert, track_id }) => {
     const server = import.meta.env.VITE_BACKEND;
 
     // CHANGE PROFILE PICTURE
-    const handleProfilePictureSubmit = () => {
-        const fileInput = document.getElementById("fileInput");
-        if (fileInput) {
-            fileInput.click();
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const userStorage = sessionStorage.getItem("user");
+    let user = {} as UserI;
+    if (userStorage) {
+        user = JSON.parse(userStorage);
+    }
+
+    useEffect(() => {
+        return () => {
+            if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+        };
+    }, [previewUrl]);
+
+    const handleProfilePictureSelect = () => {
+        setError(null);
+        const input = document.getElementById("fileInput") as HTMLInputElement | null;
+        input?.click();
+    };
+
+    const MAX_MB = 5;
+
+    const handleFilePicked: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+        setError(null);
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            setError("Please select an image file.");
+            e.target.value = "";
+            return;
         }
-        // TODO add upload logic
+        if (file.size > MAX_MB * 1024 * 1024) {
+            setError(`Image too large. Max ${MAX_MB} MB.`);
+            e.target.value = "";
+            return;
+        }
+
+        if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+        setSelectedFile(file);
+        setPreviewUrl(URL.createObjectURL(file));
+    };
+
+    const handleProfilePictureUpload = async () => {
+        if (!selectedFile) {
+            setError("No image selected yet.");
+            return;
+        }
+        setError(null);
+        setUploading(true);
+        const form = new FormData();
+        form.append("image", selectedFile);
+
+        let response = await fetch(server + "api/users/user/" + user.user_id + "/image", {
+            method: "PUT",
+            body: form,
+        });
+        if (response.ok) {
+            setModal(false);
+            window.location.reload();
+        } else {
+            setError("Upload failed");
+        }
+
+        setUploading(false);
+        const input = document.getElementById("fileInput") as HTMLInputElement | null;
+        if (input) input.value = "";
     };
 
     //  LAP INSERT
@@ -51,7 +100,7 @@ ModalProps) => {
     const [seconds, setSeconds] = useState<number>(1);
     const [miliseconds, setMiliseconds] = useState<number>(1);
 
-    const { categories, cars, tires, weatherList, categoryId, setCategoryId, carId, setCarId } = useFilters(track_id);
+    const { categories, cars, tires, weatherList, categoryId, setCategoryId, carId, setCarId } = useFilters();
     const handleLapSubmit = async () => {
         let userString = sessionStorage.getItem("user");
         let user = {} as UserI;
@@ -63,7 +112,7 @@ ModalProps) => {
             time: Date.now().toString(),
             tire_id: tireId,
             track_temperature: Number(trackTemperature),
-            weather: weather,
+            weather_id: weather,
         } as TrackConditionI;
         console.log(trackCondition);
 
@@ -96,20 +145,47 @@ ModalProps) => {
         <>
             {profile && (
                 <>
-                    <div className="modal-background" onClick={() => setModal(false)}></div>
+                    <div
+                        className="modal-background"
+                        onClick={() => {
+                            if (!uploading) setModal(false);
+                        }}
+                    ></div>
                     <div className="modal">
                         <div>
-                            <p onClick={() => setModal(false)}>X</p>
+                            <p
+                                onClick={() => {
+                                    if (!uploading) setModal(false);
+                                }}
+                            >
+                                X
+                            </p>
                         </div>
                         <h1>Change your profile picture</h1>
-                        <img src={profilePic} alt="todo change with backed" />
-                        <input id="fileInput" type="file" style={{ display: "none" }} />
+                        <img src={previewUrl ? previewUrl : profilePic} alt="profilePic preview" />
+                        {error && <p style={{ color: "white", marginTop: 12 }}>{error}</p>}
+                        <input
+                            id="fileInput"
+                            type="file"
+                            style={{ display: "none" }}
+                            accept="image/*"
+                            onChange={handleFilePicked}
+                        />
                         <Button
-                            label="Upload new picture"
-                            onClick={handleProfilePictureSubmit}
+                            label="Select new picture"
+                            onClick={handleProfilePictureSelect}
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
+                            disabled={uploading}
+                        />
+                        <Button
+                            label={uploading ? "Uploading..." : "Confirm selected image"}
+                            onClick={handleProfilePictureUpload}
+                            style="secondary"
+                            width={"40%"}
+                            height={"70px"}
+                            disabled={uploading}
                         />
                         <div className="modal-space"></div>
                     </div>

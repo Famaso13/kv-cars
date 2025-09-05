@@ -33,7 +33,7 @@ const TrackLeaderboard = () => {
     const [weather, setWeather] = useState<string | null>(null);
     const [dateISO, setDateISO] = useState<string | null>(null);
 
-    const { categories, cars, tires, weatherList, categoryId, setCategoryId, carId, setCarId } = useFilters(trackIdNum);
+    const { categories, cars, tires, weatherList, categoryId, setCategoryId, carId, setCarId } = useFilters();
 
     const onChangeCategory = (val: string) => setCategoryId(val ? Number(val) : null);
     const onChangeCar = (val: string) => setCarId(val ? Number(val) : null);

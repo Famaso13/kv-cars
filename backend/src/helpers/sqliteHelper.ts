@@ -18,7 +18,7 @@ export default class Database {
     //  TODO - dodati provjeru uspjesnosti na sve (uspejsno: vratiti true, error: vratiti error)
     insertUpdateRows(
         sql: string,
-        data: Array<string | number | null>
+        data: Array<string | number | Buffer | null>
     ): { n_of_changes: number; lastRow: number | bigint; error: unknown | null } {
         try {
             let result = this.dbConnection.prepare(sql).run(data);
@@ -47,6 +47,7 @@ export default class Database {
                     success(result);
                 } catch (err) {
                     console.error("Error during query execution:", err);
+                    console.log(sql);
                     error(err);
                 }
             }, 1);

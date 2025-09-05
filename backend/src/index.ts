@@ -11,6 +11,7 @@ import { RestListings } from "./routes/restListings";
 import { RestFilters } from "./routes/restFilters";
 import { RestUsers } from "./routes/restUsers";
 import { RestCars } from "./routes/restCars";
+import { uploadImage } from "./helpers/fileUploadHelper";
 
 dotenv.config();
 
@@ -80,13 +81,15 @@ function loadPaths() {
     server.get("/api/filters/categories", restFilters.getAllCategories.bind(restFilters));
     server.get("/api/filters/cars/:category_id", restFilters.getAllCars.bind(restFilters));
     server.get("/api/filters/tires/:car_id", restFilters.getAllTires.bind(restFilters));
-    server.get("/api/filters/weather/:track_id", restFilters.getAllWeather.bind(restFilters));
+    server.get("/api/filters/weather", restFilters.getAllWeather.bind(restFilters));
 
     let restUsers = new RestUsers();
     server.get("/api/user/login", restUsers.userLogin.bind(restUsers));
     server.get("/api/user/stats/:driver_id", restUsers.getUserStats.bind(restUsers));
     server.post("/api/user/register", restUsers.userRegister.bind(restUsers));
     server.put("/api/user/update", restUsers.userUpdate.bind(restUsers));
+    server.get("/api/user/:driver_id/image", restUsers.getUserImageById.bind(restUsers));
+    server.put("/api/users/user/:driver_id/image", uploadImage, restUsers.userUpdateImage.bind(restUsers));
 
     let restCars = new RestCars();
     server.get("/api/cars", restCars.getAllCars.bind(restCars));

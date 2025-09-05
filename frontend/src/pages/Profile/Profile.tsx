@@ -23,6 +23,7 @@ const Profile = () => {
     const [password, setPassword] = useState("");
     const [dateOfBirth, setDateOfBirth] = useState("");
     const [country, setCountry] = useState("");
+    const [profilePicture, setProfilePicture] = useState("");
 
     const getUserFromStorage = () => {
         let userStorage = sessionStorage.getItem("user");
@@ -37,6 +38,7 @@ const Profile = () => {
             setDateOfBirth(user.date_of_birth);
             setCountry(user.country);
             setLoggedIn(true);
+            setProfilePicture(`${server}api/user/${user.user_id}/image`);
         }
     };
 
@@ -104,7 +106,7 @@ const Profile = () => {
             <div className="full-screen">
                 <div className="left-profile">
                     <div className="profile-info">
-                        <img className="profile-picture" src={profile} />
+                        <img className="profile-picture" src={profilePicture ? profilePicture : profile} />
                         <h1>{login.username}</h1>
                         <p onClick={() => setPictureModal(true)}>Change profile picture</p>
                     </div>

@@ -88,6 +88,37 @@ CREATE TABLE track_conditions (
     ON DELETE SET NULL ON UPDATE CASCADE
 );
 
+-- WORKING ON THIS
+ALTER TABLE track_conditions ADD COLUMN weather_id INTEGER;
+
+UPDATE track_conditions
+SET weather_id = (
+  SELECT weathers.weathers_id
+  FROM weathers
+  WHERE weathers.weather = track_conditions.weather
+);
+
+CREATE TABLE track_conditions (
+  conditions_id      INTEGER PRIMARY KEY AUTOINCREMENT,
+  track_id           INTEGER NOT NULL,
+  time               TEXT,                -- ISO datetime
+  weather_id         INTEGER NOT NULL,    -- sada FK umjesto TEXT
+  track_temperature  REAL,
+  tire_id            INTEGER,
+  FOREIGN KEY (track_id) REFERENCES tracks(track_id)
+    ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (tire_id)  REFERENCES tires(tire_id)
+    ON DELETE SET NULL ON UPDATE CASCADE,
+  FOREIGN KEY (weather_id) REFERENCES weathers(weathers_id)
+    ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- WEATHER
+CREATE TABLE weathers (
+  weathers_id    INTEGER PRIMARY KEY AUTOINCREMENT,
+  weather TEXT
+);
+
 -- COMPETES 
 CREATE TABLE competes (
   driver_id INTEGER NOT NULL,
@@ -120,6 +151,7 @@ CREATE INDEX idx_accepts_car   ON accepts(car_id);
 CREATE INDEX idx_accepts_tire  ON accepts(tire_id);
 CREATE INDEX idx_competes_drv  ON competes(driver_id);
 CREATE INDEX idx_competes_lig  ON competes(league_id);
+CREATE INDEX idx_track_conditions_weather_id ON track_conditions(weather_id);
 
 
 -- INSERTS
@@ -270,6 +302,18 @@ INSERT INTO track_conditions (track_id, time, weather, track_temperature, tire_i
 
 SELECT * FROM track_conditions;
 
+INSERT INTO weathers (weather) VALUES
+  ('Hot'),
+  ('Sunny'),
+  ('Cloudy'),
+  ('Overcast'),
+  ('Windy'),
+  ('Foggy'),
+  ('Light Rain'),
+  ('Rain');
+
+SELECT * FROM weathers;
+
 -- LAPS
 INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms) VALUES
   -- Monza (track_id = 1)
@@ -317,17 +361,3 @@ INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms) VALUE
 -- Provjera
 SELECT * FROM laps;
 
-
--- DEVELOPMENT QUERIES 
-DELETE from users where username == 'test';
-DELETE from users where username == 'asd';
-
-SELECT c.car_id, c.model, c.make, c.category_id, c.horsepower, c.mass
-        FROM laps l
-        JOIN cars c ON l.car_id = c.car_id
-        WHERE l.driver_id = 1
-        GROUP BY c.car_id
-        ORDER BY COUNT(*) DESC
-        LIMIT 1;
-
-DELETE FROM laps WHERE lap_id = 44;

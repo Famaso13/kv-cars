@@ -7,15 +7,15 @@ import { useFilters } from "../../hooks/useFilters";
 import { useEffect, useState } from "react";
 import type { TrackConditionI } from "../../interfaces/trackConditionsI";
 import type { LapsI } from "../../interfaces/lapsI";
+import type { LeaguesI } from "../../interfaces/leaguesI";
 
 interface ModalProps {
     setModal: (value: boolean) => void;
-    profile?: boolean;
-    lapInsert?: boolean;
     track_id?: number;
+    type?: "lapInsert" | "profile" | "league" | "cars" | "tracks" | "leaderboard";
 }
 
-const Modal: React.FC<ModalProps> = ({ setModal, profile, lapInsert, track_id }) => {
+const Modal: React.FC<ModalProps> = ({ setModal, type, track_id }) => {
     const server = import.meta.env.VITE_BACKEND;
 
     // CHANGE PROFILE PICTURE
@@ -141,27 +141,63 @@ const Modal: React.FC<ModalProps> = ({ setModal, profile, lapInsert, track_id })
             alert(data.err);
         }
     };
+
+    //  CREATE LEAGUE
+    const [name, setName] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+    const [privateLeague, setPrivateLeague] = useState<boolean>(true);
+
+    const handleLeagueCreate = async () => {
+        let league = {
+            name: name,
+            description: description,
+            private: privateLeague,
+            owner_id: user.user_id,
+        } as LeaguesI;
+
+        let response = (await fetch(server + "api/leagues/", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(league),
+        })) as Response;
+        if (response.status == 200) {
+            setModal(false);
+            window.location.reload();
+        } else if (response.status == 400) {
+            let data = JSON.parse(await response.text()) as { err: string; inserted: boolean };
+            alert(data.err);
+        }
+    };
+
     return (
         <>
-            {profile && (
-                <>
-                    <div
-                        className="modal-background"
+            <div
+                className="modal-background"
+                onClick={() => {
+                    if (!uploading) setModal(false);
+                }}
+            ></div>
+            <div className="modal">
+                <div>
+                    <p
                         onClick={() => {
                             if (!uploading) setModal(false);
                         }}
-                    ></div>
-                    <div className="modal">
-                        <div>
-                            <p
-                                onClick={() => {
-                                    if (!uploading) setModal(false);
-                                }}
-                            >
-                                X
-                            </p>
-                        </div>
-                        <h1>Change your profile picture</h1>
+                    >
+                        X
+                    </p>
+                </div>
+                {type === "profile" ? (
+                    <h1>Change your profile picture</h1>
+                ) : type === "lapInsert" ? (
+                    <h1>Submit your lap</h1>
+                ) : (
+                    type === "league" && <h1>Create a League</h1>
+                )}
+                {type === "profile" && (
+                    <>
                         <img src={previewUrl ? previewUrl : profilePic} alt="profilePic preview" />
                         {error && <p style={{ color: "white", marginTop: 12 }}>{error}</p>}
                         <input
@@ -187,18 +223,11 @@ const Modal: React.FC<ModalProps> = ({ setModal, profile, lapInsert, track_id })
                             height={"70px"}
                             disabled={uploading}
                         />
-                        <div className="modal-space"></div>
-                    </div>
-                </>
-            )}
-            {lapInsert && (
-                <>
-                    <div className="modal-background" onClick={() => setModal(false)}></div>
-                    <div className="modal">
-                        <div>
-                            <p onClick={() => setModal(false)}>X</p>
-                        </div>
-                        <h1>Submit your lap</h1>
+                    </>
+                )}
+
+                {type === "lapInsert" && (
+                    <>
                         <div className="modal-lap">
                             <FormInput
                                 label="Category"
@@ -241,7 +270,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, profile, lapInsert, track_id })
                                 light
                                 width={"80%"}
                                 onChange={(val) => {
-                                    setWeather(val === "" ? null : val);
+                                    setWeather(val.toString() === "" ? null : val.toString());
                                 }}
                             />
                             <FormInput
@@ -251,7 +280,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, profile, lapInsert, track_id })
                                 light
                                 width={"80%"}
                                 onChange={(val) => {
-                                    setDate(val);
+                                    setDate(val.toString());
                                 }}
                             />
                             <FormInput
@@ -314,10 +343,52 @@ const Modal: React.FC<ModalProps> = ({ setModal, profile, lapInsert, track_id })
                             width={"40%"}
                             height={"70px"}
                         />
-                        <div className="modal-space"></div>
-                    </div>
-                </>
-            )}
+                    </>
+                )}
+                {type === "league" && (
+                    <>
+                        <FormInput
+                            label="Name"
+                            type="text"
+                            value={name}
+                            light
+                            width={"80%"}
+                            onChange={(val) => {
+                                setName(val.toString());
+                            }}
+                        />
+                        <FormInput
+                            label="Description"
+                            type="text"
+                            value={description}
+                            light
+                            width={"80%"}
+                            onChange={(val) => {
+                                setDescription(val.toString());
+                            }}
+                        />
+                        <FormInput
+                            label="Private"
+                            type="checkbox"
+                            checked={privateLeague}
+                            light
+                            width={"80%"}
+                            onChange={(val) => {
+                                setPrivateLeague(Boolean(val));
+                            }}
+                        />
+                        <Button
+                            label="Create League"
+                            onClick={handleLeagueCreate}
+                            style="secondary"
+                            width={"40%"}
+                            height={"70px"}
+                        />
+                    </>
+                )}
+
+                <div className="modal-space"></div>
+            </div>
         </>
     );
 };

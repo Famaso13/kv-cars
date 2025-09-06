@@ -26,6 +26,7 @@ function App() {
             <Route path="/cars/:id" element={loggedIn ? <CarDetail /> : <Login />} />
             <Route path="/leaderboard" element={loggedIn ? <GridPage type="leaderboard" /> : <Login />} />
             <Route path="/leaderboard/track/:id" element={loggedIn ? <TrackLeaderboard /> : <Login />} />
+            <Route path="/leagues" element={loggedIn ? <GridPage type="league" /> : <Login />} />
             <Route path="/profile" element={loggedIn ? <Profile /> : <Login />} />
             <Route path="*" element={<NotFound />} />
         </Routes>

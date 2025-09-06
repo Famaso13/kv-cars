@@ -101,7 +101,7 @@ const Profile = () => {
 
     return (
         <>
-            {pictureModal && <Modal setModal={setPictureModal} profile />}
+            {pictureModal && <Modal setModal={setPictureModal} type="profile" />}
             <Header loggedIn={loggedIn} />
             <div className="full-screen">
                 <div className="left-profile">

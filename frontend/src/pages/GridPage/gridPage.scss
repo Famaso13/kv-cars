@@ -2,13 +2,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     width: 100%;
     min-height: 100dvh;
 }
 
+.leaderboard-add {
+    display: flex;
+    min-height: 200px;
+    width: 80%;
+    padding: 8% 0 0 0;
+    justify-content: end;
+    box-sizing: border-box;
+}
+
 .leaderboard-grid {
     height: 100%;
-    padding: 10% 0 8% 0;
+    padding: 3% 0 8% 0;
     width: 80vw;
     box-sizing: border-box;
     display: grid;

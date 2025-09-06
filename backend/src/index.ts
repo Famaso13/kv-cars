@@ -12,6 +12,7 @@ import { RestFilters } from "./routes/restFilters";
 import { RestUsers } from "./routes/restUsers";
 import { RestCars } from "./routes/restCars";
 import { uploadImage } from "./helpers/fileUploadHelper";
+import { RestLeagues } from "./routes/restLeagues";
 
 dotenv.config();
 
@@ -56,7 +57,6 @@ function runServer() {
 }
 
 function loadPaths() {
-    // TODO - make paths for the classes after creating classes and methods
     let restTracks = new RestTracks();
     server.get("/api/tracks", restTracks.getTracks.bind(restTracks));
     server.get("/api/tracks/:id", restTracks.getTrackById.bind(restTracks));
@@ -94,4 +94,9 @@ function loadPaths() {
     let restCars = new RestCars();
     server.get("/api/cars", restCars.getAllCars.bind(restCars));
     server.get("/api/car/:car_id", restCars.getCarById.bind(restCars));
+
+    let restLeagues = new RestLeagues();
+    server.get("/api/leagues", restLeagues.getLeagues.bind(restLeagues));
+    server.post("/api/leagues", restLeagues.createLeague.bind(restLeagues));
+    server.get("/api/leagues/:league_id", restLeagues.getLeagueById.bind(restLeagues));
 }

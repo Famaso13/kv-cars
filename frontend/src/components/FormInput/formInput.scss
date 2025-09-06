@@ -28,6 +28,20 @@ $primary-color: #a02638;
     box-shadow: 0 0 5px rgba(160, 38, 56, 0.5);
 }
 
+.input-checkbox {
+    display: flex;
+    justify-content: end;
+
+    label {
+        margin-right: auto;
+        padding-left: 30px;
+    }
+
+    input {
+        height: 25px;
+        width: 25px;
+    }
+}
 select {
     padding: 8px 12px;
     height: 36px;

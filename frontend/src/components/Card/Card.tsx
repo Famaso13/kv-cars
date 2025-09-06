@@ -3,13 +3,21 @@ import type { CarsI } from "../../interfaces/carsI";
 import type { TrackI } from "../../interfaces/tracksI";
 import "./card.scss";
 import type { CategoryFilterI } from "../../interfaces/filtersI";
+// import type { LeaguesI } from "../../interfaces/leaguesI";
 
 type CardProps =
     | {
           track: TrackI;
           car?: null;
+          //  league?: null;
       }
-    | { track?: null; car: CarsI };
+    | {
+          track?: null;
+          car: CarsI;
+          // league?: null
+      };
+
+//  | { track?: null; car?: null; league: LeaguesI };
 
 const Card: React.FC<CardProps> = ({ track, car }) => {
     const server = import.meta.env.VITE_BACKEND;

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 interface HeaderProps {
     loggedIn: boolean;
-    currentPage?: "tracks" | "cars" | "leaderboard";
+    currentPage?: "tracks" | "cars" | "leaderboard" | "leagues";
 }
 
 const Header: React.FC<HeaderProps> = ({ loggedIn, currentPage }) => {
@@ -56,8 +56,15 @@ const Header: React.FC<HeaderProps> = ({ loggedIn, currentPage }) => {
                 />
                 <Button
                     style={currentPage === "leaderboard" ? "selected" : "navigation"}
-                    label="Leaderboard"
+                    label="Leaderboards"
                     onClick={() => handleNavigate("leaderboard")}
+                    width={"20%"}
+                    height={"50%"}
+                />
+                <Button
+                    style={currentPage === "leagues" ? "selected" : "navigation"}
+                    label="Leagues"
+                    onClick={() => handleNavigate("leagues")}
                     width={"20%"}
                     height={"50%"}
                 />

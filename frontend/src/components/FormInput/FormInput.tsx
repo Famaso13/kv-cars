@@ -1,7 +1,6 @@
 import type { CarFilterI, CategoryFilterI, TireFilterI, WeatherFilterI } from "../../interfaces/filtersI";
 import "./formInput.scss";
 
-// TODO - change array type to coresponding select tipes {car, category...}
 interface InputProps {
     label: string;
     disabled?: boolean;
@@ -13,6 +12,7 @@ interface InputProps {
     value?: string;
     array?: Array<CategoryFilterI> | Array<CarFilterI> | Array<TireFilterI> | Array<WeatherFilterI>;
     light?: boolean;
+    checked?: boolean;
     onChange?: (value: string) => void;
 }
 
@@ -27,6 +27,7 @@ const FormInput: React.FC<InputProps> = ({
     value,
     array,
     light,
+    checked,
     onChange,
 }) => {
     return (
@@ -68,6 +69,22 @@ const FormInput: React.FC<InputProps> = ({
                         </select>
                     </label>
                 </>
+            ) : type === "checkbox" ? (
+                <div className="input-checkbox" style={{ width, height }}>
+                    <input
+                        value={value}
+                        id={label}
+                        disabled={disabled}
+                        placeholder={placeholder}
+                        checked={checked}
+                        type={type}
+                        required={required}
+                        // onChange={(e) => onChange?.(e.target.checked)}
+                    />
+                    <label htmlFor={label} className={light ? "label light" : "label"}>
+                        {label}
+                    </label>
+                </div>
             ) : (
                 <label htmlFor={label} className={light ? "label light" : "label"} style={{ width, height }}>
                     {label}

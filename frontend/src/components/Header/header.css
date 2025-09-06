@@ -13,8 +13,8 @@ header {
 .main {
     display: flex;
     align-items: center;
-    width: 30%;
-    margin-right: 40%;
+    width: 50%;
+    margin-right: 20%;
     justify-content: space-around;
 }
 

@@ -41,10 +41,10 @@ export class RestUsers {
     }
 
     getUserById(request: Request, response: Response) {
-        let user_id;
+        let user_id = request.params["user_id"];
 
         if (user_id !== undefined) {
-            this.getById(user_id).then((user) => {
+            this.getById(Number(user_id)).then((user) => {
                 response.status(200);
                 response.send(JSON.stringify(user));
             });

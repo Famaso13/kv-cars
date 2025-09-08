@@ -85,6 +85,7 @@ function loadPaths() {
 
     let restUsers = new RestUsers();
     server.get("/api/user/login", restUsers.userLogin.bind(restUsers));
+    server.get("/api/user/:user_id", restUsers.getUserById.bind(restUsers));
     server.get("/api/user/stats/:driver_id", restUsers.getUserStats.bind(restUsers));
     server.post("/api/user/register", restUsers.userRegister.bind(restUsers));
     server.put("/api/user/update", restUsers.userUpdate.bind(restUsers));

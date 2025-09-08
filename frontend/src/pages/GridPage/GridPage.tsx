@@ -101,8 +101,7 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
                     <div className="leaderboard-grid">
                         {leagues.map((league) => (
                             <Link to={`/leagues/${league.league_id}`} key={league.league_id} className="link">
-                                <p>{league.name}</p>
-                                {/* <Card car={} /> */}
+                                <Card league={league} />
                             </Link>
                         ))}
                     </div>

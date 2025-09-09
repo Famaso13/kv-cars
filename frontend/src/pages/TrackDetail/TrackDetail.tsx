@@ -23,7 +23,7 @@ const TrackDetail = () => {
     }, [trackIdNum, server]);
     return (
         <div className="car-detail">
-            <Header loggedIn={true} currentPage="cars" />
+            <Header loggedIn={true} currentPage="tracks" />
             <div className="cars-title">
                 <h1>{track.name}</h1>
             </div>

@@ -25,8 +25,10 @@ function App() {
             <Route path="/cars" element={loggedIn ? <GridPage type="cars" /> : <Login />} />
             <Route path="/cars/:id" element={loggedIn ? <CarDetail /> : <Login />} />
             <Route path="/leaderboard" element={loggedIn ? <GridPage type="leaderboard" /> : <Login />} />
-            <Route path="/leaderboard/track/:id" element={loggedIn ? <TrackLeaderboard /> : <Login />} />
+            <Route path="/leaderboard/track/:track_id" element={loggedIn ? <TrackLeaderboard /> : <Login />} />
             <Route path="/leagues" element={loggedIn ? <GridPage type="league" /> : <Login />} />
+            <Route path="/leagues/:league_id" element={loggedIn ? <GridPage type="leagueDetail" /> : <Login />} />
+            <Route path="/leagues/:league_id/tracks/:track_id" element={loggedIn ? <TrackLeaderboard /> : <Login />} />
             <Route path="/profile" element={loggedIn ? <Profile /> : <Login />} />
             <Route path="*" element={<NotFound />} />
         </Routes>

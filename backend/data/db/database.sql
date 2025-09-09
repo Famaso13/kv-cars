@@ -152,6 +152,8 @@ CREATE INDEX idx_accepts_tire  ON accepts(tire_id);
 CREATE INDEX idx_competes_drv  ON competes(driver_id);
 CREATE INDEX idx_competes_lig  ON competes(league_id);
 CREATE INDEX idx_track_conditions_weather_id ON track_conditions(weather_id);
+CREATE INDEX ix_competes_league_driver ON competes(league_id, driver_id);
+CREATE INDEX ix_laps_track_driver ON laps(track_id, driver_id);
 
 
 -- INSERTS
@@ -360,4 +362,5 @@ INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms) VALUE
 
 -- Provjera
 SELECT * FROM laps;
+
 

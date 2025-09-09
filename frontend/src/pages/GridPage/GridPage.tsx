@@ -1,7 +1,7 @@
 import "./gridPage.scss";
 import Header from "../../components/Header/Header";
 import Card from "../../components/Card/Card";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import type { TrackI } from "../../interfaces/tracksI";
 import type { CarsI } from "../../interfaces/carsI";
@@ -10,10 +10,13 @@ import Modal from "../../components/Modal/Modal";
 import type { LeaguesI } from "../../interfaces/leaguesI";
 
 interface GridPageProps {
-    type: "leaderboard" | "tracks" | "cars" | "league";
+    type: "leaderboard" | "tracks" | "cars" | "league" | "leagueDetail";
 }
 
 const GridPage: React.FC<GridPageProps> = ({ type }) => {
+    const { league_id } = useParams<{ league_id: string }>();
+    const leagueIdNum = league_id ? Number(league_id) : NaN;
+
     const [loggedIn, setLoggedIn] = useState(false);
     const server = import.meta.env.VITE_BACKEND;
     const [tracks, setTracks] = useState<TrackI[]>([]);
@@ -50,6 +53,8 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
         fetchLeagues();
     }, []);
 
+    const selectedLeague = Number.isFinite(leagueIdNum) ? leagues.find((l) => l.league_id === leagueIdNum) : undefined;
+
     return (
         <>
             {modalShow && <Modal setModal={setModalShow} type={type} />}
@@ -70,6 +75,7 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
                     {type === "league" && (
                         <Button label="Add League" style="primary" onClick={() => setModalShow(true)} />
                     )}
+                    {type === "leagueDetail" && <h1 className="league-title">{selectedLeague?.name}</h1>}
                 </div>
                 {(type === "tracks" || type === "leaderboard") && (
                     <div className="leaderboard-grid">
@@ -102,6 +108,19 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
                         {leagues.map((league) => (
                             <Link to={`/leagues/${league.league_id}`} key={league.league_id} className="link">
                                 <Card league={league} />
+                            </Link>
+                        ))}
+                    </div>
+                )}
+                {type === "leagueDetail" && (
+                    <div className="leaderboard-grid">
+                        {tracks.map((track) => (
+                            <Link
+                                to={`/leagues/${leagueIdNum}/tracks/${track.track_id}`}
+                                key={track.track_id}
+                                className="link"
+                            >
+                                <Card track={track} />
                             </Link>
                         ))}
                     </div>

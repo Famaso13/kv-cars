@@ -12,7 +12,7 @@ import type { LeaguesI } from "../../interfaces/leaguesI";
 interface ModalProps {
     setModal: (value: boolean) => void;
     track_id?: number;
-    type?: "lapInsert" | "profile" | "league" | "cars" | "tracks" | "leaderboard";
+    type?: "lapInsert" | "profile" | "league" | "cars" | "tracks" | "leaderboard" | "leagueDetail";
 }
 
 const Modal: React.FC<ModalProps> = ({ setModal, type, track_id }) => {

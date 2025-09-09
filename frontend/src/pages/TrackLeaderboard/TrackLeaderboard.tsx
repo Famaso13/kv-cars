@@ -11,8 +11,10 @@ import { useFilters } from "../../hooks/useFilters";
 
 const TrackLeaderboard = () => {
     const server = import.meta.env.VITE_BACKEND;
-    const { id } = useParams<{ id: string }>();
-    const trackIdNum = id ? Number(id) : NaN;
+    const { track_id } = useParams<{ track_id: string }>();
+    const { league_id } = useParams<{ league_id: string }>();
+    const trackIdNum = track_id ? Number(track_id) : undefined;
+    const leagueIdNum = league_id ? Number(league_id) : undefined;
     const [track, setTrack] = useState<TrackI>({} as TrackI);
     const [apply, setApply] = useState(0);
     const [toggleFilters, setToggleFilters] = useState(true);
@@ -26,7 +28,18 @@ const TrackLeaderboard = () => {
             }
         };
 
-        fetchTrackById(trackIdNum);
+        if (trackIdNum !== undefined) fetchTrackById(trackIdNum);
+    }, [trackIdNum, server]);
+
+    useEffect(() => {
+        const fetchTrackById = async (id: number) => {
+            let response = (await fetch(server + "api/tracks/" + id)) as Response;
+            if (response.status == 200) {
+                setTrack(JSON.parse(await response.text()) as TrackI);
+            }
+        };
+
+        if (trackIdNum !== undefined) fetchTrackById(trackIdNum);
     }, [trackIdNum, server]);
 
     const [tireId, setTireId] = useState<number | null>(null);
@@ -59,7 +72,7 @@ const TrackLeaderboard = () => {
 
     return (
         <div>
-            <Header loggedIn={true} currentPage="leaderboard" />
+            <Header loggedIn={true} currentPage={leagueIdNum ? "leagues" : "leaderboard"} />
             <div className="full-screen">
                 <div className="leaderboard-filters">
                     <h2>Data filters</h2>
@@ -111,7 +124,7 @@ const TrackLeaderboard = () => {
                     <div className="leaderboard">
                         <div className="leaderboard-entries">
                             <LeaderboardListings
-                                track_id={Number(id)}
+                                track_id={Number(trackIdNum)}
                                 categoryId={categoryId}
                                 carId={carId}
                                 tireId={tireId}
@@ -120,6 +133,7 @@ const TrackLeaderboard = () => {
                                 apply={apply}
                                 type="tracks"
                                 toggleFilters={toggleFilters}
+                                league_id={leagueIdNum}
                             />
                             <Button
                                 label="Add Lap"

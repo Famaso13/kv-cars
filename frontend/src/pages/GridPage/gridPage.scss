@@ -1,3 +1,5 @@
+$primary-color: #a02638;
+
 .leaderboard-content {
     display: flex;
     align-items: center;
@@ -30,4 +32,9 @@
         text-decoration: none;
         width: 100%;
     }
+}
+
+.league-title {
+    color: $primary-color;
+    margin-right: auto;
 }

@@ -76,6 +76,7 @@ function loadPaths() {
     server.get("/api/listings/:track_id", restListings.getListingsByTrackId.bind(restListings));
     server.get("/api/listings/driver/:driver_id", restListings.getListingsByDriverId.bind(restListings));
     server.get("/api/listings/car/:car_id", restListings.getListingsByCarId.bind(restListings));
+    server.get("/api/listings/:league_id/:track_id", restListings.getListingsByTrackIdAndLeagueId.bind(restListings));
 
     let restFilters = new RestFilters();
     server.get("/api/filters/categories", restFilters.getAllCategories.bind(restFilters));

@@ -14,6 +14,7 @@ interface LeaderboardListingsProps {
     driver_id?: number;
     type: "tracks" | "track_detail" | "profile" | "cars";
     toggleFilters?: boolean;
+    league_id?: number;
 }
 
 const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
@@ -27,12 +28,14 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
     driver_id,
     type,
     toggleFilters,
+    league_id,
 }) => {
     const [tempUnit, setTempUnit] = useState("°C");
 
     const server = import.meta.env.VITE_BACKEND;
 
     const [fullListings, setFullListings] = useState<ListingsI[]>([]);
+    const [leagueListings, setLeagueListings] = useState<ListingsI[]>([]);
     const [filteredListings, setFilteredListings] = useState<ListingsI[]>([]);
     const [profileListings, setProfileListings] = useState<ProfileListingsI[]>([]);
     const [carListings, setCarListings] = useState<CarsListingsI[]>([]);
@@ -41,8 +44,17 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         let response = (await fetch(server + "api/listings/" + track_id)) as Response;
         if (response.status == 200) {
             let data = JSON.parse(await response.text()) as Array<ListingsI>;
-            console.log(data);
+            console.log("svi", data);
             setFullListings(data);
+        }
+    };
+
+    const fetchListingsByLeagueId = async (league_id: number) => {
+        let response = (await fetch(server + "api/listings/" + league_id + "/" + track_id)) as Response;
+        if (response.status == 200) {
+            let data = JSON.parse(await response.text()) as Array<ListingsI>;
+            console.log(data);
+            setLeagueListings(data);
         }
     };
 
@@ -95,6 +107,10 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
     useEffect(() => {
         if (driver_id !== undefined) fetchDriverListings(driver_id);
     }, [driver_id, type, server]);
+
+    useEffect(() => {
+        if (league_id !== undefined) fetchListingsByLeagueId(league_id);
+    }, [league_id, type, server]);
 
     const getRealPosition = (listing: ListingsI) => {
         return (
@@ -173,38 +189,47 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                 </div>
                 <hr />
                 <div className="leaderboard-listings">
+                    {type === "tracks" && league_id == undefined ? (
+                        toggleFilters ? (
+                            filteredListings.map((listing, index) => (
+                                <div key={index} className="leaderboard-listing">
+                                    <Listing position={index + 1} listing={listing} tempUnit={tempUnit} type="tracks" />
+                                    {index !== filteredListings.length - 1 && <hr />}
+                                </div>
+                            ))
+                        ) : (
+                            filteredListings.map((listing, index) => {
+                                const realPos = getRealPosition(listing);
+                                return (
+                                    <div key={index} className="leaderboard-listing">
+                                        <Listing
+                                            position={realPos}
+                                            listing={listing}
+                                            tempUnit={tempUnit}
+                                            type="tracks"
+                                        />
+                                        {index !== filteredListings.length - 1 && <hr />}
+                                    </div>
+                                );
+                            })
+                        )
+                    ) : (
+                        <div></div>
+                    )}
+
                     {type === "tracks" &&
-                        (toggleFilters
-                            ? filteredListings.map((listing, index) => (
-                                  <div key={index} className="leaderboard-listing">
-                                      <Listing
-                                          position={index + 1}
-                                          listing={listing}
-                                          tempUnit={tempUnit}
-                                          type="tracks"
-                                      />
-                                      {index !== filteredListings.length - 1 && <hr />}
-                                  </div>
-                              ))
-                            : filteredListings.map((listing, index) => {
-                                  const realPos = getRealPosition(listing);
-                                  return (
-                                      <div key={index} className="leaderboard-listing">
-                                          <Listing
-                                              position={realPos}
-                                              listing={listing}
-                                              tempUnit={tempUnit}
-                                              type="tracks"
-                                          />
-                                          {index !== filteredListings.length - 1 && <hr />}
-                                      </div>
-                                  );
-                              }))}
-                    {type === "track_detail" &&
-                        filteredListings.slice(0, 3).map((listing, index) => (
+                        league_id !== undefined &&
+                        leagueListings.map((listing, index) => (
                             <div key={index} className="leaderboard-listing">
                                 <Listing position={index + 1} listing={listing} tempUnit={tempUnit} type="tracks" />
-                                {index !== filteredListings.slice(0, 3).length - 1 && <hr />}
+                                {index !== leagueListings.length - 1 && <hr />}
+                            </div>
+                        ))}
+                    {type === "track_detail" &&
+                        fullListings.slice(0, 3).map((listing, index) => (
+                            <div key={index} className="leaderboard-listing">
+                                <Listing position={index + 1} listing={listing} tempUnit={tempUnit} type="tracks" />
+                                {index !== fullListings.slice(0, 3).length - 1 && <hr />}
                             </div>
                         ))}
 

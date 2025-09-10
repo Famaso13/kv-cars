@@ -48,6 +48,47 @@ export class RestCars {
         }
     }
 
+    carUpdateImage(request: Request, response: Response) {
+        const car_id_param = request.params["car_id"];
+        let car_id = Number(car_id_param);
+        if (!Number.isFinite(car_id)) {
+            response.status(400);
+            response.send("Invalid user_id");
+        }
+
+        if (!request.file) {
+            response.status(400);
+            response.send("No file uploaded");
+        } else {
+            const imageBuffer: Buffer = request.file?.buffer;
+
+            this.updateImage(car_id, imageBuffer).then((status) => {
+                if (status.inserted === true) {
+                    response.status(200);
+                    response.send(JSON.stringify(status));
+                } else {
+                    response.status(400);
+                    response.send(JSON.stringify(status));
+                }
+            });
+        }
+    }
+
+    getCarImageById(request: Request, response: Response) {
+        const car_id_param = request.params["car_id"];
+        let car_id = Number(car_id_param);
+
+        if (!Number.isFinite(car_id)) {
+            response.status(400);
+            response.send("Invalid user_id");
+        } else {
+            this.getImageById(car_id).then((image) => {
+                response.status(200);
+                response.send(image);
+            });
+        }
+    }
+
     async getMostUsedByDriverId(driver_id: number): Promise<CarsI | null> {
         let sql = `
                   SELECT c.car_id, c.model, c.make, c.category_id, c.horsepower, c.mass
@@ -107,6 +148,26 @@ export class RestCars {
                 mass: d["mass"],
             };
             return c;
+        }
+        return null;
+    }
+
+    async updateImage(user_id: number, image: Buffer) {
+        let sql = `UPDATE cars 
+               SET  image = ?
+               WHERE car_id = ?`;
+
+        let userData = [image, user_id];
+        let data = await this.database.insertUpdateRows(sql, userData);
+        if (data.error === null) return { err: "", inserted: true };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
+    }
+
+    async getImageById(car_id: number) {
+        let sql = "SELECT image FROM cars WHERE car_id = ?;";
+        var data = (await this.database.getDataPromise(sql, [car_id])) as Array<{ image: Buffer | null }>;
+        if (data.length == 1 && data[0]?.image) {
+            return data[0].image as Buffer;
         }
         return null;
     }

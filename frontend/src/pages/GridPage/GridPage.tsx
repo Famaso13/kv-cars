@@ -8,6 +8,7 @@ import type { CarsI } from "../../interfaces/carsI";
 import Button from "../../components/Button/Button";
 import Modal from "../../components/Modal/Modal";
 import type { LeaguesI } from "../../interfaces/leaguesI";
+import type { UserI } from "../../interfaces/usersI";
 
 interface GridPageProps {
     type: "leaderboard" | "tracks" | "cars" | "league" | "leagueDetail";
@@ -16,6 +17,8 @@ interface GridPageProps {
 const GridPage: React.FC<GridPageProps> = ({ type }) => {
     const { league_id } = useParams<{ league_id: string }>();
     const leagueIdNum = league_id ? Number(league_id) : NaN;
+
+    const [user, setUser] = useState<UserI>({} as UserI);
 
     const [loggedIn, setLoggedIn] = useState(false);
     const server = import.meta.env.VITE_BACKEND;
@@ -32,6 +35,8 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
         | "leaderboard"
         | "leagueDetailAdd"
         | "leagueDetailRemove"
+        | "carAdd"
+        | "trackAdd"
     >("league");
     const [modalShow, setModalShow] = useState(false);
 
@@ -56,8 +61,16 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
         }
     };
 
+    const fetchLoggedInUser = async () => {
+        let sessionUser = sessionStorage.getItem("user");
+        if (sessionUser !== null) {
+            setLoggedIn(true);
+            setUser(JSON.parse(sessionUser));
+        }
+    };
+
     useEffect(() => {
-        if (sessionStorage.getItem("user") !== null) setLoggedIn(true);
+        fetchLoggedInUser();
         fetchTracks();
         fetchCars();
         fetchLeagues();
@@ -88,6 +101,26 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
                             style="primary"
                             onClick={() => {
                                 setModalType("league");
+                                setModalShow(true);
+                            }}
+                        />
+                    )}
+                    {type === "cars" && user.admin === 1 && (
+                        <Button
+                            label="Add Car"
+                            style="primary"
+                            onClick={() => {
+                                setModalType("carAdd");
+                                setModalShow(true);
+                            }}
+                        />
+                    )}
+                    {type === "tracks" && user.admin === 1 && (
+                        <Button
+                            label="Add Track"
+                            style="primary"
+                            onClick={() => {
+                                setModalType("trackAdd");
                                 setModalShow(true);
                             }}
                         />

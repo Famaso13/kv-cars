@@ -208,6 +208,7 @@ export class RestUsers {
                 last_name: d["last_name"],
                 date_of_birth: d["date_of_birth"],
                 country: d["country"],
+                admin: d["admin"],
             };
             result.push(u);
         }
@@ -229,6 +230,7 @@ export class RestUsers {
                 last_name: d["last_name"],
                 date_of_birth: d["date_of_birth"],
                 country: d["country"],
+                admin: d["admin"],
             };
             return u;
         }
@@ -248,8 +250,8 @@ export class RestUsers {
             return { err: "Email already exists!", inserted: false };
         }
 
-        let sql = "INSERT INTO users (username, email, password) VALUES (?,?,?);";
-        let data = await this.database.insertUpdateRows(sql, [username, email, password]);
+        let sql = "INSERT INTO users (username, email, password, admin) VALUES (?,?,?,?);";
+        let data = await this.database.insertUpdateRows(sql, [username, email, password, 0]);
         if (data.error === null) return { err: "", inserted: true };
         else return { err: "Error during row insertion. Please try again.", inserted: false };
     }
@@ -328,6 +330,7 @@ export class RestUsers {
                 last_name: d["last_name"],
                 date_of_birth: d["date_of_birth"],
                 country: d["country"],
+                admin: d["admin"],
             };
             return u;
         }

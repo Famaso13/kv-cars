@@ -21,7 +21,9 @@ interface ModalProps {
         | "tracks"
         | "leaderboard"
         | "leagueDetailAdd"
-        | "leagueDetailRemove";
+        | "leagueDetailRemove"
+        | "carAdd"
+        | "trackAdd";
 }
 
 const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) => {
@@ -45,7 +47,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
         };
     }, [previewUrl]);
 
-    const handleProfilePictureSelect = () => {
+    const handlePictureSelect = () => {
         setError(null);
         const input = document.getElementById("fileInput") as HTMLInputElement | null;
         input?.click();
@@ -74,7 +76,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
         setPreviewUrl(URL.createObjectURL(file));
     };
 
-    const handleProfilePictureUpload = async () => {
+    const handlePictureUpload = async (type: "profile" | "cars" | "track", id?: number) => {
         if (!selectedFile) {
             setError("No image selected yet.");
             return;
@@ -84,15 +86,39 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
         const form = new FormData();
         form.append("image", selectedFile);
 
-        let response = await fetch(server + "api/users/user/" + user.user_id + "/image", {
-            method: "PUT",
-            body: form,
-        });
-        if (response.ok) {
-            setModal(false);
-            window.location.reload();
-        } else {
-            setError("Upload failed");
+        if (type === "profile") {
+            let response = await fetch(server + "api/users/user/" + user.user_id + "/image", {
+                method: "PUT",
+                body: form,
+            });
+            if (response.ok) {
+                setModal(false);
+                window.location.reload();
+            } else {
+                setError("Upload failed");
+            }
+        } else if (type === "cars") {
+            let response = await fetch(server + "api/cars/car/" + id + "/image", {
+                method: "PUT",
+                body: form,
+            });
+            if (response.ok) {
+                setModal(false);
+                window.location.reload();
+            } else {
+                setError("Upload failed");
+            }
+        } else if (type === "track") {
+            let response = await fetch(server + "api/tracks/track/" + id + "/image", {
+                method: "PUT",
+                body: form,
+            });
+            if (response.ok) {
+                setModal(false);
+                window.location.reload();
+            } else {
+                setError("Upload failed");
+            }
         }
 
         setUploading(false);
@@ -266,11 +292,47 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
         );
     };
 
-    //  const filteredUsers = dbUsers.filter((u) => u.username.toLowerCase().includes(username.toLowerCase()));
-
     useEffect(() => {
         getAllUsers();
     }, [type == "leagueDetailAdd"]);
+
+    //  CAR ADD
+
+    const [car_id, setCar_id] = useState("");
+
+    //  const handleCarAdd = async () => {
+    //   let response = (await fetch(server + "api/leagues/" + league_id + "/driver/", {
+    //       headers: {
+    //           "Content-Type": "application/json",
+    //       },
+    //       method: "DELETE",
+    //       body: JSON.stringify({ user_id: selection.user_id }),
+    //   })) as Response;
+    //   if (response.status == 400) {
+    //       let data = JSON.parse(await response.text()) as { err: string; deleted: boolean };
+    //       alert(data.err);
+    //   }
+    //   setModal(false);
+    //  };
+
+    //  TRACK ADD
+
+    const [trackId, setTrackId] = useState("");
+
+    //  const handleCarAdd = async () => {
+    //   let response = (await fetch(server + "api/leagues/" + league_id + "/driver/", {
+    //       headers: {
+    //           "Content-Type": "application/json",
+    //       },
+    //       method: "DELETE",
+    //       body: JSON.stringify({ user_id: selection.user_id }),
+    //   })) as Response;
+    //   if (response.status == 400) {
+    //       let data = JSON.parse(await response.text()) as { err: string; deleted: boolean };
+    //       alert(data.err);
+    //   }
+    //   setModal(false);
+    //  };
 
     return (
         <>
@@ -310,7 +372,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                         />
                         <Button
                             label="Select new picture"
-                            onClick={handleProfilePictureSelect}
+                            onClick={handlePictureSelect}
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
@@ -318,7 +380,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                         />
                         <Button
                             label={uploading ? "Uploading..." : "Confirm selected image"}
-                            onClick={handleProfilePictureUpload}
+                            onClick={() => handlePictureUpload("profile")}
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
@@ -577,6 +639,82 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                         <Button
                             label="Remove League Drivers"
                             onClick={handleLeagueRemoveUsers}
+                            style="secondary"
+                            width={"40%"}
+                            height={"70px"}
+                        />
+                    </>
+                )}
+                {type === "carAdd" && (
+                    <>
+                        <img src={previewUrl ? previewUrl : profilePic} alt="profilePic preview" />
+                        {error && <p style={{ color: "white", marginTop: 12 }}>{error}</p>}
+                        <input
+                            id="fileInput"
+                            type="file"
+                            style={{ display: "none" }}
+                            accept="image/*"
+                            onChange={handleFilePicked}
+                        />
+                        <Button
+                            label="Select new picture"
+                            onClick={handlePictureSelect}
+                            style="secondary"
+                            width={"40%"}
+                            height={"70px"}
+                            disabled={uploading}
+                        />
+                        <FormInput
+                            label="Car id"
+                            type="text"
+                            value={car_id}
+                            light
+                            width={"80%"}
+                            onChange={(val) => {
+                                setCar_id(val.toString());
+                            }}
+                        />
+                        <Button
+                            label="Add Car"
+                            onClick={() => handlePictureUpload("cars", Number(car_id))}
+                            style="secondary"
+                            width={"40%"}
+                            height={"70px"}
+                        />
+                    </>
+                )}
+                {type === "trackAdd" && (
+                    <>
+                        <img src={previewUrl ? previewUrl : profilePic} alt="profilePic preview" />
+                        {error && <p style={{ color: "white", marginTop: 12 }}>{error}</p>}
+                        <input
+                            id="fileInput"
+                            type="file"
+                            style={{ display: "none" }}
+                            accept="image/*"
+                            onChange={handleFilePicked}
+                        />
+                        <Button
+                            label="Select new picture"
+                            onClick={handlePictureSelect}
+                            style="secondary"
+                            width={"40%"}
+                            height={"70px"}
+                            disabled={uploading}
+                        />
+                        <FormInput
+                            label="Car id"
+                            type="text"
+                            value={trackId}
+                            light
+                            width={"80%"}
+                            onChange={(val) => {
+                                setTrackId(val.toString());
+                            }}
+                        />
+                        <Button
+                            label="Add Track"
+                            onClick={() => handlePictureUpload("track", Number(trackId))}
                             style="secondary"
                             width={"40%"}
                             height={"70px"}

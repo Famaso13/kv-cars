@@ -81,6 +81,7 @@ const Profile = () => {
             country: country,
             password: password,
             date_created: login.date_created,
+            admin: login.admin,
         };
         let response = (await fetch(server + "api/user/update/", {
             headers: {
@@ -106,7 +107,7 @@ const Profile = () => {
             <div className="full-screen">
                 <div className="left-profile">
                     <div className="profile-info">
-                        <img className="profile-picture" src={profilePicture ? profilePicture : profile} />
+                        <img className="profile-picture" src={profilePicture === "" ? profile : profilePicture} />
                         <h1>{login.username}</h1>
                         <p onClick={() => setPictureModal(true)}>Change profile picture</p>
                     </div>

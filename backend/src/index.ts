@@ -60,6 +60,8 @@ function loadPaths() {
     let restTracks = new RestTracks();
     server.get("/api/tracks", restTracks.getTracks.bind(restTracks));
     server.get("/api/tracks/:id", restTracks.getTrackById.bind(restTracks));
+    server.put("/api/tracks/track/:track_id/image", uploadImage, restTracks.trackUpdateImage.bind(restTracks));
+    server.get("/api/tracks/:track_id/image", restTracks.getTrackImageById.bind(restTracks));
 
     let restTrackConditions = new RestTrackConditions();
     server.get("/api/conditions/:track_id", restTrackConditions.getConditionsByTrackId.bind(restTrackConditions));
@@ -97,6 +99,8 @@ function loadPaths() {
     let restCars = new RestCars();
     server.get("/api/cars", restCars.getAllCars.bind(restCars));
     server.get("/api/car/:car_id", restCars.getCarById.bind(restCars));
+    server.put("/api/cars/car/:car_id/image", uploadImage, restCars.carUpdateImage.bind(restCars));
+    server.get("/api/cars/:car_id/image", restCars.getCarImageById.bind(restCars));
 
     let restLeagues = new RestLeagues();
     server.get("/api/leagues", restLeagues.getLeagues.bind(restLeagues));

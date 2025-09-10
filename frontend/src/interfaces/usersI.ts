@@ -8,6 +8,7 @@ export interface UserI {
     last_name: string;
     date_of_birth: string;
     country: string;
+    admin: number;
 }
 
 export interface UserStatsI {

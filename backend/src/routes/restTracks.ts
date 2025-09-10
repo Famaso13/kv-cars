@@ -33,6 +33,46 @@ export class RestTracks {
         }
     }
 
+    trackUpdateImage(request: Request, response: Response) {
+        const track_id_param = request.params["track_id"];
+        let track_id = Number(track_id_param);
+        if (!Number.isFinite(track_id)) {
+            response.status(400);
+            response.send("Invalid user_id");
+        }
+
+        if (!request.file) {
+            response.status(400);
+            response.send("No file uploaded");
+        } else {
+            const imageBuffer: Buffer = request.file?.buffer;
+
+            this.updateImage(track_id, imageBuffer).then((status) => {
+                if (status.inserted === true) {
+                    response.status(200);
+                    response.send(JSON.stringify(status));
+                } else {
+                    response.status(400);
+                    response.send(JSON.stringify(status));
+                }
+            });
+        }
+    }
+
+    getTrackImageById(request: Request, response: Response) {
+        const track_id_param = request.params["track_id"];
+        let track_id = Number(track_id_param);
+        if (!Number.isFinite(track_id)) {
+            response.status(400);
+            response.send("Invalid user_id");
+        } else {
+            this.getImageById(track_id).then((image) => {
+                response.status(200);
+                response.send(image);
+            });
+        }
+    }
+
     async getAll(): Promise<Array<TrackI>> {
         let sql = "SELECT * FROM tracks;";
         var data = (await this.database.getDataPromise(sql, [])) as Array<TrackI>;
@@ -66,6 +106,26 @@ export class RestTracks {
             return t;
         }
 
+        return null;
+    }
+
+    async updateImage(track_id: number, image: Buffer) {
+        let sql = `UPDATE tracks 
+               SET  image = ?
+               WHERE track_id = ?`;
+
+        let userData = [image, track_id];
+        let data = await this.database.insertUpdateRows(sql, userData);
+        if (data.error === null) return { err: "", inserted: true };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
+    }
+
+    async getImageById(track_id: number) {
+        let sql = "SELECT image FROM tracks WHERE track_id = ?;";
+        var data = (await this.database.getDataPromise(sql, [track_id])) as Array<{ image: Buffer | null }>;
+        if (data.length == 1 && data[0]?.image) {
+            return data[0].image as Buffer;
+        }
         return null;
     }
 }

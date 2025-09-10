@@ -50,7 +50,16 @@ const Card: React.FC<CardProps> = ({ track, car, league }) => {
     }, [league]);
     return (
         <div className="track-card">
-            <img src="#" alt={track ? track.name : car ? car.make + car.model : league.name} />
+            {!league && (
+                <img
+                    src={
+                        track
+                            ? `${server}api/tracks/${track.track_id}/image`
+                            : car && `${server}api/cars/${car.car_id}/image`
+                    }
+                    alt={track ? track.name : car && car.make + car.model}
+                />
+            )}
             <div className="track-info">
                 {track && (
                     <>
@@ -88,22 +97,22 @@ const Card: React.FC<CardProps> = ({ track, car, league }) => {
                         </div>
                     </>
                 )}
-                {league && (
-                    <>
-                        <h3>{league.name}</h3>
-                        {league.description !== "" && (
-                            <div className="track-stats">
-                                <h3>Description:</h3>
-                                <p>{league.description}</p>
-                            </div>
-                        )}
-                        <div className="track-stats">
-                            <h3>Owner:</h3>
-                            <p>{owner.username}</p>
-                        </div>
-                    </>
-                )}
             </div>
+            {league && (
+                <div className="card-league">
+                    <h1>{league.name}</h1>
+                    {league.description !== "" && (
+                        <div className="track-stats">
+                            <h3>Description:</h3>
+                            <p>{league.description}</p>
+                        </div>
+                    )}
+                    <div className="track-stats">
+                        <h3>Owner:</h3>
+                        <p>{owner.username}</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

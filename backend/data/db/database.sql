@@ -14,6 +14,8 @@ ALTER TABLE users ADD COLUMN last_name TEXT;
 ALTER TABLE users ADD COLUMN date_of_birth TEXT;
 ALTER TABLE users ADD COLUMN country TEXT;
 ALTER TABLE users ADD COLUMN image BLOB;
+ALTER TABLE users ADD COLUMN admin INTEGER NOT NULL DEFAULT 0 CHECK (admin IN (0,1));
+
 
 
 -- LEAGUES
@@ -362,3 +364,4 @@ INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms) VALUE
 
 -- Provjera
 SELECT * FROM laps;
+

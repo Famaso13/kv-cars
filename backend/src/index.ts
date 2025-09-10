@@ -85,6 +85,7 @@ function loadPaths() {
     server.get("/api/filters/weather", restFilters.getAllWeather.bind(restFilters));
 
     let restUsers = new RestUsers();
+    server.get("/api/users/", restUsers.getAllUsers.bind(restUsers));
     server.get("/api/user/login", restUsers.userLogin.bind(restUsers));
     server.get("/api/user/:user_id", restUsers.getUserById.bind(restUsers));
     server.get("/api/user/stats/:driver_id", restUsers.getUserStats.bind(restUsers));
@@ -99,6 +100,9 @@ function loadPaths() {
 
     let restLeagues = new RestLeagues();
     server.get("/api/leagues", restLeagues.getLeagues.bind(restLeagues));
+    server.get("/api/leagues/drivers/:league_id", restLeagues.getAllLeagueParticipants.bind(restLeagues));
     server.post("/api/leagues", restLeagues.createLeague.bind(restLeagues));
+    server.post("/api/leagues/:league_id/driver", restLeagues.addLeagueParticipant.bind(restLeagues));
+    server.delete("/api/leagues/:league_id/driver", restLeagues.removeLeagueParticipant.bind(restLeagues));
     server.get("/api/leagues/:league_id", restLeagues.getLeagueById.bind(restLeagues));
 }

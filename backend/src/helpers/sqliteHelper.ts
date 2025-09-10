@@ -15,7 +15,6 @@ export default class Database {
         this.dbConnection.exec("PRAGMA foreign_keys = ON;");
     }
 
-    //  TODO - dodati provjeru uspjesnosti na sve (uspejsno: vratiti true, error: vratiti error)
     insertUpdateRows(
         sql: string,
         data: Array<string | number | Buffer | null>

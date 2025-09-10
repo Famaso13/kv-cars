@@ -19,6 +19,13 @@ export class RestUsers {
         this.restCars = new RestCars();
     }
 
+    getAllUsers(request: Request, response: Response) {
+        this.getAll().then((users) => {
+            response.status(200);
+            response.send(JSON.stringify(users));
+        });
+    }
+
     userLogin(request: Request, response: Response) {
         let username = request.query["username"];
         let password = request.query["pass"];
@@ -184,6 +191,27 @@ export class RestUsers {
             let message = { err: "No driver_id provided" };
             response.send(JSON.stringify(message));
         }
+    }
+
+    async getAll() {
+        let sql = "SELECT * FROM users ;";
+        var data = (await this.database.getDataPromise(sql, [])) as Array<UserI>;
+        let result = new Array<UserI>();
+        for (let d of data) {
+            let u: UserI = {
+                user_id: d["user_id"],
+                username: d["username"],
+                email: d["email"],
+                password: d["password"],
+                date_created: d["date_created"],
+                first_name: d["first_name"],
+                last_name: d["last_name"],
+                date_of_birth: d["date_of_birth"],
+                country: d["country"],
+            };
+            result.push(u);
+        }
+        return result;
     }
 
     async login(username: string, password: string) {

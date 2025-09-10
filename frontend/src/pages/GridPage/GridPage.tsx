@@ -23,6 +23,16 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
     const [cars, setCars] = useState<CarsI[]>([]);
     const [leagues, setLeagues] = useState<LeaguesI[]>([]);
 
+    const [modalType, setModalType] = useState<
+        | "lapInsert"
+        | "profile"
+        | "league"
+        | "cars"
+        | "tracks"
+        | "leaderboard"
+        | "leagueDetailAdd"
+        | "leagueDetailRemove"
+    >("league");
     const [modalShow, setModalShow] = useState(false);
 
     const fetchTracks = async () => {
@@ -57,7 +67,7 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
 
     return (
         <>
-            {modalShow && <Modal setModal={setModalShow} type={type} />}
+            {modalShow && <Modal setModal={setModalShow} type={modalType} league_id={leagueIdNum} />}
             <Header
                 loggedIn={loggedIn}
                 currentPage={
@@ -73,9 +83,38 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
             <div className="leaderboard-content">
                 <div className="leaderboard-add">
                     {type === "league" && (
-                        <Button label="Add League" style="primary" onClick={() => setModalShow(true)} />
+                        <Button
+                            label="Add League"
+                            style="primary"
+                            onClick={() => {
+                                setModalType("league");
+                                setModalShow(true);
+                            }}
+                        />
                     )}
-                    {type === "leagueDetail" && <h1 className="league-title">{selectedLeague?.name}</h1>}
+                    {type === "leagueDetail" && (
+                        <>
+                            <h1 className="league-title">{selectedLeague?.name}</h1>
+                            <Button
+                                label="Add League Drivers"
+                                style="primary"
+                                height={"80px"}
+                                onClick={() => {
+                                    setModalType("leagueDetailAdd");
+                                    setModalShow(true);
+                                }}
+                            />
+                            <Button
+                                label="Remove League Drivers"
+                                style="primary"
+                                height={"80px"}
+                                onClick={() => {
+                                    setModalType("leagueDetailRemove");
+                                    setModalShow(true);
+                                }}
+                            />
+                        </>
+                    )}
                 </div>
                 {(type === "tracks" || type === "leaderboard") && (
                     <div className="leaderboard-grid">

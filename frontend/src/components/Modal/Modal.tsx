@@ -12,10 +12,19 @@ import type { LeaguesI } from "../../interfaces/leaguesI";
 interface ModalProps {
     setModal: (value: boolean) => void;
     track_id?: number;
-    type?: "lapInsert" | "profile" | "league" | "cars" | "tracks" | "leaderboard" | "leagueDetail";
+    league_id?: number;
+    type?:
+        | "lapInsert"
+        | "profile"
+        | "league"
+        | "cars"
+        | "tracks"
+        | "leaderboard"
+        | "leagueDetailAdd"
+        | "leagueDetailRemove";
 }
 
-const Modal: React.FC<ModalProps> = ({ setModal, type, track_id }) => {
+const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) => {
     const server = import.meta.env.VITE_BACKEND;
 
     // CHANGE PROFILE PICTURE
@@ -171,6 +180,98 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id }) => {
         }
     };
 
+    //  ADD DRIVER TO LEAGUE
+    const [dbUsers, setDbUsers] = useState<UserI[]>([]);
+    const [username, setUsername] = useState<string>("");
+    const [drivers, setDrivers] = useState<UserI[]>([]);
+    const [addSelection, setAddSelection] = useState<UserI[]>([]);
+    const [removeSelection, setRemoveSelection] = useState<UserI[]>([]);
+
+    const handleLeagueAddUsers = async () => {
+        for (const selection of addSelection) {
+            let response = (await fetch(server + "api/leagues/" + league_id + "/driver/", {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
+                body: JSON.stringify({ user_id: selection.user_id }),
+            })) as Response;
+
+            if (response.status == 400) {
+                let data = JSON.parse(await response.text()) as { err: string; inserted: boolean };
+                alert(data.err);
+            }
+        }
+
+        setModal(false);
+    };
+
+    const handleLeagueRemoveUsers = async () => {
+        for (const selection of removeSelection) {
+            let response = (await fetch(server + "api/leagues/" + league_id + "/driver/", {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "DELETE",
+                body: JSON.stringify({ user_id: selection.user_id }),
+            })) as Response;
+
+            if (response.status == 400) {
+                let data = JSON.parse(await response.text()) as { err: string; deleted: boolean };
+                alert(data.err);
+            }
+        }
+
+        setModal(false);
+    };
+
+    const getAllUsers = async () => {
+        const responseUsers = await fetch(server + "api/users");
+        if (responseUsers.status === 200) {
+            const users = (await responseUsers.json()) as UserI[];
+            console.log("users", users);
+
+            const responseLeagueUsers = await fetch(server + "api/leagues/drivers/" + league_id);
+            if (responseLeagueUsers.status === 200) {
+                const driverIds = (await responseLeagueUsers.json()) as Array<{ driver_id: number }>;
+                console.log("driverIds", driverIds);
+
+                const driverIdSet = new Set(driverIds.map((d) => Number(d.driver_id)));
+
+                const leagueDrivers = users.filter((u) => driverIdSet.has(Number(u.user_id)));
+                const nonLeagueUsers = users.filter((u) => !driverIdSet.has(Number(u.user_id)));
+
+                console.log("leagueDrivers", leagueDrivers);
+                console.log("nonLeagueUsers", nonLeagueUsers);
+
+                setDrivers(leagueDrivers);
+                setDbUsers(nonLeagueUsers);
+            }
+        }
+    };
+
+    const toggleDriver = (driver: UserI) => {
+        setAddSelection((prev) =>
+            prev.some((d) => d.user_id === driver.user_id)
+                ? prev.filter((d) => d.user_id !== driver.user_id)
+                : [...prev, driver]
+        );
+    };
+
+    const toggleRemoveDriver = (driver: UserI) => {
+        setRemoveSelection((prev) =>
+            prev.some((d) => d.user_id === driver.user_id)
+                ? prev.filter((d) => d.user_id !== driver.user_id)
+                : [...prev, driver]
+        );
+    };
+
+    //  const filteredUsers = dbUsers.filter((u) => u.username.toLowerCase().includes(username.toLowerCase()));
+
+    useEffect(() => {
+        getAllUsers();
+    }, [type == "leagueDetailAdd"]);
+
     return (
         <>
             <div
@@ -180,7 +281,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id }) => {
                 }}
             ></div>
             <div className="modal">
-                <div>
+                <div className="modal-exit">
                     <p
                         onClick={() => {
                             if (!uploading) setModal(false);
@@ -380,6 +481,102 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id }) => {
                         <Button
                             label="Create League"
                             onClick={handleLeagueCreate}
+                            style="secondary"
+                            width={"40%"}
+                            height={"70px"}
+                        />
+                    </>
+                )}
+
+                {type === "leagueDetailAdd" && (
+                    <>
+                        {addSelection.length > 0 ? (
+                            <p>{addSelection.map((driver) => driver.username).join(", ")}</p>
+                        ) : (
+                            <p>No driver selected</p>
+                        )}
+                        <FormInput
+                            label="Driver username"
+                            type="text"
+                            value={username}
+                            light
+                            width={"80%"}
+                            onChange={(val) => {
+                                setUsername(val.toString());
+                            }}
+                        />
+                        <div className="driver-add-container">
+                            {dbUsers.length > 0 ? (
+                                dbUsers
+                                    .filter((u) => u.username.toLowerCase().includes(username.toLowerCase()))
+                                    .map((driver) => {
+                                        const isSelected = addSelection.some((d) => d.user_id === driver.user_id);
+
+                                        return (
+                                            <p
+                                                key={driver.user_id}
+                                                onClick={() => toggleDriver(driver)}
+                                                className={isSelected ? "modal-driver-selected" : "modal-driver"}
+                                            >
+                                                {driver.username}
+                                            </p>
+                                        );
+                                    })
+                            ) : (
+                                <p>No drivers</p>
+                            )}
+                        </div>
+                        <Button
+                            label="Add League Drivers"
+                            onClick={handleLeagueAddUsers}
+                            style="secondary"
+                            width={"40%"}
+                            height={"70px"}
+                        />
+                    </>
+                )}
+
+                {type === "leagueDetailRemove" && (
+                    <>
+                        {removeSelection.length > 0 ? (
+                            <p>{removeSelection.map((driver) => driver.username).join(", ")}</p>
+                        ) : (
+                            <p>No driver selected</p>
+                        )}
+                        <FormInput
+                            label="Driver username"
+                            type="text"
+                            value={username}
+                            light
+                            width={"80%"}
+                            onChange={(val) => {
+                                setUsername(val.toString());
+                            }}
+                        />
+                        <div className="driver-add-container">
+                            {drivers.length > 0 ? (
+                                drivers
+                                    .filter((u) => u.username.toLowerCase().includes(username.toLowerCase()))
+                                    .map((driver) => {
+                                        const isSelected = removeSelection.some((d) => d.user_id === driver.user_id);
+
+                                        return (
+                                            <p
+                                                key={driver.user_id}
+                                                onClick={() => toggleRemoveDriver(driver)}
+                                                className={isSelected ? "modal-driver-selected" : "modal-driver"}
+                                            >
+                                                {driver.username}
+                                            </p>
+                                        );
+                                    })
+                            ) : (
+                                <p>No drivers</p>
+                            )}
+                        </div>
+                        <Button
+                            label="Remove League Drivers"
+                            onClick={handleLeagueRemoveUsers}
                             style="secondary"
                             width={"40%"}
                             height={"70px"}

@@ -21,7 +21,7 @@ export class RestLeagues {
 
     getLeagueById(request: Request, response: Response) {
         response.type("application/json");
-        let data = request.params["league-id"];
+        let data = request.params["league_id"];
         if (data != undefined) {
             this.getById(parseInt(data)).then((league) => {
                 response.status(200);
@@ -54,6 +54,66 @@ export class RestLeagues {
         }
     }
 
+    getAllLeagueParticipants(request: Request, response: Response) {
+        let league = request.params["league_id"];
+
+        if (league !== undefined) {
+            response.type("application/json");
+            this.getParticipants(Number(league)).then((drivers) => {
+                response.status(200);
+                response.send(JSON.stringify(drivers));
+            });
+        } else {
+            response.status(400);
+            let message = { err: "No league_id provided" };
+            response.send(JSON.stringify(message));
+        }
+    }
+
+    addLeagueParticipant(request: Request, response: Response) {
+        let league = request.params["league_id"];
+        const userLeague = request.body as { user_id: number };
+        const user = Number(userLeague.user_id);
+
+        if (league !== undefined) {
+            this.addUser(user, Number(league)).then((status) => {
+                if (status.inserted === true) {
+                    response.status(200);
+                    response.send(JSON.stringify(status));
+                } else {
+                    response.status(400);
+                    response.send(JSON.stringify(status));
+                }
+            });
+        } else {
+            response.status(400);
+            let message = { err: "No username or password provided", inserted: false };
+            response.send(JSON.stringify(message));
+        }
+    }
+
+    removeLeagueParticipant(request: Request, response: Response) {
+        let league = request.params["league_id"];
+        const userLeague = request.body as { user_id: number };
+        const user = Number(userLeague.user_id);
+
+        if (league !== undefined) {
+            this.removeUser(user, Number(league)).then((status) => {
+                if (status.removed === true) {
+                    response.status(200);
+                    response.send(JSON.stringify(status));
+                } else {
+                    response.status(400);
+                    response.send(JSON.stringify(status));
+                }
+            });
+        } else {
+            response.status(400);
+            let message = { err: "No username or password provided", inserted: false };
+            response.send(JSON.stringify(message));
+        }
+    }
+
     async getAll(): Promise<Array<LeaguesI>> {
         let sql = "SELECT * FROM leagues;";
         var data = (await this.database.getDataPromise(sql, [])) as Array<LeaguesI>;
@@ -69,6 +129,12 @@ export class RestLeagues {
             result.push(l);
         }
         return result;
+    }
+
+    async getParticipants(league_id: number): Promise<Array<{ driver_id: number }>> {
+        let sql = "SELECT driver_id FROM competes WHERE league_id = ?;";
+        var data = (await this.database.getDataPromise(sql, [league_id])) as Array<{ driver_id: number }>;
+        return data;
     }
 
     async getById(league_id: number): Promise<LeaguesI | null> {
@@ -101,5 +167,19 @@ export class RestLeagues {
         let data = await this.database.insertUpdateRows(sql, leagueInsert);
         if (data.error === null) return { err: "", inserted: true };
         else return { err: "Error during row insertion. Please try again.", inserted: false };
+    }
+
+    async addUser(user_id: number, league_id: number) {
+        let sql = "INSERT INTO competes (driver_id, league_id) VALUES (?,?);";
+        let data = await this.database.insertUpdateRows(sql, [user_id, league_id]);
+        if (data.error === null) return { err: "", inserted: true };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
+    }
+
+    async removeUser(user_id: number, league_id: number) {
+        let sql = "DELETE FROM competes WHERE driver_id = ? AND league_id = ?;";
+        let data = await this.database.insertUpdateRows(sql, [user_id, league_id]);
+        if (data.error === null) return { err: "", removed: true };
+        else return { err: "Error during row deletion. Please try again.", removed: false };
     }
 }

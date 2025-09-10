@@ -1,4 +1,5 @@
 $primary-color: #a02638;
+$primary-dark: #8f1f2f;
 
 .modal-background {
     width: 100vw;
@@ -16,7 +17,7 @@ $primary-color: #a02638;
     width: 40dvw;
     min-height: 70dvh;
     position: fixed;
-    overflow-y: scroll;
+    overflow: hidden;
     top: 15dvh;
     left: 35dvw;
     background-color: $primary-color;
@@ -32,7 +33,7 @@ $primary-color: #a02638;
         justify-items: center;
     }
 
-    div {
+    .modal-exit {
         width: 100%;
         display: flex;
         justify-content: end;
@@ -73,6 +74,31 @@ $primary-color: #a02638;
             font-size: large;
             cursor: auto;
             padding-bottom: 10px;
+        }
+    }
+
+    .driver-add-container {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        justify-content: start;
+        height: 250px;
+        overflow-y: auto;
+        padding: 10px 0;
+
+        .modal-driver {
+            cursor: pointer;
+            background-color: $primary-dark;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+        .modal-driver-selected {
+            cursor: pointer;
+            background-color: white;
+            color: $primary-color;
+            padding: 0.5rem;
+            border-radius: 8px;
         }
     }
 }

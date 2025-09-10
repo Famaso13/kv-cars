@@ -362,5 +362,3 @@ INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms) VALUE
 
 -- Provjera
 SELECT * FROM laps;
-
-

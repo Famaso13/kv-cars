@@ -44,28 +44,28 @@ const Header: React.FC<HeaderProps> = ({ loggedIn, currentPage }) => {
                     style={currentPage === "tracks" ? "selected" : "navigation"}
                     label="Tracks"
                     onClick={() => handleNavigate("tracks")}
-                    width={"20%"}
+                    // width={"20%"}
                     height={"50%"}
                 />
                 <Button
                     style={currentPage === "cars" ? "selected" : "navigation"}
                     label="Cars"
                     onClick={() => handleNavigate("cars")}
-                    width={"20%"}
+                    // width={"20%"}
                     height={"50%"}
                 />
                 <Button
                     style={currentPage === "leaderboard" ? "selected" : "navigation"}
                     label="Leaderboards"
                     onClick={() => handleNavigate("leaderboard")}
-                    width={"20%"}
+                    // width={"30%"}
                     height={"50%"}
                 />
                 <Button
                     style={currentPage === "leagues" ? "selected" : "navigation"}
                     label="Leagues"
                     onClick={() => handleNavigate("leagues")}
-                    width={"20%"}
+                    // width={"20%"}
                     height={"50%"}
                 />
             </div>

@@ -1,46 +1,51 @@
 .button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: large;
-    font-weight: bold;
-    transition: background-color 0.3s, color 0.3s;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: large;
+	font-weight: bold;
+	transition: background-color 0.3s, color 0.3s;
+	transform-origin: center;
 }
 
 .primary {
-    background-color: #a02638;
-    color: white;
+	background-color: #a02638;
+	color: white;
 }
 
 .secondary {
-    background-color: white;
-    color: #a02638;
-    border: #a02638 1px solid;
+	background-color: white;
+	color: #a02638;
+	border: #a02638 1px solid;
 }
 
 .navigation {
-    background-color: white;
-    color: #00000099;
-    font-size: 1.5rem;
-    font-weight: bold;
-    transition: transform 0.2s ease;
+	display: inline-flex;
+	background-color: white;
+	color: #00000099;
+	font-size: 1.5rem;
+	font-weight: bold;
+	transition: transform 0.2s ease;
 }
 
 .navigation:hover {
-    color: #a02638;
-    transform: scale(1.1);
+	color: #a02638;
+	transform: scale(1.1);
 }
 
 .selected {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #a02638;
-    background: none;
-    transition: transform 0.2s ease;
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: #a02638;
+	background: none;
+	transition: transform 0.2s ease;
 }
 
 .selected:hover {
-    color: #a02638;
-    transform: scale(1.1);
+	color: #a02638;
+	transform: scale(1.1);
 }

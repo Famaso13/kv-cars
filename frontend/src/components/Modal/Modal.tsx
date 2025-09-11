@@ -9,6 +9,7 @@ import type { TrackConditionI } from "../../interfaces/trackConditionsI";
 import type { LapsI } from "../../interfaces/lapsI";
 import type { LeaguesI } from "../../interfaces/leaguesI";
 import type { CarsI } from "../../interfaces/carsI";
+import type { TireFilterI } from "../../interfaces/filtersI";
 
 interface ModalProps {
     setModal: (value: boolean) => void;
@@ -302,6 +303,30 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
     const [model, setModel] = useState("");
     const [horsepower, setHorspower] = useState(100);
     const [mass, setMass] = useState(1000);
+    const [selectedTires, setSelectedTires] = useState<number[]>([]);
+    const [dbTires, setDbTires] = useState<TireFilterI[]>([]);
+
+    const getAllTires = async () => {
+        let response = (await fetch(server + "api/filters/tires/")) as Response;
+        if (response.status === 200) {
+            let data = JSON.parse(await response.text()) as TireFilterI[];
+            setDbTires(data);
+        }
+    };
+
+    const normalizeTireId = (t: any) => Number(t.tire_id);
+    const normalizeTireLabel = (t: any) => String(t.type);
+
+    const toggleTire = (id: number) => {
+        setSelectedTires((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+    };
+
+    const selectAllTires = () => {
+        const all = (dbTires ?? []).map(normalizeTireId);
+        setSelectedTires(all);
+    };
+
+    const clearTires = () => setSelectedTires([]);
 
     const handleCarAdd = async () => {
         const car = {
@@ -319,16 +344,31 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
             body: JSON.stringify(car),
         })) as Response;
         if (response.status == 400) {
-            console.log("neuspijeh inserta");
             let data = JSON.parse(await response.text()) as { err: string; inserted: boolean };
             alert(data.err);
         } else {
-            console.log("upload slike");
             let data = JSON.parse(await response.text()) as { err: string; inserted: boolean; car_id: number };
+            console.log("selected tires", selectedTires);
+
+            try {
+                for (let tire of selectedTires) {
+                    console.log("selected tires", selectedTires);
+                    await fetch(server + `api/cars/${data.car_id}/${tire}`, {
+                        method: "POST",
+                    });
+                }
+            } catch (e) {
+                console.warn("Failed to attach tires:", e);
+            }
+
             handlePictureUpload("cars", data.car_id);
         }
         setModal(false);
     };
+
+    useEffect(() => {
+        getAllTires();
+    }, [type == "carAdd"]);
 
     //  TRACK ADD
 
@@ -719,6 +759,32 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                     setCategoryId(val === "" ? null : Number(val));
                                 }}
                             />
+                        </div>
+                        <div className="tire-picker-header">
+                            <h3>Compatible Tires</h3>
+                            <div className="tire-picker-actions">
+                                <button className="tire-action" type="button" onClick={selectAllTires}>
+                                    Select all
+                                </button>
+                                <button className="tire-action" type="button" onClick={clearTires}>
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="tire-picker">
+                            {(dbTires ?? []).map((t: any) => {
+                                const id = normalizeTireId(t);
+                                const label = normalizeTireLabel(t);
+                                const checked = selectedTires.includes(id);
+                                return (
+                                    <label key={id} className={`tire-chip ${checked ? "checked" : ""}`}>
+                                        <input type="checkbox" checked={checked} onChange={() => toggleTire(id)} />
+                                        <span>{label}</span>
+                                    </label>
+                                );
+                            })}
+                            {(!dbTires || dbTires.length === 0) && <p className="tire-empty">No tires available</p>}
                         </div>
                         <div className="modal-grid-2">
                             <FormInput

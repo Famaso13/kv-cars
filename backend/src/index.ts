@@ -83,7 +83,9 @@ function loadPaths() {
     let restFilters = new RestFilters();
     server.get("/api/filters/categories", restFilters.getAllCategories.bind(restFilters));
     server.get("/api/filters/cars/:category_id", restFilters.getAllCars.bind(restFilters));
-    server.get("/api/filters/tires/:car_id", restFilters.getAllTires.bind(restFilters));
+    server.get("/api/filters/tires/:car_id", restFilters.getAllTiresByCarId.bind(restFilters));
+    server.get("/api/filters/tires", restFilters.getAllTires.bind(restFilters));
+
     server.get("/api/filters/weather", restFilters.getAllWeather.bind(restFilters));
 
     let restUsers = new RestUsers();
@@ -102,6 +104,8 @@ function loadPaths() {
     server.post("/api/car", restCars.insertCar.bind(restCars));
     server.put("/api/cars/car/:car_id/image", uploadImage, restCars.carUpdateImage.bind(restCars));
     server.get("/api/cars/:car_id/image", restCars.getCarImageById.bind(restCars));
+    server.post("/api/cars/:car_id/:tire_id", restCars.insertCarTires.bind(restCars));
+    server.get("/api/tires/:car_id/image", restCars.getCarImageById.bind(restCars));
 
     let restLeagues = new RestLeagues();
     server.get("/api/leagues", restLeagues.getLeagues.bind(restLeagues));

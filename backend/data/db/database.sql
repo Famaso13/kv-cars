@@ -118,7 +118,7 @@ CREATE TABLE track_conditions (
 -- WEATHER
 CREATE TABLE weathers (
   weathers_id    INTEGER PRIMARY KEY AUTOINCREMENT,
-  weather TEXT
+  weather TEXT 
 );
 
 -- COMPETES 

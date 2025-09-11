@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Database from "../helpers/sqliteHelper";
 import { CarsI } from "../interfaces/carsI";
+import { TireFilterI } from "../interfaces/filtersI";
 
 export class RestCars {
     private database: Database;
@@ -112,6 +113,29 @@ export class RestCars {
         }
     }
 
+    insertCarTires(request: Request, response: Response) {
+        const car_id_param = request.params["car_id"];
+        const tire_id_param = request.params["tire_id"];
+        let car_id = Number(car_id_param);
+        let tire_id = Number(tire_id_param);
+
+        console.log("tu sam u gumama");
+
+        if (!Number.isFinite(car_id)) {
+            response.status(400);
+            response.send("Invalid car_id");
+        }
+        if (!Number.isFinite(tire_id)) {
+            response.status(400);
+            response.send("Invalid tire_id");
+        } else {
+            this.insertTires(car_id, tire_id).then((status) => {
+                response.status(200);
+                response.send(JSON.stringify(status));
+            });
+        }
+    }
+
     async getMostUsedByDriverId(driver_id: number): Promise<CarsI | null> {
         let sql = `
                   SELECT c.car_id, c.model, c.make, c.category_id, c.horsepower, c.mass
@@ -201,6 +225,13 @@ export class RestCars {
         let sql = "INSERT INTO cars (make, model, category_id, horsepower, mass) VALUES (?,?,?,?,?);";
         let data = await this.database.insertUpdateRows(sql, carData);
         if (data.error === null) return { err: "", inserted: true, car_id: data.lastRow };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
+    }
+
+    async insertTires(car_id: number, tire_id: number) {
+        let sql = "INSERT INTO accepts (car_id, tire_id) VALUES (?,?);";
+        let data = await this.database.insertUpdateRows(sql, [car_id, tire_id]);
+        if (data.error === null) return { err: "", inserted: true };
         else return { err: "Error during row insertion. Please try again.", inserted: false };
     }
 }

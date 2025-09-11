@@ -36,11 +36,11 @@ export class RestFilters {
         }
     }
 
-    getAllTires(request: Request, response: Response) {
+    getAllTiresByCarId(request: Request, response: Response) {
         response.type("application/json");
         let data = request.params["car_id"];
         if (data != undefined) {
-            this.getTires(parseInt(data)).then((tires) => {
+            this.getCarTires(parseInt(data)).then((tires) => {
                 response.status(200);
                 console.log(tires);
                 response.send(JSON.stringify(tires));
@@ -50,6 +50,16 @@ export class RestFilters {
             let message = { err: "No car_id provided" };
             response.send(JSON.stringify(message));
         }
+    }
+
+    getAllTires(request: Request, response: Response) {
+        response.type("application/json");
+
+        this.getTires().then((tires) => {
+            response.status(200);
+            console.log(tires);
+            response.send(JSON.stringify(tires));
+        });
     }
 
     getAllWeather(request: Request, response: Response) {
@@ -89,7 +99,7 @@ export class RestFilters {
         return result;
     }
 
-    async getTires(car_id: number): Promise<Array<TireFilterI>> {
+    async getCarTires(car_id: number): Promise<Array<TireFilterI>> {
         let sql =
             "SELECT t.tire_id, t.type FROM accepts a JOIN tires t ON t.tire_id = a.tire_id WHERE a.car_id = ? ORDER BY t.type;";
         var data = (await this.database.getDataPromise(sql, [car_id])) as Array<TireFilterI>;
@@ -100,6 +110,20 @@ export class RestFilters {
                 type: d["type"],
             };
             result.push(tf);
+        }
+        return result;
+    }
+
+    async getTires() {
+        let sql = "SELECT tire_id, type FROM tires;";
+        let data = (await this.database.getDataPromise(sql, [])) as Array<TireFilterI>;
+        let result = new Array<TireFilterI>();
+        for (let d of data) {
+            let t: TireFilterI = {
+                tire_id: d["tire_id"],
+                type: d["type"],
+            };
+            result.push(t);
         }
         return result;
     }

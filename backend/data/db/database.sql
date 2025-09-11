@@ -177,7 +177,8 @@ INSERT INTO categories (name, description) VALUES
   ('GT2',       'Trkaća klasa GT2 sa većom snagom.'),
   ('Touring',   'Turing automobili zasnovani na serijskim modelima.'),
   ('Formula',   'Jednosjedi otvorenih kotača.'),
-  ('Classic',   'Klasici i oldtimeri iz različitih era.');
+  ('Classic',   'Klasici i oldtimeri iz različitih era.'),
+  ('Sport',   'Sportski automobili visokih performansi, fokusirani na agilnost, ubrzanje i upravljivost na stazi i cesti.');
 
 select * from categories;
 

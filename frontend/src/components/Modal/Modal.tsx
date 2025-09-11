@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import type { TrackConditionI } from "../../interfaces/trackConditionsI";
 import type { LapsI } from "../../interfaces/lapsI";
 import type { LeaguesI } from "../../interfaces/leaguesI";
+import type { CarsI } from "../../interfaces/carsI";
 
 interface ModalProps {
     setModal: (value: boolean) => void;
@@ -297,23 +298,37 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
     }, [type == "leagueDetailAdd"]);
 
     //  CAR ADD
+    const [make, setMake] = useState("");
+    const [model, setModel] = useState("");
+    const [horsepower, setHorspower] = useState(100);
+    const [mass, setMass] = useState(1000);
 
-    const [car_id, setCar_id] = useState("");
-
-    //  const handleCarAdd = async () => {
-    //   let response = (await fetch(server + "api/leagues/" + league_id + "/driver/", {
-    //       headers: {
-    //           "Content-Type": "application/json",
-    //       },
-    //       method: "DELETE",
-    //       body: JSON.stringify({ user_id: selection.user_id }),
-    //   })) as Response;
-    //   if (response.status == 400) {
-    //       let data = JSON.parse(await response.text()) as { err: string; deleted: boolean };
-    //       alert(data.err);
-    //   }
-    //   setModal(false);
-    //  };
+    const handleCarAdd = async () => {
+        const car = {
+            make: make,
+            model: model,
+            category_id: categoryId,
+            horsepower: horsepower,
+            mass: mass,
+        } as CarsI;
+        let response = (await fetch(server + "api/car", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(car),
+        })) as Response;
+        if (response.status == 400) {
+            console.log("neuspijeh inserta");
+            let data = JSON.parse(await response.text()) as { err: string; inserted: boolean };
+            alert(data.err);
+        } else {
+            console.log("upload slike");
+            let data = JSON.parse(await response.text()) as { err: string; inserted: boolean; car_id: number };
+            handlePictureUpload("cars", data.car_id);
+        }
+        setModal(false);
+    };
 
     //  TRACK ADD
 
@@ -356,8 +371,16 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                     <h1>Change your profile picture</h1>
                 ) : type === "lapInsert" ? (
                     <h1>Submit your lap</h1>
+                ) : type === "league" ? (
+                    <h1>Create a League</h1>
+                ) : type === "carAdd" ? (
+                    <h1>Add a car</h1>
+                ) : type === "trackAdd" ? (
+                    <h1>Add a league</h1>
+                ) : type === "leagueDetailAdd" ? (
+                    <h1>Add a participant</h1>
                 ) : (
-                    type === "league" && <h1>Create a League</h1>
+                    type === "leagueDetailRemove" && <h1>Remove a participant</h1>
                 )}
                 {type === "profile" && (
                     <>
@@ -664,19 +687,68 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                             height={"70px"}
                             disabled={uploading}
                         />
-                        <FormInput
-                            label="Car id"
-                            type="text"
-                            value={car_id}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                setCar_id(val.toString());
-                            }}
-                        />
+                        <div className="modal-grid-3">
+                            <FormInput
+                                label="Make"
+                                type="text"
+                                value={make}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    setMake(val.toString());
+                                }}
+                            />
+                            <FormInput
+                                label="Model"
+                                type="text"
+                                value={model}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    setModel(val.toString());
+                                }}
+                            />
+                            <FormInput
+                                label="Category"
+                                array={categories}
+                                type="select"
+                                width={"80%"}
+                                value={categoryId?.toString() ?? ""}
+                                light
+                                onChange={(val) => {
+                                    setCategoryId(val === "" ? null : Number(val));
+                                }}
+                            />
+                        </div>
+                        <div className="modal-grid-2">
+                            <FormInput
+                                label="Horsepower"
+                                type="text"
+                                value={horsepower.toString()}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    if (!isNaN(Number(val))) {
+                                        setHorspower(Number(val));
+                                    }
+                                }}
+                            />
+                            <FormInput
+                                label="Mass"
+                                type="text"
+                                value={mass.toString()}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    if (!isNaN(Number(val))) {
+                                        setMass(Number(val));
+                                    }
+                                }}
+                            />
+                        </div>
                         <Button
                             label="Add Car"
-                            onClick={() => handlePictureUpload("cars", Number(car_id))}
+                            onClick={handleCarAdd}
                             style="secondary"
                             width={"40%"}
                             height={"70px"}

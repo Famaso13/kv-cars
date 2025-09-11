@@ -99,6 +99,7 @@ function loadPaths() {
     let restCars = new RestCars();
     server.get("/api/cars", restCars.getAllCars.bind(restCars));
     server.get("/api/car/:car_id", restCars.getCarById.bind(restCars));
+    server.post("/api/car", restCars.insertCar.bind(restCars));
     server.put("/api/cars/car/:car_id/image", uploadImage, restCars.carUpdateImage.bind(restCars));
     server.get("/api/cars/:car_id/image", restCars.getCarImageById.bind(restCars));
 

@@ -89,6 +89,29 @@ export class RestCars {
         }
     }
 
+    async insertCar(request: Request, response: Response) {
+        let car = request.body as CarsI;
+        console.log(car);
+
+        if (car !== undefined) {
+            let carInsertStatus = await this.insert(car);
+            if (carInsertStatus.inserted == false) {
+                response.status(400);
+                let message = "Car not inserted";
+                response.send(JSON.stringify(message));
+            }
+
+            if (!carInsertStatus.car_id) {
+                response.status(400);
+                let message = "Couldn't get inserted car_id";
+                response.send(JSON.stringify(message));
+            } else if (carInsertStatus.inserted === true) {
+                response.status(200);
+                response.send(JSON.stringify(carInsertStatus));
+            }
+        }
+    }
+
     async getMostUsedByDriverId(driver_id: number): Promise<CarsI | null> {
         let sql = `
                   SELECT c.car_id, c.model, c.make, c.category_id, c.horsepower, c.mass
@@ -170,5 +193,14 @@ export class RestCars {
             return data[0].image as Buffer;
         }
         return null;
+    }
+
+    async insert(car: CarsI) {
+        let carData = [car.make, car.model, car.category_id, car.horsepower, car.mass];
+
+        let sql = "INSERT INTO cars (make, model, category_id, horsepower, mass) VALUES (?,?,?,?,?);";
+        let data = await this.database.insertUpdateRows(sql, carData);
+        if (data.error === null) return { err: "", inserted: true, car_id: data.lastRow };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
     }
 }

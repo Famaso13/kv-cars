@@ -29,7 +29,7 @@ const TrackDetail = () => {
             </div>
             <div className="car-info">
                 <div className="car-stats">
-                    <img src="" alt={track.name} />
+                    <img src={`${server}api/tracks/${track.track_id}/image`} alt={track.name} />
                     <div className="car-card-details">
                         <div>
                             <h2>Location:</h2>

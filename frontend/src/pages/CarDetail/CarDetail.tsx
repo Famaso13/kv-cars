@@ -46,7 +46,7 @@ const CarDetail = () => {
             </div>
             <div className="car-info">
                 <div className="car-stats">
-                    <img src="" alt={car.model} />
+                    <img src={`${server}api/cars/${car.car_id}/image`} alt={car.model} />
                     <div className="car-card-details">
                         <div>
                             <h2>Category</h2>

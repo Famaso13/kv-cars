@@ -62,6 +62,7 @@ function loadPaths() {
     server.get("/api/tracks/:id", restTracks.getTrackById.bind(restTracks));
     server.put("/api/tracks/track/:track_id/image", uploadImage, restTracks.trackUpdateImage.bind(restTracks));
     server.get("/api/tracks/:track_id/image", restTracks.getTrackImageById.bind(restTracks));
+    server.post("/api/track", restTracks.insertTrack.bind(restTracks));
 
     let restTrackConditions = new RestTrackConditions();
     server.get("/api/conditions/:track_id", restTrackConditions.getConditionsByTrackId.bind(restTrackConditions));

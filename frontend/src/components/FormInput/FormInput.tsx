@@ -14,6 +14,7 @@ interface InputProps {
     light?: boolean;
     checked?: boolean;
     onChange?: (value: string) => void;
+    onChangeCheckbox?: (value: boolean) => void;
 }
 
 const FormInput: React.FC<InputProps> = ({
@@ -29,6 +30,7 @@ const FormInput: React.FC<InputProps> = ({
     light,
     checked,
     onChange,
+    onChangeCheckbox,
 }) => {
     return (
         <>
@@ -79,7 +81,7 @@ const FormInput: React.FC<InputProps> = ({
                         checked={checked}
                         type={type}
                         required={required}
-                        // onChange={(e) => onChange?.(e.target.checked)}
+                        onChange={(e) => onChangeCheckbox?.(e.target.checked)}
                     />
                     <label htmlFor={label} className={light ? "label light" : "label"}>
                         {label}

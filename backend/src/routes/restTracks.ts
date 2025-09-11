@@ -73,6 +73,28 @@ export class RestTracks {
         }
     }
 
+    async insertTrack(request: Request, response: Response) {
+        let track = request.body as TrackI;
+
+        if (track !== undefined) {
+            let trackInsertStatus = await this.insert(track);
+            if (trackInsertStatus.inserted == false) {
+                response.status(400);
+                let message = "Track not inserted";
+                response.send(JSON.stringify(message));
+            }
+
+            if (!trackInsertStatus.track_id) {
+                response.status(400);
+                let message = "Couldn't get inserted track_id";
+                response.send(JSON.stringify(message));
+            } else if (trackInsertStatus.inserted === true) {
+                response.status(200);
+                response.send(JSON.stringify(trackInsertStatus));
+            }
+        }
+    }
+
     async getAll(): Promise<Array<TrackI>> {
         let sql = "SELECT * FROM tracks;";
         var data = (await this.database.getDataPromise(sql, [])) as Array<TrackI>;
@@ -127,5 +149,19 @@ export class RestTracks {
             return data[0].image as Buffer;
         }
         return null;
+    }
+
+    async insert(track: TrackI) {
+        const trackData = [
+            track.name ?? null,
+            track.location ?? null,
+            track.length_km ?? null,
+            track.famous_corner ?? null,
+        ];
+
+        let sql = "INSERT INTO tracks (name, location, length_km, famous_corner) VALUES (?,?,?,?);";
+        let data = await this.database.insertUpdateRows(sql, trackData);
+        if (data.error === null) return { err: "", inserted: true, track_id: data.lastRow };
+        else return { err: "Error during row insertion. Please try again.", inserted: false };
     }
 }

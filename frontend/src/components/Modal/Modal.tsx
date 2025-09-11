@@ -10,6 +10,7 @@ import type { LapsI } from "../../interfaces/lapsI";
 import type { LeaguesI } from "../../interfaces/leaguesI";
 import type { CarsI } from "../../interfaces/carsI";
 import type { TireFilterI } from "../../interfaces/filtersI";
+import type { TrackI } from "../../interfaces/tracksI";
 
 interface ModalProps {
     setModal: (value: boolean) => void;
@@ -138,7 +139,9 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
     const [miliseconds, setMiliseconds] = useState<number>(1);
 
     const { categories, cars, tires, weatherList, categoryId, setCategoryId, carId, setCarId } = useFilters();
-    const handleLapSubmit = async () => {
+    const handleLapSubmit: React.ChangeEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+
         let userString = sessionStorage.getItem("user");
         let user = {} as UserI;
         if (userString !== null) user = JSON.parse(userString);
@@ -184,7 +187,9 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
     const [description, setDescription] = useState<string>("");
     const [privateLeague, setPrivateLeague] = useState<boolean>(true);
 
-    const handleLeagueCreate = async () => {
+    const handleLeagueCreate: React.ChangeEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+
         let league = {
             name: name,
             description: description,
@@ -215,7 +220,9 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
     const [addSelection, setAddSelection] = useState<UserI[]>([]);
     const [removeSelection, setRemoveSelection] = useState<UserI[]>([]);
 
-    const handleLeagueAddUsers = async () => {
+    const handleLeagueAddUsers: React.ChangeEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+
         for (const selection of addSelection) {
             let response = (await fetch(server + "api/leagues/" + league_id + "/driver/", {
                 headers: {
@@ -234,7 +241,9 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
         setModal(false);
     };
 
-    const handleLeagueRemoveUsers = async () => {
+    const handleLeagueRemoveUsers: React.ChangeEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+
         for (const selection of removeSelection) {
             let response = (await fetch(server + "api/leagues/" + league_id + "/driver/", {
                 headers: {
@@ -328,7 +337,9 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
 
     const clearTires = () => setSelectedTires([]);
 
-    const handleCarAdd = async () => {
+    const handleCarAdd: React.ChangeEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+
         const car = {
             make: make,
             model: model,
@@ -372,22 +383,36 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
 
     //  TRACK ADD
 
-    const [trackId, setTrackId] = useState("");
+    const [trackName, setTrackName] = useState("");
+    const [location, setLocation] = useState("");
+    const [length, setLength] = useState(1.0);
+    const [corner, setCorner] = useState("");
 
-    //  const handleCarAdd = async () => {
-    //   let response = (await fetch(server + "api/leagues/" + league_id + "/driver/", {
-    //       headers: {
-    //           "Content-Type": "application/json",
-    //       },
-    //       method: "DELETE",
-    //       body: JSON.stringify({ user_id: selection.user_id }),
-    //   })) as Response;
-    //   if (response.status == 400) {
-    //       let data = JSON.parse(await response.text()) as { err: string; deleted: boolean };
-    //       alert(data.err);
-    //   }
-    //   setModal(false);
-    //  };
+    const handleTrackAdd: React.FormEventHandler<HTMLFormElement> = async (e) => {
+        e.preventDefault();
+        const trackAdd = {
+            name: trackName,
+            location: location,
+            length_km: length,
+            famous_corner: corner,
+        } as TrackI;
+
+        let response = (await fetch(server + "api/track", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(trackAdd),
+        })) as Response;
+        if (response.status == 400) {
+            let data = JSON.parse(await response.text()) as { err: string; inserted: boolean };
+            alert(data.err);
+        } else {
+            let data = JSON.parse(await response.text()) as { err: string; inserted: boolean; track_id: number };
+            handlePictureUpload("track", data.track_id);
+        }
+        setModal(false);
+    };
 
     return (
         <>
@@ -453,7 +478,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                 )}
 
                 {type === "lapInsert" && (
-                    <>
+                    <form onSubmit={handleLapSubmit}>
                         <div className="modal-lap">
                             <FormInput
                                 label="Category"
@@ -465,6 +490,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                 onChange={(val) => {
                                     setCategoryId(val === "" ? null : Number(val));
                                 }}
+                                required
                             />
                             <FormInput
                                 label="Cars"
@@ -476,6 +502,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                 onChange={(val) => {
                                     setCarId(val === "" ? null : Number(val));
                                 }}
+                                required
                             />
                             <FormInput
                                 label="Tires"
@@ -487,6 +514,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                 onChange={(val) => {
                                     setTireId(val === "" ? null : Number(val));
                                 }}
+                                required
                             />
                             <FormInput
                                 label="Weather"
@@ -498,6 +526,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                 onChange={(val) => {
                                     setWeather(val.toString() === "" ? null : val.toString());
                                 }}
+                                required
                             />
                             <FormInput
                                 label="Date"
@@ -508,6 +537,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                 onChange={(val) => {
                                     setDate(val.toString());
                                 }}
+                                required
                             />
                             <FormInput
                                 label="Track Temperature (°C)"
@@ -520,6 +550,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                         setTrackTemperature(Number(val));
                                     }
                                 }}
+                                required
                             />
                         </div>
                         <div className="modal-lap-time">
@@ -534,6 +565,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                         setMinute(Number(val));
                                     }
                                 }}
+                                required
                             />
                             <p>:</p>
                             <FormInput
@@ -547,6 +579,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                         setSeconds(Number(val));
                                     }
                                 }}
+                                required
                             />
                             <p>.</p>
                             <FormInput
@@ -560,19 +593,21 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                         setMiliseconds(Number(val));
                                     }
                                 }}
+                                required
                             />
                         </div>
                         <Button
                             label="Submit Lap"
-                            onClick={handleLapSubmit}
+                            onClick={() => {}}
+                            type="submit"
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
                         />
-                    </>
+                    </form>
                 )}
                 {type === "league" && (
-                    <>
+                    <form onSubmit={handleLeagueCreate}>
                         <FormInput
                             label="Name"
                             type="text"
@@ -582,6 +617,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                             onChange={(val) => {
                                 setName(val.toString());
                             }}
+                            required
                         />
                         <FormInput
                             label="Description"
@@ -599,22 +635,23 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                             checked={privateLeague}
                             light
                             width={"80%"}
-                            onChange={(val) => {
+                            onChangeCheckbox={(val) => {
                                 setPrivateLeague(Boolean(val));
                             }}
                         />
                         <Button
                             label="Create League"
-                            onClick={handleLeagueCreate}
+                            onClick={() => {}}
+                            type="submit"
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
                         />
-                    </>
+                    </form>
                 )}
 
                 {type === "leagueDetailAdd" && (
-                    <>
+                    <form onSubmit={handleLeagueAddUsers}>
                         {addSelection.length > 0 ? (
                             <p>{addSelection.map((driver) => driver.username).join(", ")}</p>
                         ) : (
@@ -653,16 +690,17 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                         </div>
                         <Button
                             label="Add League Drivers"
-                            onClick={handleLeagueAddUsers}
+                            onClick={() => {}}
+                            type="submit"
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
                         />
-                    </>
+                    </form>
                 )}
 
                 {type === "leagueDetailRemove" && (
-                    <>
+                    <form onSubmit={handleLeagueRemoveUsers}>
                         {removeSelection.length > 0 ? (
                             <p>{removeSelection.map((driver) => driver.username).join(", ")}</p>
                         ) : (
@@ -701,15 +739,16 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                         </div>
                         <Button
                             label="Remove League Drivers"
-                            onClick={handleLeagueRemoveUsers}
+                            onClick={() => {}}
+                            type="submit"
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
                         />
-                    </>
+                    </form>
                 )}
                 {type === "carAdd" && (
-                    <>
+                    <form onSubmit={handleCarAdd}>
                         <img src={previewUrl ? previewUrl : profilePic} alt="profilePic preview" />
                         {error && <p style={{ color: "white", marginTop: 12 }}>{error}</p>}
                         <input
@@ -721,7 +760,8 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                         />
                         <Button
                             label="Select new picture"
-                            onClick={handlePictureSelect}
+                            onClick={() => {}}
+                            type="submit"
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
@@ -737,6 +777,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                 onChange={(val) => {
                                     setMake(val.toString());
                                 }}
+                                required
                             />
                             <FormInput
                                 label="Model"
@@ -747,6 +788,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                 onChange={(val) => {
                                     setModel(val.toString());
                                 }}
+                                required
                             />
                             <FormInput
                                 label="Category"
@@ -758,6 +800,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                 onChange={(val) => {
                                     setCategoryId(val === "" ? null : Number(val));
                                 }}
+                                required
                             />
                         </div>
                         <div className="tire-picker-header">
@@ -798,6 +841,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                         setHorspower(Number(val));
                                     }
                                 }}
+                                required
                             />
                             <FormInput
                                 label="Mass"
@@ -810,19 +854,21 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                                         setMass(Number(val));
                                     }
                                 }}
+                                required
                             />
                         </div>
                         <Button
                             label="Add Car"
-                            onClick={handleCarAdd}
+                            onClick={() => {}}
+                            type="submit"
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
                         />
-                    </>
+                    </form>
                 )}
                 {type === "trackAdd" && (
-                    <>
+                    <form onSubmit={handleTrackAdd}>
                         <img src={previewUrl ? previewUrl : profilePic} alt="profilePic preview" />
                         {error && <p style={{ color: "white", marginTop: 12 }}>{error}</p>}
                         <input
@@ -834,30 +880,72 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                         />
                         <Button
                             label="Select new picture"
-                            onClick={handlePictureSelect}
+                            onClick={() => {}}
+                            type="submit"
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
                             disabled={uploading}
                         />
-                        <FormInput
-                            label="Car id"
-                            type="text"
-                            value={trackId}
-                            light
-                            width={"80%"}
-                            onChange={(val) => {
-                                setTrackId(val.toString());
-                            }}
-                        />
+                        <div className="modal-grid-2">
+                            <FormInput
+                                label="Name"
+                                type="text"
+                                value={trackName}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    setTrackName(val.toString());
+                                }}
+                                required
+                            />
+                            <FormInput
+                                label="Location"
+                                type="text"
+                                value={location}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    setLocation(val.toString());
+                                }}
+                                required
+                            />
+                        </div>
+                        <div className="modal-grid-2">
+                            <FormInput
+                                label="Length (km)"
+                                type="number"
+                                value={length.toString()}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    if (!isNaN(Number(val))) {
+                                        setLength(Number(val));
+                                    }
+                                }}
+                                required
+                            />
+                            <FormInput
+                                label="Famous Corner"
+                                type="text"
+                                value={corner}
+                                light
+                                width={"80%"}
+                                onChange={(val) => {
+                                    setCorner(val.toString());
+                                }}
+                                required
+                            />
+                        </div>
                         <Button
                             label="Add Track"
-                            onClick={() => handlePictureUpload("track", Number(trackId))}
+                            onClick={() => {}}
+                            type="submit"
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
                         />
-                    </>
+                    </form>
                 )}
 
                 <div className="modal-space"></div>

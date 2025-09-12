@@ -760,8 +760,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                         />
                         <Button
                             label="Select new picture"
-                            onClick={() => {}}
-                            type="submit"
+                            onClick={handlePictureSelect}
                             style="secondary"
                             width={"40%"}
                             height={"70px"}
@@ -880,8 +879,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
                         />
                         <Button
                             label="Select new picture"
-                            onClick={() => {}}
-                            type="submit"
+                            onClick={handlePictureSelect}
                             style="secondary"
                             width={"40%"}
                             height={"70px"}

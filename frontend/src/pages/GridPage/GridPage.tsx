@@ -168,11 +168,14 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
                 )}
                 {type === "cars" && (
                     <div className="leaderboard-grid">
-                        {cars.map((car) => (
-                            <Link to={`/cars/${car.car_id}`} key={car.car_id} className="link">
-                                <Card car={car} />
-                            </Link>
-                        ))}
+                        {cars
+                            .slice()
+                            .sort((a, b) => (a.make + a.model).localeCompare(b.make + b.model))
+                            .map((car) => (
+                                <Link to={`/cars/${car.car_id}`} key={car.car_id} className="link">
+                                    <Card car={car} />
+                                </Link>
+                            ))}
                     </div>
                 )}
                 {type === "league" && (

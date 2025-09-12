@@ -90,7 +90,6 @@ CREATE TABLE track_conditions (
     ON DELETE SET NULL ON UPDATE CASCADE
 );
 
--- WORKING ON THIS
 ALTER TABLE track_conditions ADD COLUMN weather_id INTEGER;
 
 UPDATE track_conditions
@@ -104,7 +103,7 @@ CREATE TABLE track_conditions (
   conditions_id      INTEGER PRIMARY KEY AUTOINCREMENT,
   track_id           INTEGER NOT NULL,
   time               TEXT,                -- ISO datetime
-  weather_id         INTEGER NOT NULL,    -- sada FK umjesto TEXT
+  weather_id         INTEGER NOT NULL,    
   track_temperature  REAL,
   tire_id            INTEGER,
   FOREIGN KEY (track_id) REFERENCES tracks(track_id)

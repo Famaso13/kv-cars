@@ -238,13 +238,11 @@ export class RestUsers {
     }
 
     async register(username: string, password: string, email: string) {
-        // username check
-
         let usernames = await this.getUsernames();
         if (usernames.includes(username)) {
             return { err: "Username already exists!", inserted: false };
         }
-        //   email check
+
         let emails = await this.getEmails();
         if (emails.includes(email)) {
             return { err: "Email already exists!", inserted: false };

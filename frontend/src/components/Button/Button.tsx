@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({
             type={type}
             disabled={disabled}
             onClick={onClick}
-            className={`button ${style}`}
+            className={`button ${style} ${disabled ? "disabled" : ""}`}
             style={{ width, height }}
         >
             {label}

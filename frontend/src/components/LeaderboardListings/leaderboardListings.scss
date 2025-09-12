@@ -34,6 +34,19 @@ $primary-color: #a02638;
     }
 }
 
+.leaderboard-pagination {
+    display: flex;
+    width: 50%;
+    justify-content: space-around;
+
+    p {
+        color: black;
+        margin: 0;
+        font-size: 20px;
+        text-align: center;
+    }
+}
+
 .leaderboard-container {
     display: flex;
     flex-direction: column;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { CarsListingsI, ListingsI, ProfileListingsI } from "../../types/listing";
 import Listing from "../Listing/Listing";
 import "./leaderboardListings.scss";
+import Button from "../Button/Button";
 
 interface LeaderboardListingsProps {
     track_id?: number;
@@ -92,6 +93,15 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         }
     };
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
+    const paginate = <T,>(listings: T[]) => {
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        return listings.slice(start, end);
+    };
+
     useEffect(() => {
         if (track_id !== undefined) fetchFilteredListings(track_id);
     }, [apply, track_id, server]);
@@ -135,6 +145,68 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                     <option value="°F">°F (Fahrenheit)</option>
                 </select>
             </div>
+            {type === "tracks" && (
+                <div className="leaderboard-pagination">
+                    <Button
+                        label="<<"
+                        onClick={() => setCurrentPage(1)}
+                        disabled={currentPage === 1}
+                        style="secondary"
+                    />
+
+                    <Button
+                        label="<"
+                        onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                        disabled={currentPage === 1}
+                        style="primary"
+                    />
+
+                    <p>
+                        Page {currentPage} of{" "}
+                        {Math.ceil(
+                            (league_id !== undefined ? leagueListings.length : filteredListings.length) / itemsPerPage
+                        )}
+                    </p>
+
+                    <Button
+                        label=">"
+                        onClick={() => {
+                            const totalPages = Math.ceil(
+                                (league_id !== undefined ? leagueListings.length : filteredListings.length) /
+                                    itemsPerPage
+                            );
+                            setCurrentPage((p) => Math.min(p + 1, totalPages));
+                        }}
+                        disabled={
+                            currentPage ===
+                            Math.ceil(
+                                (league_id !== undefined ? leagueListings.length : filteredListings.length) /
+                                    itemsPerPage
+                            )
+                        }
+                        style="primary"
+                    />
+
+                    <Button
+                        label=">>"
+                        onClick={() => {
+                            const totalPages = Math.ceil(
+                                (league_id !== undefined ? leagueListings.length : filteredListings.length) /
+                                    itemsPerPage
+                            );
+                            setCurrentPage(totalPages);
+                        }}
+                        disabled={
+                            currentPage ===
+                            Math.ceil(
+                                (league_id !== undefined ? leagueListings.length : filteredListings.length) /
+                                    itemsPerPage
+                            )
+                        }
+                        style="secondary"
+                    />
+                </div>
+            )}
             <div className="leaderboard-container">
                 <div className="leaderboard-listings">
                     {type === "profile" ? (
@@ -191,14 +263,19 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                 <div className="leaderboard-listings">
                     {type === "tracks" && league_id == undefined ? (
                         toggleFilters ? (
-                            filteredListings.map((listing, index) => (
+                            paginate(filteredListings).map((listing, index) => (
                                 <div key={index} className="leaderboard-listing">
-                                    <Listing position={index + 1} listing={listing} tempUnit={tempUnit} type="tracks" />
-                                    {index !== filteredListings.length - 1 && <hr />}
+                                    <Listing
+                                        position={(currentPage - 1) * itemsPerPage + index + 1}
+                                        listing={listing}
+                                        tempUnit={tempUnit}
+                                        type="tracks"
+                                    />
+                                    {index !== paginate(filteredListings).length - 1 && <hr />}
                                 </div>
                             ))
                         ) : (
-                            filteredListings.map((listing, index) => {
+                            paginate(filteredListings).map((listing, index) => {
                                 const realPos = getRealPosition(listing);
                                 return (
                                     <div key={index} className="leaderboard-listing">
@@ -208,7 +285,7 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                                             tempUnit={tempUnit}
                                             type="tracks"
                                         />
-                                        {index !== filteredListings.length - 1 && <hr />}
+                                        {index !== paginate(filteredListings).length - 1 && <hr />}
                                     </div>
                                 );
                             })
@@ -219,10 +296,15 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
 
                     {type === "tracks" &&
                         league_id !== undefined &&
-                        leagueListings.map((listing, index) => (
+                        paginate(leagueListings).map((listing, index) => (
                             <div key={index} className="leaderboard-listing">
-                                <Listing position={index + 1} listing={listing} tempUnit={tempUnit} type="tracks" />
-                                {index !== leagueListings.length - 1 && <hr />}
+                                <Listing
+                                    position={(currentPage - 1) * itemsPerPage + index + 1}
+                                    listing={listing}
+                                    tempUnit={tempUnit}
+                                    type="tracks"
+                                />
+                                {index !== paginate(leagueListings).length - 1 && <hr />}
                             </div>
                         ))}
                     {type === "track_detail" &&

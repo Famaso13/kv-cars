@@ -26,7 +26,6 @@ export class RestFilters {
         if (data != undefined) {
             this.getCars(parseInt(data)).then((cars) => {
                 response.status(200);
-                console.log(cars);
                 response.send(JSON.stringify(cars));
             });
         } else {
@@ -42,7 +41,6 @@ export class RestFilters {
         if (data != undefined) {
             this.getCarTires(parseInt(data)).then((tires) => {
                 response.status(200);
-                console.log(tires);
                 response.send(JSON.stringify(tires));
             });
         } else {
@@ -57,7 +55,6 @@ export class RestFilters {
 
         this.getTires().then((tires) => {
             response.status(200);
-            console.log(tires);
             response.send(JSON.stringify(tires));
         });
     }
@@ -66,7 +63,6 @@ export class RestFilters {
         response.type("application/json");
         this.getWeather().then((weather) => {
             response.status(200);
-            console.log(weather);
             response.send(JSON.stringify(weather));
         });
     }

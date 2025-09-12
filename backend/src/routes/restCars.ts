@@ -92,7 +92,6 @@ export class RestCars {
 
     async insertCar(request: Request, response: Response) {
         let car = request.body as CarsI;
-        console.log(car);
 
         if (car !== undefined) {
             let carInsertStatus = await this.insert(car);
@@ -118,8 +117,6 @@ export class RestCars {
         const tire_id_param = request.params["tire_id"];
         let car_id = Number(car_id_param);
         let tire_id = Number(tire_id_param);
-
-        console.log("tu sam u gumama");
 
         if (!Number.isFinite(car_id)) {
             response.status(400);

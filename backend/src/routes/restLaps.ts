@@ -21,7 +21,6 @@ export class RestLaps {
         if (data != undefined) {
             this.getAllByTrackId(parseInt(data)).then((laps) => {
                 response.status(200);
-                console.log(laps);
                 response.send(JSON.stringify(laps));
             });
         } else {

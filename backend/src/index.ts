@@ -52,7 +52,7 @@ function runServer() {
     });
 
     server.listen(port, () => {
-        console.log(`Server pokrenut na portu: ${port}`);
+        console.log(`Server running on port: ${port}`);
     });
 }
 

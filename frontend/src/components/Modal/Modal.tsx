@@ -154,7 +154,6 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
             track_temperature: Number(trackTemperature),
             weather_id: weather,
         } as TrackConditionI;
-        console.log(trackCondition);
 
         let lap = {
             car_id: carId,
@@ -266,20 +265,15 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
         const responseUsers = await fetch(server + "api/users");
         if (responseUsers.status === 200) {
             const users = (await responseUsers.json()) as UserI[];
-            console.log("users", users);
 
             const responseLeagueUsers = await fetch(server + "api/leagues/drivers/" + league_id);
             if (responseLeagueUsers.status === 200) {
                 const driverIds = (await responseLeagueUsers.json()) as Array<{ driver_id: number }>;
-                console.log("driverIds", driverIds);
 
                 const driverIdSet = new Set(driverIds.map((d) => Number(d.driver_id)));
 
                 const leagueDrivers = users.filter((u) => driverIdSet.has(Number(u.user_id)));
                 const nonLeagueUsers = users.filter((u) => !driverIdSet.has(Number(u.user_id)));
-
-                console.log("leagueDrivers", leagueDrivers);
-                console.log("nonLeagueUsers", nonLeagueUsers);
 
                 setDrivers(leagueDrivers);
                 setDbUsers(nonLeagueUsers);
@@ -359,11 +353,9 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
             alert(data.err);
         } else {
             let data = JSON.parse(await response.text()) as { err: string; inserted: boolean; car_id: number };
-            console.log("selected tires", selectedTires);
 
             try {
                 for (let tire of selectedTires) {
-                    console.log("selected tires", selectedTires);
                     await fetch(server + `api/cars/${data.car_id}/${tire}`, {
                         method: "POST",
                     });

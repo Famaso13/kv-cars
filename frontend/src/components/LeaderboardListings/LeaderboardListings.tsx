@@ -45,7 +45,6 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         let response = (await fetch(server + "api/listings/" + track_id)) as Response;
         if (response.status == 200) {
             let data = JSON.parse(await response.text()) as Array<ListingsI>;
-            console.log("svi", data);
             setFullListings(data);
         }
     };
@@ -54,7 +53,6 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         let response = (await fetch(server + "api/listings/" + league_id + "/" + track_id)) as Response;
         if (response.status == 200) {
             let data = JSON.parse(await response.text()) as Array<ListingsI>;
-            console.log(data);
             setLeagueListings(data);
         }
     };
@@ -70,7 +68,6 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         let response = (await fetch(server + "api/listings/" + track_id + "?" + params.toString())) as Response;
         if (response.status == 200) {
             let data = JSON.parse(await response.text()) as Array<ListingsI>;
-            console.log(data);
             setFilteredListings(data);
         }
     };
@@ -79,7 +76,6 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         let response = (await fetch(server + "api/listings/driver/" + driver_id)) as Response;
         if (response.status == 200) {
             let data = JSON.parse(await response.text()) as Array<ProfileListingsI>;
-            console.log(data);
             setProfileListings(data);
         }
     };
@@ -88,7 +84,6 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
         let response = (await fetch(server + "api/listings/car/" + car_id)) as Response;
         if (response.status == 200) {
             let data = JSON.parse(await response.text()) as Array<CarsListingsI>;
-            console.log(data);
             setCarListings(data);
         }
     };

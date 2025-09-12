@@ -31,7 +31,6 @@ export class RestTrackConditions {
         if (data != undefined) {
             this.getById(parseInt(data)).then((track_condition) => {
                 response.status(200);
-                console.log(track_condition);
                 response.send(JSON.stringify(track_condition));
             });
         } else {
@@ -109,7 +108,6 @@ export class RestTrackConditions {
 
     async insertCondition(condition: TrackConditionI) {
         var weather_id = await this.getWeatherId(condition.weather_id!);
-        console.log(weather_id);
 
         let conditionData = [
             condition.track_id ?? null,

@@ -162,8 +162,6 @@ ORDER BY l.lap_time_ms ASC;
             date ?? "",
         ];
 
-        console.log(params);
-
         const data = (await this.database.getDataPromise(sql, params)) as Array<ListingsI>;
         return data.map((d) => ({
             username: d["username"],

@@ -107,7 +107,14 @@ const Profile = () => {
             <div className="full-screen">
                 <div className="left-profile">
                     <div className="profile-info">
-                        <img className="profile-picture" src={profilePicture === "" ? profile : profilePicture} />
+                        <img
+                            className="profile-picture"
+                            src={profilePicture || profile}
+                            onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).src = profile;
+                            }}
+                            alt="Profile"
+                        />
                         <h1>{login.username}</h1>
                         <p onClick={() => setPictureModal(true)}>Change profile picture</p>
                     </div>

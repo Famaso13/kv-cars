@@ -110,6 +110,7 @@ function loadPaths() {
 
     let restLeagues = new RestLeagues();
     server.get("/api/leagues", restLeagues.getLeagues.bind(restLeagues));
+    server.get("/api/leagues/:driver_id", restLeagues.getPrivateLeagues.bind(restLeagues));
     server.get("/api/leagues/drivers/:league_id", restLeagues.getAllLeagueParticipants.bind(restLeagues));
     server.post("/api/leagues", restLeagues.createLeague.bind(restLeagues));
     server.post("/api/leagues/:league_id/driver", restLeagues.addLeagueParticipant.bind(restLeagues));

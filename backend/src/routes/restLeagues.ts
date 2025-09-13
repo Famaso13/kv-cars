@@ -13,10 +13,26 @@ export class RestLeagues {
 
     getLeagues(request: Request, response: Response) {
         response.type("application/json");
-        this.getAll().then((leagues) => {
+        this.getPublic().then((leagues) => {
             response.status(200);
             response.send(JSON.stringify(leagues));
         });
+    }
+
+    getPrivateLeagues(request: Request, response: Response) {
+        response.type("application/json");
+        let data = request.params["driver_id"];
+
+        if (data != undefined) {
+            this.getPrivate(Number(data)).then((leagues) => {
+                response.status(200);
+                response.send(JSON.stringify(leagues));
+            });
+        } else {
+            response.status(400);
+            let message = { err: "No driver_id provided" };
+            response.send(JSON.stringify(message));
+        }
     }
 
     getLeagueById(request: Request, response: Response) {
@@ -114,9 +130,39 @@ export class RestLeagues {
         }
     }
 
-    async getAll(): Promise<Array<LeaguesI>> {
-        let sql = "SELECT * FROM leagues;";
+    async getPublic(): Promise<Array<LeaguesI>> {
+        let sql = "SELECT * FROM leagues WHERE private = 0;";
         var data = (await this.database.getDataPromise(sql, [])) as Array<LeaguesI>;
+        let result = new Array<LeaguesI>();
+        for (let d of data) {
+            let l: LeaguesI = {
+                league_id: d["league_id"],
+                name: d["name"],
+                owner_id: d["owner_id"],
+                private: d["private"],
+                description: d["description"],
+            };
+            result.push(l);
+        }
+        return result;
+    }
+
+    async getPrivate(user_id: number): Promise<Array<LeaguesI>> {
+        const sql = `
+                     SELECT l.league_id, l.name, l.owner_id, l.private,  l.description 
+                     FROM leagues AS l
+                     WHERE l.private = 1
+                        AND (
+                        l.owner_id = ?
+                        OR EXISTS (
+                           SELECT 1
+                           FROM competes AS c
+                           WHERE c.league_id = l.league_id
+                              AND c.driver_id = ?
+                        )
+                        )
+                  `;
+        var data = (await this.database.getDataPromise(sql, [user_id, user_id])) as Array<LeaguesI>;
         let result = new Array<LeaguesI>();
         for (let d of data) {
             let l: LeaguesI = {

@@ -25,6 +25,7 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
     const [tracks, setTracks] = useState<TrackI[]>([]);
     const [cars, setCars] = useState<CarsI[]>([]);
     const [leagues, setLeagues] = useState<LeaguesI[]>([]);
+    const [privateLeagues, setPrivateLeagues] = useState<LeaguesI[]>([]);
 
     const [modalType, setModalType] = useState<
         | "lapInsert"
@@ -61,6 +62,13 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
         }
     };
 
+    const fetchPrivateLeagues = async () => {
+        let response = (await fetch(server + "api/leagues/" + user.user_id)) as Response;
+        if (response.status == 200) {
+            setPrivateLeagues(JSON.parse(await response.text()) as Array<LeaguesI>);
+        }
+    };
+
     const fetchLoggedInUser = async () => {
         let sessionUser = sessionStorage.getItem("user");
         if (sessionUser !== null) {
@@ -75,6 +83,10 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
         fetchCars();
         fetchLeagues();
     }, []);
+
+    useEffect(() => {
+        if (user.user_id !== undefined) fetchPrivateLeagues();
+    }, [user]);
 
     const selectedLeague = Number.isFinite(leagueIdNum) ? leagues.find((l) => l.league_id === leagueIdNum) : undefined;
 
@@ -178,14 +190,29 @@ const GridPage: React.FC<GridPageProps> = ({ type }) => {
                             ))}
                     </div>
                 )}
+                {type === "league" && privateLeagues.length !== 0 && (
+                    <>
+                        <h2>Private leagues</h2>
+                        <div className="leaderboard-grid">
+                            {privateLeagues.map((league) => (
+                                <Link to={`/leagues/${league.league_id}`} key={league.league_id} className="link">
+                                    <Card league={league} />
+                                </Link>
+                            ))}
+                        </div>
+                    </>
+                )}
                 {type === "league" && (
-                    <div className="leaderboard-grid">
-                        {leagues.map((league) => (
-                            <Link to={`/leagues/${league.league_id}`} key={league.league_id} className="link">
-                                <Card league={league} />
-                            </Link>
-                        ))}
-                    </div>
+                    <>
+                        <h2>Public leagues</h2>
+                        <div className="leaderboard-grid">
+                            {leagues.map((league) => (
+                                <Link to={`/leagues/${league.league_id}`} key={league.league_id} className="link">
+                                    <Card league={league} />
+                                </Link>
+                            ))}
+                        </div>
+                    </>
                 )}
                 {type === "leagueDetail" && (
                     <div className="leaderboard-grid">

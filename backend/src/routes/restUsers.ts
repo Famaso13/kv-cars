@@ -140,8 +140,13 @@ export class RestUsers {
             response.send("Invalid user_id");
         } else {
             this.getImageById(driver_id).then((image) => {
-                response.status(200);
-                response.send(image);
+                if (image === null) {
+                    response.status(404);
+                    response.send(image);
+                } else {
+                    response.status(200);
+                    response.send(image);
+                }
             });
         }
     }

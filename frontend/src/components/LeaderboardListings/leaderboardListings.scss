@@ -38,6 +38,8 @@ $primary-color: #a02638;
     display: flex;
     width: 50%;
     justify-content: space-around;
+    padding: 10px 0;
+    box-sizing: border-box;
 
     p {
         color: black;

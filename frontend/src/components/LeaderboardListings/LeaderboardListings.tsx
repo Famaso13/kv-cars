@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import type { CarsListingsI, ListingsI, ProfileListingsI } from "../../types/listing";
 import Listing from "../Listing/Listing";
 import "./leaderboardListings.scss";
-import Button from "../Button/Button";
+import Pagination from "../Pagination/Pagination";
 
 interface LeaderboardListingsProps {
     track_id?: number;
@@ -142,63 +142,25 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
             </div>
             {type === "tracks" && (
                 <div className="leaderboard-pagination">
-                    <Button
-                        label="<<"
-                        onClick={() => setCurrentPage(1)}
-                        disabled={currentPage === 1}
-                        style="secondary"
+                    <Pagination
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        league_id={league_id}
+                        leagueListingsLenght={leagueListings.length}
+                        filteredListingsLength={filteredListings.length}
+                        itemsPerPage={itemsPerPage}
+                        type={type}
                     />
-
-                    <Button
-                        label="<"
-                        onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                        disabled={currentPage === 1}
-                        style="primary"
-                    />
-
-                    <p>
-                        Page {currentPage} of{" "}
-                        {Math.ceil(
-                            (league_id !== undefined ? leagueListings.length : filteredListings.length) / itemsPerPage
-                        )}
-                    </p>
-
-                    <Button
-                        label=">"
-                        onClick={() => {
-                            const totalPages = Math.ceil(
-                                (league_id !== undefined ? leagueListings.length : filteredListings.length) /
-                                    itemsPerPage
-                            );
-                            setCurrentPage((p) => Math.min(p + 1, totalPages));
-                        }}
-                        disabled={
-                            currentPage ===
-                            Math.ceil(
-                                (league_id !== undefined ? leagueListings.length : filteredListings.length) /
-                                    itemsPerPage
-                            )
-                        }
-                        style="primary"
-                    />
-
-                    <Button
-                        label=">>"
-                        onClick={() => {
-                            const totalPages = Math.ceil(
-                                (league_id !== undefined ? leagueListings.length : filteredListings.length) /
-                                    itemsPerPage
-                            );
-                            setCurrentPage(totalPages);
-                        }}
-                        disabled={
-                            currentPage ===
-                            Math.ceil(
-                                (league_id !== undefined ? leagueListings.length : filteredListings.length) /
-                                    itemsPerPage
-                            )
-                        }
-                        style="secondary"
+                </div>
+            )}
+            {type === "profile" && (
+                <div className="leaderboard-pagination">
+                    <Pagination
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        profileListingsLenght={profileListings.length}
+                        itemsPerPage={itemsPerPage}
+                        type={type}
                     />
                 </div>
             )}
@@ -311,15 +273,15 @@ const LeaderboardListings: React.FC<LeaderboardListingsProps> = ({
                         ))}
 
                     {type === "profile" &&
-                        profileListings.map((profileListing, index) => (
+                        paginate(profileListings).map((profileListing, index) => (
                             <div key={index} className="leaderboard-listing">
                                 <Listing
-                                    position={index + 1}
+                                    position={(currentPage - 1) * itemsPerPage + index + 1}
                                     listing={profileListing}
                                     tempUnit={tempUnit}
                                     type="profile"
                                 />
-                                {index !== profileListings.length - 1 && <hr />}
+                                {index !== paginate(profileListings).length - 1 && <hr />}
                             </div>
                         ))}
 

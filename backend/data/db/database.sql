@@ -143,6 +143,8 @@ CREATE TABLE laps (
   FOREIGN KEY (track_id)      REFERENCES tracks(track_id)        ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (conditions_id) REFERENCES track_conditions(conditions_id) ON DELETE SET NULL ON UPDATE CASCADE
 );
+ALTER TABLE laps ADD COLUMN league_id INTEGER;
+
 
 CREATE INDEX idx_laps_driver   ON laps(driver_id);
 CREATE INDEX idx_laps_track    ON laps(track_id);

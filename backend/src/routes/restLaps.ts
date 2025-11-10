@@ -132,6 +132,7 @@ export class RestLaps {
                 conditions_id: d["conditions_id"],
                 lap_time_ms: d["lap_time_ms"],
                 date: d["date"],
+                league_id: d["league_id"],
             };
             result.push(l);
         }
@@ -152,6 +153,7 @@ export class RestLaps {
                 conditions_id: d["conditions_id"],
                 lap_time_ms: d["lap_time_ms"],
                 date: d["date"],
+                league_id: d["league_id"],
             };
             return l;
         }
@@ -171,6 +173,7 @@ export class RestLaps {
                 conditions_id: d["conditions_id"],
                 lap_time_ms: d["lap_time_ms"],
                 date: d["date"],
+                league_id: d["league_id"],
             };
             result.push(l);
         }
@@ -197,6 +200,7 @@ export class RestLaps {
                 conditions_id: d["conditions_id"],
                 lap_time_ms: d["lap_time_ms"],
                 date: d["date"],
+                league_id: d["league_id"],
             };
             return l;
         }
@@ -211,10 +215,11 @@ export class RestLaps {
             lap.conditions_id ?? null,
             lap.lap_time_ms ?? null,
             lap.date ?? null,
+            lap.league_id ?? null,
         ];
 
         let sql =
-            "INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms, date) VALUES (?,?,?,?,?,?);";
+            "INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms, date, league_id) VALUES (?,?,?,?,?,?,?);";
         let data = await this.database.insertUpdateRows(sql, lapData);
         if (data.error === null) return { err: "", inserted: true };
         else return { err: "Error during row insertion. Please try again.", inserted: false };

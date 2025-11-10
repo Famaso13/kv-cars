@@ -6,4 +6,5 @@ export interface LapsI {
     conditions_id?: number | null;
     lap_time_ms: number;
     date?: string;
+    league_id?: number;
 }

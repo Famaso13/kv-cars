@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import Database from "../helpers/sqliteHelper";
-import { TrackConditionI } from "../interfaces/trackConditionsI";
-import { LapsI } from "../interfaces/lapsI";
 import { CarFilterI, CategoryFilterI, TireFilterI, WeatherFilterI } from "../interfaces/filtersI";
 
 export class RestFilters {

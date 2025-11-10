@@ -70,6 +70,7 @@ function loadPaths() {
 
     let restLaps = new RestLaps();
     server.get("/api/laps/:track_id", restLaps.getLapsByTrackId.bind(restLaps));
+    server.get("/api/laps/:league_id/:track_id", restLaps.getLeagueLapsByTrackId.bind(restLaps));
     server.get("/api/lap/:lap_id", restLaps.getLapByTrackId.bind(restLaps));
     server.get("/api/laps/driver/:driver_id", restLaps.getLapsByDriverId.bind(restLaps));
     server.get("/api/lap/driver/:driver_id", restLaps.getFastestLapByDriverId.bind(restLaps));

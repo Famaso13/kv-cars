@@ -30,6 +30,26 @@ export class RestLaps {
         }
     }
 
+    getLeagueLapsByTrackId(request: Request, response: Response) {
+        response.type("application/json");
+        let trackData = request.params["track_id"];
+        let leagueData = request.params["league_id"];
+        if (trackData == undefined) {
+            response.status(400);
+            let message = { err: "No track_id provided" };
+            response.send(JSON.stringify(message));
+        } else if (leagueData == undefined) {
+            response.status(400);
+            let message = { err: "No league_id provided" };
+            response.send(JSON.stringify(message));
+        } else {
+            this.getAllByTrackAndLeagueId(parseInt(trackData), parseInt(leagueData)).then((laps) => {
+                response.status(200);
+                response.send(JSON.stringify(laps));
+            });
+        }
+    }
+
     getLapByTrackId(request: Request, response: Response) {
         response.type("application/json");
         let data = request.params["lap_id"];
@@ -122,6 +142,26 @@ export class RestLaps {
     async getAllByTrackId(track_id: number): Promise<Array<LapsI>> {
         let sql = "SELECT * FROM laps WHERE track_id=?;";
         var data = (await this.database.getDataPromise(sql, [track_id])) as Array<LapsI>;
+        let result = new Array<LapsI>();
+        for (let d of data) {
+            let l: LapsI = {
+                lap_id: d["lap_id"],
+                driver_id: d["driver_id"],
+                car_id: d["car_id"],
+                track_id: d["track_id"],
+                conditions_id: d["conditions_id"],
+                lap_time_ms: d["lap_time_ms"],
+                date: d["date"],
+                league_id: d["league_id"],
+            };
+            result.push(l);
+        }
+        return result;
+    }
+
+    async getAllByTrackAndLeagueId(track_id: number, league_id: number): Promise<Array<LapsI>> {
+        let sql = "SELECT * FROM laps WHERE track_id=? AND league_id=?;";
+        var data = (await this.database.getDataPromise(sql, [track_id, league_id])) as Array<LapsI>;
         let result = new Array<LapsI>();
         for (let d of data) {
             let l: LapsI = {

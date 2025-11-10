@@ -203,12 +203,7 @@ ORDER BY l.lap_time_ms ASC;
     LEFT JOIN tires t              ON t.tire_id      = tc.tire_id
     LEFT JOIN weathers w           ON w.weathers_id  = tc.weather_id
     WHERE l.track_id = ?
-      AND EXISTS (
-        SELECT 1
-        FROM competes comp
-        WHERE comp.league_id = ?
-          AND comp.driver_id = l.driver_id
-      )
+      AND l.league_id = ?
       AND (? = -1 OR c.category_id = ?)
       AND (? = -1 OR c.car_id      = ?)
       AND (? = -1 OR t.tire_id     = ?)

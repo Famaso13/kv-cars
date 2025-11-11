@@ -56,6 +56,10 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
         input?.click();
     };
 
+    useEffect(() => {
+        console.log("league_id prop:", league_id);
+    }, [league_id]);
+
     const MAX_MB = 5;
 
     const handleFilePicked: React.ChangeEventHandler<HTMLInputElement> = (e) => {

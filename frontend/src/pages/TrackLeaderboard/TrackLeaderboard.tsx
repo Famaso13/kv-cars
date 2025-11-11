@@ -144,7 +144,9 @@ const TrackLeaderboard = () => {
                             />
                         </div>
                     </div>
-                    {showModal && <Modal setModal={setShowModal} type="lapInsert" track_id={trackIdNum} />}
+                    {showModal && (
+                        <Modal setModal={setShowModal} type="lapInsert" track_id={trackIdNum} league_id={leagueIdNum} />
+                    )}
                 </div>
             </div>
         </div>

@@ -557,3 +557,5 @@ INSERT INTO laps (driver_id, car_id, track_id, conditions_id, lap_time_ms, date)
 
   -- Provjera
 SELECT * FROM laps;
+
+DELETE FROM laps WHERE lap_id = 207;

@@ -137,7 +137,7 @@ const Modal: React.FC<ModalProps> = ({ setModal, type, track_id, league_id }) =>
     const [tireId, setTireId] = useState<number | null>(null);
     const [weather, setWeather] = useState<string | null>(null);
     const [date, setDate] = useState<string>("");
-    const [trackTemperature, setTrackTemperature] = useState<number>(30);
+    const [trackTemperature, setTrackTemperature] = useState<number>(26);
     const [minute, setMinute] = useState<number>(1);
     const [seconds, setSeconds] = useState<number>(1);
     const [miliseconds, setMiliseconds] = useState<number>(1);

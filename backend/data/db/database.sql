@@ -181,6 +181,9 @@ INSERT INTO categories (name, description) VALUES
   ('Classic',   'Klasici i oldtimeri iz različitih era.'),
   ('Sport',   'Sportski automobili visokih performansi, fokusirani na agilnost, ubrzanje i upravljivost na stazi i cesti.');
 
+INSERT INTO categories (name, description) VALUES
+  ('Race',   'High-performance race cars designed for competitive racing events.');
+
 select * from categories;
 
 -- CARS
